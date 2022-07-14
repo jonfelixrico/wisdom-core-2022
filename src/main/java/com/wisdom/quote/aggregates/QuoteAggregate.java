@@ -3,7 +3,7 @@ package com.wisdom.quote.aggregates;
 import java.time.Instant;
 import java.util.List;
 
-public class QuoteEntity {
+public class QuoteAggregate {
 	private String quoteId;
 	private String content;
 	
@@ -12,10 +12,10 @@ public class QuoteEntity {
 	
 	private Instant submitDt;
 	
-	private List<ReceiveSubEntity> receives;
+	private List<ReceiveSubAggregate> receives;
 
-	public QuoteEntity(String quoteId, String content, String authorId, String submitterId, Instant submitDt,
-			List<ReceiveSubEntity> receives) {
+	public QuoteAggregate(String quoteId, String content, String authorId, String submitterId, Instant submitDt,
+			List<ReceiveSubAggregate> receives) {
 		this.quoteId = quoteId;
 		this.content = content;
 		this.authorId = authorId;
@@ -44,7 +44,7 @@ public class QuoteEntity {
 		return submitDt;
 	}
 
-	public List<ReceiveSubEntity> getReceives() {
+	public List<ReceiveSubAggregate> getReceives() {
 		return receives;
 	}
 	
@@ -52,7 +52,7 @@ public class QuoteEntity {
 	 * Adds a receive to the quote.
 	 * @param receiveObj
 	 */
-	public void addReceive(ReceiveSubEntity receiveObj) {
+	public void addReceive(ReceiveSubAggregate receiveObj) {
 		// TODO dupe checking of receive id
 		this.receives.add(receiveObj);
 	}

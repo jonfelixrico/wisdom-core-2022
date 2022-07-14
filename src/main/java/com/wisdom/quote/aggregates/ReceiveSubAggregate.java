@@ -2,13 +2,13 @@ package com.wisdom.quote.aggregates;
 
 import java.time.Instant;
 
-public class ReceiveSubEntity {
+public class ReceiveSubAggregate {
 	private String id;
 	private String receiverId;
 	private Instant receiveDt;
 	private String channelId;
 	
-	public ReceiveSubEntity(String id, String receiverId, Instant receiveDt, String channelId) {
+	public ReceiveSubAggregate(String id, String receiverId, Instant receiveDt, String channelId) {
 		this.id = id;
 		this.receiverId = receiverId;
 		this.receiveDt = receiveDt;
