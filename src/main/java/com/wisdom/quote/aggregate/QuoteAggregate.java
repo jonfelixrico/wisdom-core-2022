@@ -1,6 +1,7 @@
 package com.wisdom.quote.aggregate;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,18 +10,20 @@ public class QuoteAggregate {
 	private Instant expirationDt;
 
 	private Map<String, VoteType> votes;
-	private List<Receive> receives;
+	private List<String> receiveIds;
 	
 	private Verdict verdict;
 	
-	public QuoteAggregate(Instant expirationDt, Map<String, VoteType> votes, List<Receive> receives,
+	public QuoteAggregate(Instant expirationDt, Map<String, VoteType> votes, List<String> receives,
 			Verdict verdict) {
 		this.expirationDt = expirationDt;
 		
 		this.votes = new HashMap<>();
 		this.votes.putAll(votes);
 
-		this.receives = receives;
+		this.receiveIds = new ArrayList<>();
+		this.receiveIds.addAll(receives);
+
 		this.verdict = verdict;
 	}
 
@@ -36,12 +39,12 @@ public class QuoteAggregate {
 		votes.put(voterId, voteType);
 	}
 
-	void receive(Receive receive) {
+	void receive(String receiveId) {
 		if (verdict == null || verdict.getStatus() != VerdictStatus.ACCEPTED) {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
 		
-		receives.add(receive);
+		receiveIds.add(receiveId);
 	}
 	
 	void cancel(Instant cancelDt) {
