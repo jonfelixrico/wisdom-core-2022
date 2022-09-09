@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class QuoteAggregate {
+public class QuoteAggregate {
 	private Instant expirationDt;
 
 	private Map<String, VoteType> votes;
