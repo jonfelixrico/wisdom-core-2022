@@ -74,4 +74,22 @@ public class QuoteAggregate {
 		
 		verdict = new VerdictImpl(VerdictStatus.EXPIRED, expireDt);
 	}
+
+	public Instant getExpirationDt() {
+		return expirationDt;
+	}
+
+	public Map<String, VoteType> getVotes() {
+		return Map.copyOf(votes);
+	}
+
+	public List<String> getReceiveIds() {
+		return List.copyOf(receiveIds);
+	}
+
+	public Verdict getVerdict() {
+		return verdict;
+	}
+	
+	
 }
