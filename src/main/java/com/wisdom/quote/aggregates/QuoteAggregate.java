@@ -2,58 +2,61 @@ package com.wisdom.quote.aggregates;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
-public class QuoteAggregate {
-	private String quoteId;
-	private String content;
+public abstract class QuoteAggregate {
+	private Instant expirationDt;
+
+	private Map<String, VoteType> votes;
+	private List<ReceiveInput> receives;
 	
-	private String authorId;
-	private String submitterId;
+	private Verdict verdict;
 	
-	private Instant submitDt;
-	
-	private List<ReceiveSubAggregate> receives;
-
-	public QuoteAggregate(String quoteId, String content, String authorId, String submitterId, Instant submitDt,
-			List<ReceiveSubAggregate> receives) {
-		this.quoteId = quoteId;
-		this.content = content;
-		this.authorId = authorId;
-		this.submitterId = submitterId;
-		this.submitDt = submitDt;
-		this.receives = receives;
+	void addVote(String voterId, VoteType voteType, Instant voteDt) {
+		if (verdict != null) {
+			throw new IllegalStateException("Quote no longer accepts votes.");
+		}
+		
+		if (voteDt.isAfter(expirationDt)) {
+			throw new IllegalStateException("Quote no longer accepts votes.");
+		}
+		
+		votes.put(voterId, voteType);
 	}
 
-	public String getQuoteId() {
-		return quoteId;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public String getAuthorId() {
-		return authorId;
-	}
-
-	public String getSubmitterId() {
-		return submitterId;
-	}
-
-	public Instant getSubmitDt() {
-		return submitDt;
-	}
-
-	public List<ReceiveSubAggregate> getReceives() {
-		return receives;
+	void receive(ReceiveInput receive) {
+		if (verdict == null || verdict.getStatus() != VerdictStatus.ACCEPTED) {
+			throw new IllegalStateException("Quote does not accept receives.");
+		}
+		
+		receives.add(receive);
 	}
 	
-	/**
-	 * Adds a receive to the quote.
-	 * @param receiveObj
-	 */
-	public void addReceive(ReceiveSubAggregate receiveObj) {
-		// TODO dupe checking of receive id
-		this.receives.add(receiveObj);
+	void cancel(Instant cancelDt) {
+		if (verdict != null) {
+			throw new IllegalStateException("Quote can no longer be cancelled.");
+		}
+		
+		verdict = VerdictImpl.create(VerdictStatus.CANCELLED, cancelDt);
+	}
+	
+	void accept(Instant acceptDt) {
+		if (verdict != null) {
+			throw new IllegalStateException("Quote can no longer be accepted.");
+		}
+		
+		verdict = VerdictImpl.create(VerdictStatus.ACCEPTED, acceptDt);
+	}
+	
+	void flagAsExpired (Instant expireDt) {
+		if (verdict != null) {
+			throw new IllegalStateException("Quote can no longer be flagged as expired.");
+		}
+		
+		if (expireDt.isBefore(expirationDt)) {
+			throw new IllegalStateException("Provided expiration date is earlier than quote expiration date.");
+		}
+		
+		verdict = VerdictImpl.create(VerdictStatus.EXPIRED, expireDt);
 	}
 }
