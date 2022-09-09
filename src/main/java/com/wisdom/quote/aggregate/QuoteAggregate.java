@@ -40,19 +40,19 @@ public class QuoteAggregate {
 	}
 
 	void receive(String receiveId) {
-		if (verdict == null || verdict.getStatus() != VerdictStatus.ACCEPTED) {
+		if (verdict == null || verdict.getStatus() != VerdictStatus.APPROVED) {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
 		
 		receiveIds.add(receiveId);
 	}
 	
-	void accept(Instant acceptDt) {
+	void approve(Instant acceptDt) {
 		if (verdict != null) {
-			throw new IllegalStateException("Quote can no longer be accepted.");
+			throw new IllegalStateException("Quote can no longer be approved.");
 		}
 		
-		verdict = new VerdictImpl(VerdictStatus.ACCEPTED, acceptDt);
+		verdict = new VerdictImpl(VerdictStatus.APPROVED, acceptDt);
 	}
 	
 	void flagAsExpired (Instant expireDt) {

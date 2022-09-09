@@ -4,12 +4,12 @@ import java.time.Instant;
 
 import com.wisdom.eventsourcing.Event;
 
-public class QuoteAcceptedBySystemEvent implements Event {
+public class QuoteApprovedBySystemEvent implements Event {
 	private Instant timestamp;
 	
 	@Override
 	public String getEventType() {
-		return "QUOTE_ACCEPTED_BY_SYSTEM";
+		return "QUOTE_APPROVED_BY_SYSTEM";
 	}
 	
 }
