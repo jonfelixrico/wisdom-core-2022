@@ -1,4 +1,4 @@
-package com.wisdom.quote.aggregates;
+package com.wisdom.quote.aggregate;
 
 import java.time.Instant;
 import java.util.HashMap;

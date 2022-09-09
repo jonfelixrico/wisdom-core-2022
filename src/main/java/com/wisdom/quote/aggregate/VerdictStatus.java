@@ -1,4 +1,4 @@
-package com.wisdom.quote.aggregates;
+package com.wisdom.quote.aggregate;
 
 public enum VerdictStatus {
 	EXPIRED,
