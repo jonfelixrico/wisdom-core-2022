@@ -1,6 +1,7 @@
 package com.wisdom.quote.aggregates;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,10 @@ public abstract class QuoteAggregate {
 	public QuoteAggregate(Instant expirationDt, Map<String, VoteType> votes, List<Receive> receives,
 			Verdict verdict) {
 		this.expirationDt = expirationDt;
-		this.votes = votes;
+		
+		this.votes = new HashMap<>();
+		this.votes.putAll(votes);
+
 		this.receives = receives;
 		this.verdict = verdict;
 	}
