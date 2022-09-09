@@ -1,5 +1,5 @@
 package com.wisdom.quote.aggregates;
 
-public interface ReceiveInput {
+public interface Receive {
 	String getId();
 }

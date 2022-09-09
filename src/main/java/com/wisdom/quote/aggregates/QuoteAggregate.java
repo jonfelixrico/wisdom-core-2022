@@ -8,10 +8,18 @@ public abstract class QuoteAggregate {
 	private Instant expirationDt;
 
 	private Map<String, VoteType> votes;
-	private List<ReceiveInput> receives;
+	private List<Receive> receives;
 	
 	private Verdict verdict;
 	
+	public QuoteAggregate(Instant expirationDt, Map<String, VoteType> votes, List<Receive> receives,
+			Verdict verdict) {
+		this.expirationDt = expirationDt;
+		this.votes = votes;
+		this.receives = receives;
+		this.verdict = verdict;
+	}
+
 	void addVote(String voterId, VoteType voteType, Instant voteDt) {
 		if (verdict != null) {
 			throw new IllegalStateException("Quote no longer accepts votes.");
@@ -24,7 +32,7 @@ public abstract class QuoteAggregate {
 		votes.put(voterId, voteType);
 	}
 
-	void receive(ReceiveInput receive) {
+	void receive(Receive receive) {
 		if (verdict == null || verdict.getStatus() != VerdictStatus.ACCEPTED) {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
@@ -37,7 +45,7 @@ public abstract class QuoteAggregate {
 			throw new IllegalStateException("Quote can no longer be cancelled.");
 		}
 		
-		verdict = VerdictImpl.create(VerdictStatus.CANCELLED, cancelDt);
+		verdict = new VerdictImpl(VerdictStatus.CANCELLED, cancelDt);
 	}
 	
 	void accept(Instant acceptDt) {
@@ -45,7 +53,7 @@ public abstract class QuoteAggregate {
 			throw new IllegalStateException("Quote can no longer be accepted.");
 		}
 		
-		verdict = VerdictImpl.create(VerdictStatus.ACCEPTED, acceptDt);
+		verdict = new VerdictImpl(VerdictStatus.ACCEPTED, acceptDt);
 	}
 	
 	void flagAsExpired (Instant expireDt) {
@@ -57,6 +65,6 @@ public abstract class QuoteAggregate {
 			throw new IllegalStateException("Provided expiration date is earlier than quote expiration date.");
 		}
 		
-		verdict = VerdictImpl.create(VerdictStatus.EXPIRED, expireDt);
+		verdict = new VerdictImpl(VerdictStatus.EXPIRED, expireDt);
 	}
 }
