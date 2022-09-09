@@ -47,14 +47,6 @@ public class QuoteAggregate {
 		receiveIds.add(receiveId);
 	}
 	
-	void cancel(Instant cancelDt) {
-		if (verdict != null) {
-			throw new IllegalStateException("Quote can no longer be cancelled.");
-		}
-		
-		verdict = new VerdictImpl(VerdictStatus.CANCELLED, cancelDt);
-	}
-	
 	void accept(Instant acceptDt) {
 		if (verdict != null) {
 			throw new IllegalStateException("Quote can no longer be accepted.");
@@ -90,6 +82,4 @@ public class QuoteAggregate {
 	public Verdict getVerdict() {
 		return verdict;
 	}
-	
-	
 }
