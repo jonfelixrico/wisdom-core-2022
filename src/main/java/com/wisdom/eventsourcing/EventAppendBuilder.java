@@ -74,7 +74,7 @@ public class EventAppendBuilder {
 		return expectedRevision;
 	}
 
-	public void pushEvent(Event event) {
+	public void pushEvent(@NonNull Event event) {
 		events.add(event);
 		logger.debug("Pushed event type {} to stream {}", event.getEventType(), streamId);
 	}
