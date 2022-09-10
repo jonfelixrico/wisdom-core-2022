@@ -39,6 +39,14 @@ public class QuoteWriteModel {
 		this(quoteId, aggregate, new EventBuffer(getStreamId(quoteId), expectedRevision));
 	}
 
+	/**
+	 * This version of the constructor was necessary because of the buffer part. In the quote submission event,
+	 * we want to be able to push an event which is not covered by one of the methods here.
+	 * 
+	 * @param quoteId
+	 * @param aggregate
+	 * @param buffer
+	 */
 	private QuoteWriteModel(String quoteId, QuoteAggregate aggregate, EventBuffer buffer) {
 		this.quoteId = quoteId;
 		this.aggregate = aggregate;
