@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.wisdom.eventsourcing.EventsBuffer;
+import com.wisdom.eventsourcing.EventBuffer;
 import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.aggregate.VoteType;
 import com.wisdom.quote.aggregate.events.QuoteApprovedBySystemEvent;
@@ -22,7 +22,7 @@ public class QuoteWriteModel {
 	public static QuoteWriteModel submit(String quoteId, String content, String authorId, String submitterId,
 			Instant createDt, Instant expirationDt, String serverId, String channelId, String messageId) {
 		// push the initial event
-		EventsBuffer buffer = new EventsBuffer(getStreamId(quoteId), BigInteger.ZERO);
+		EventBuffer buffer = new EventBuffer(getStreamId(quoteId), BigInteger.ZERO);
 		buffer.pushEvent(new QuoteSubmittedEvent(quoteId, content, authorId, submitterId, createDt, expirationDt,
 				serverId, channelId, messageId));
 
@@ -33,13 +33,13 @@ public class QuoteWriteModel {
 	private String quoteId;
 
 	private QuoteAggregate aggregate;
-	private EventsBuffer buffer;
+	private EventBuffer buffer;
 
 	public QuoteWriteModel(String quoteId, QuoteAggregate aggregate, BigInteger revision) {
-		this(quoteId, aggregate, new EventsBuffer(getStreamId(quoteId), revision));
+		this(quoteId, aggregate, new EventBuffer(getStreamId(quoteId), revision));
 	}
 
-	private QuoteWriteModel(String quoteId, QuoteAggregate aggregate, EventsBuffer buffer) {
+	private QuoteWriteModel(String quoteId, QuoteAggregate aggregate, EventBuffer buffer) {
 		this.quoteId = quoteId;
 		this.aggregate = aggregate;
 		this.buffer = buffer;
