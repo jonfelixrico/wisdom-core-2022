@@ -5,6 +5,8 @@ import java.time.Instant;
 import com.wisdom.eventsourcing.Event;
 
 public class QuoteFlaggedAsExpiredBySystemEvent implements Event {
+	public static final String EVENT_TYPE = "QUOTE_FLAGGED_AS_EXPIRED_BY_SYSTEM";
+
 	private String quoteId;
 	private Instant timestamp;
 
@@ -23,7 +25,7 @@ public class QuoteFlaggedAsExpiredBySystemEvent implements Event {
 
 	@Override
 	public String getEventType() {
-		return "QUOTE_FLAGGED_AS_EXPIRED_BY_SYSTEM";
+		return EVENT_TYPE;
 	}
 
 }

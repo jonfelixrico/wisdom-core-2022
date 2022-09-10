@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.wisdom.eventsourcing.Event;
 
 public class QuoteReceivedEvent implements Event {
+	public static final String EVENT_TYPE = "QUOTE_RECEIVED";
 
 	private String quoteId;
 	private String receiveId;
@@ -57,7 +58,7 @@ public class QuoteReceivedEvent implements Event {
 
 	@Override
 	public String getEventType() {
-		return "QUOTE_RECEIVED";
+		return EVENT_TYPE;
 	}
 
 }

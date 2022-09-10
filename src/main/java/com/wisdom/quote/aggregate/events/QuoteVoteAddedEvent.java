@@ -6,6 +6,7 @@ import com.wisdom.eventsourcing.Event;
 import com.wisdom.quote.aggregate.VoteType;
 
 public class QuoteVoteAddedEvent implements Event {
+	public static final String EVENT_TYPE = "QUOTE_VOTE_ADDED";
 
 	private String quoteId;
 
@@ -39,7 +40,7 @@ public class QuoteVoteAddedEvent implements Event {
 
 	@Override
 	public String getEventType() {
-		return "QUOTE_VOTE_ADDED";
+		return EVENT_TYPE;
 	}
 
 }

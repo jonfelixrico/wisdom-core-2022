@@ -5,6 +5,8 @@ import java.time.Instant;
 import com.wisdom.eventsourcing.Event;
 
 public class QuoteSubmittedEvent implements Event {
+	public static final String EVENT_TYPE = "QUOTE_SUBMITTED";
+
 	private String id;
 
 	private String content;
@@ -34,7 +36,7 @@ public class QuoteSubmittedEvent implements Event {
 	@Override
 	public String getEventType() {
 		// TODO Auto-generated method stub
-		return "QUOTE_SUBMITTED";
+		return EVENT_TYPE;
 	}
 
 	public String getId() {

@@ -5,6 +5,8 @@ import java.time.Instant;
 import com.wisdom.eventsourcing.Event;
 
 public class QuoteApprovedBySystemEvent implements Event {
+	public static final String EVENT_TYPE = "QUOTE_APPROVED_BY_SYSTEM";
+
 	private String quoteId;
 	private Instant timestamp;
 
@@ -23,7 +25,7 @@ public class QuoteApprovedBySystemEvent implements Event {
 
 	@Override
 	public String getEventType() {
-		return "QUOTE_APPROVED_BY_SYSTEM";
+		return EVENT_TYPE;
 	}
 
 }
