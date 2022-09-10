@@ -22,7 +22,7 @@ public class QuoteWriteModel {
 	public static QuoteWriteModel submit(String quoteId, String content, String authorId, String submitterId,
 			Instant createDt, Instant expirationDt, String serverId, String channelId, String messageId) {
 		// push the initial event
-		EventBuffer buffer = new EventBuffer(getStreamId(quoteId), BigInteger.ZERO);
+		EventBuffer buffer = new EventBuffer(getStreamId(quoteId), 0L);
 		buffer.pushEvent(new QuoteSubmittedEvent(quoteId, content, authorId, submitterId, createDt, expirationDt,
 				serverId, channelId, messageId));
 
@@ -35,7 +35,7 @@ public class QuoteWriteModel {
 	private QuoteAggregate aggregate;
 	private EventBuffer buffer;
 
-	public QuoteWriteModel(String quoteId, QuoteAggregate aggregate, BigInteger revision) {
+	public QuoteWriteModel(String quoteId, QuoteAggregate aggregate, long revision) {
 		this(quoteId, aggregate, new EventBuffer(getStreamId(quoteId), revision));
 	}
 
