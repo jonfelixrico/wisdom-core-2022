@@ -1,8 +1,10 @@
 package com.wisdom.quote.writemodel.projection;
 
+import java.time.Instant;
+
 public class Receive {
 	private String id;
-	private String timestamp;
+	private Instant timestamp;
 	private String userId;
 
 	private String serverId;
@@ -13,7 +15,7 @@ public class Receive {
 		return id;
 	}
 
-	public String getTimestamp() {
+	public Instant getTimestamp() {
 		return timestamp;
 	}
 
@@ -33,7 +35,7 @@ public class Receive {
 		return messageId;
 	}
 
-	public Receive(String id, String timestamp, String userId, String serverId, String channelId, String messageId) {
+	public Receive(String id, Instant timestamp, String userId, String serverId, String channelId, String messageId) {
 		this.id = id;
 		this.timestamp = timestamp;
 		this.userId = userId;
