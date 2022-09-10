@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 
 import com.eventstore.dbclient.AppendToStreamOptions;
@@ -20,6 +23,8 @@ import com.eventstore.dbclient.WriteResult;
  *
  */
 public class EventAppendBuilder {
+	Logger logger = LoggerFactory.getLogger(EventAppendBuilder.class);
+
 	private String streamId;
 	private List<Event> events;
 
@@ -87,7 +92,7 @@ public class EventAppendBuilder {
 
 		if (expectedRevision != null) {
 			if (options.getExpectedRevision() != null) {
-				// TODO add logging that expectedRevision will be overridden
+				logger.debug("Replaced original expectedRevision value of {} with {}", options.getExpectedRevision(), expectedRevision);
 			}
 
 			options.expectedRevision(expectedRevision);
