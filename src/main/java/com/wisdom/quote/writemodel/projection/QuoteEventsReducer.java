@@ -89,7 +89,7 @@ public class QuoteEventsReducer {
 	}
 	
 	/**
-	 * Processes adding of votes
+	 * Processes removing of votes
 	 * @param model
 	 * @param event
 	 * @return
