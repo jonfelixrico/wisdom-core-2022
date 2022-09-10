@@ -11,13 +11,12 @@ public class QuoteAggregate {
 
 	private Map<String, VoteType> votes;
 	private List<String> receiveIds;
-	
+
 	private Verdict verdict;
-	
-	public QuoteAggregate(Instant expirationDt, Map<String, VoteType> votes, List<String> receives,
-			Verdict verdict) {
+
+	public QuoteAggregate(Instant expirationDt, Map<String, VoteType> votes, List<String> receives, Verdict verdict) {
 		this.expirationDt = expirationDt;
-		
+
 		this.votes = new HashMap<>();
 		this.votes.putAll(votes);
 
@@ -31,11 +30,11 @@ public class QuoteAggregate {
 		if (verdict != null) {
 			throw new IllegalStateException("Quote no longer accepts votes.");
 		}
-		
+
 		if (voteDt.isAfter(expirationDt)) {
 			throw new IllegalStateException("Quote no longer accepts votes.");
 		}
-		
+
 		votes.put(voterId, voteType);
 	}
 
@@ -43,27 +42,27 @@ public class QuoteAggregate {
 		if (verdict == null || verdict.getStatus() != VerdictStatus.APPROVED) {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
-		
+
 		receiveIds.add(receiveId);
 	}
-	
+
 	void approve(Instant acceptDt) {
 		if (verdict != null) {
 			throw new IllegalStateException("Quote can no longer be approved.");
 		}
-		
+
 		verdict = new VerdictImpl(VerdictStatus.APPROVED, acceptDt);
 	}
-	
-	void flagAsExpired (Instant expireDt) {
+
+	void flagAsExpired(Instant expireDt) {
 		if (verdict != null) {
 			throw new IllegalStateException("Quote can no longer be flagged as expired.");
 		}
-		
+
 		if (expireDt.isBefore(expirationDt)) {
 			throw new IllegalStateException("Provided expiration date is earlier than quote expiration date.");
 		}
-		
+
 		verdict = new VerdictImpl(VerdictStatus.EXPIRED, expireDt);
 	}
 
