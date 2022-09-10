@@ -28,14 +28,18 @@ public class QuoteAggregate {
 
 	public void addVote(String voterId, VoteType voteType, Instant voteDt) {
 		if (verdict != null) {
-			throw new IllegalStateException("Quote no longer accepts votes.");
-		}
-
-		if (voteDt.isAfter(expirationDt)) {
-			throw new IllegalStateException("Quote no longer accepts votes.");
+			throw new IllegalStateException("This quote is no longer in its voting phase.");
 		}
 
 		votes.put(voterId, voteType);
+	}
+	
+	public void removeVote(String voterId) {
+		if (verdict != null) {
+			throw new IllegalStateException("This quote is no longer in its voting phase.");
+		}
+
+		votes.remove(voterId);
 	}
 
 	public void receive(String receiveId) {
