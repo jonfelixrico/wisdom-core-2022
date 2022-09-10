@@ -1,6 +1,5 @@
 package com.wisdom.quote.aggregate.writemodel;
 
-import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
