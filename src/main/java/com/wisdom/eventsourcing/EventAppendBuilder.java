@@ -76,6 +76,7 @@ public class EventAppendBuilder {
 
 	public void pushEvent(Event event) {
 		events.add(event);
+		logger.debug("Pushed event type {} to stream {}", event.getEventType(), streamId);
 	}
 
 	/**
