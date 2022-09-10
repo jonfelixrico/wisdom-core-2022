@@ -1,4 +1,4 @@
-package com.wisdom.quote.aggregate.events;
+package com.wisdom.quote.writemodel.events;
 
 import java.time.Instant;
 

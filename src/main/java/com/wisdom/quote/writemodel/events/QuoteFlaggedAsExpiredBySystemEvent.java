@@ -1,16 +1,16 @@
-package com.wisdom.quote.aggregate.events;
+package com.wisdom.quote.writemodel.events;
 
 import java.time.Instant;
 
 import com.wisdom.eventsourcing.Event;
 
-public class QuoteApprovedBySystemEvent implements Event {
-	public static final String EVENT_TYPE = "QUOTE_APPROVED_BY_SYSTEM";
+public class QuoteFlaggedAsExpiredBySystemEvent implements Event {
+	public static final String EVENT_TYPE = "QUOTE_FLAGGED_AS_EXPIRED_BY_SYSTEM";
 
 	private String quoteId;
 	private Instant timestamp;
 
-	public QuoteApprovedBySystemEvent(String quoteId, Instant timestamp) {
+	public QuoteFlaggedAsExpiredBySystemEvent(String quoteId, Instant timestamp) {
 		this.quoteId = quoteId;
 		this.timestamp = timestamp;
 	}
