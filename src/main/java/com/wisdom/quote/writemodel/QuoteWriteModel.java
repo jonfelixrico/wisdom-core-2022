@@ -12,6 +12,7 @@ import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
+import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
 public class QuoteWriteModel {
 	private static String getStreamId(String quoteId) {
@@ -56,9 +57,14 @@ public class QuoteWriteModel {
 		return quoteId;
 	}
 
-	public void addVote(String voterId, VoteType voteType, Instant voteDt) {
-		aggregate.addVote(voterId, voteType, voteDt);
-		builder.pushEvent(new QuoteVoteAddedEvent(quoteId, voterId, voteType, voteDt));
+	public void addVote(String voterId, VoteType voteType, Instant timestamp) {
+		aggregate.addVote(voterId, voteType, timestamp);
+		builder.pushEvent(new QuoteVoteAddedEvent(quoteId, voterId, voteType, timestamp));
+	}
+	
+	public void removeVote(String voterId, Instant timestamp) {
+		aggregate.removeVote(voterId);
+		builder.pushEvent(new QuoteVoteRemovedEvent(quoteId, voterId, timestamp));
 	}
 
 	public void receive(String receiveId, String receiverId, Instant receiveDt, String serverId, String channelId,
