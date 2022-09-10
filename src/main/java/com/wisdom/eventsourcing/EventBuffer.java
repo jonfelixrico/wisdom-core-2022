@@ -30,7 +30,7 @@ public class EventBuffer {
 	 * This will create an EventBuffer that expects the last stream revision
 	 * id to be `revision`.
 	 * @param streamId
-	 * @param revision
+	 * @param revision The revision no. that we expect the stream to be in.
 	 */
 	public EventBuffer(String streamId, BigInteger revision) {
 		this(streamId);
