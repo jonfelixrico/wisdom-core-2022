@@ -1,10 +1,8 @@
-package com.wisdom.writemodel.common;
+package com.wisdom.eventsourcing;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.wisdom.eventsourcing.Event;
 
 public class EventsBuffer {
 	private String streamId;

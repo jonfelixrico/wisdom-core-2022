@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.wisdom.eventsourcing.EventsBuffer;
 import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.aggregate.VoteType;
 import com.wisdom.quote.aggregate.events.QuoteApprovedBySystemEvent;
@@ -12,7 +13,6 @@ import com.wisdom.quote.aggregate.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.aggregate.events.QuoteReceivedEvent;
 import com.wisdom.quote.aggregate.events.QuoteSubmittedEvent;
 import com.wisdom.quote.aggregate.events.QuoteVoteAddedEvent;
-import com.wisdom.writemodel.common.EventsBuffer;
 
 public class QuoteWriteModel {
 	private static String getStreamId(String quoteId) {
