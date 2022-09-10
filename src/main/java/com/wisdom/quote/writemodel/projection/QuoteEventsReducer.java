@@ -1,6 +1,7 @@
 package com.wisdom.quote.writemodel.projection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
+import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
+import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
 public class QuoteEventsReducer {
 	/**
@@ -67,5 +70,37 @@ public class QuoteEventsReducer {
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
 				model.getMessageId(), model.getVotes(), model.getReceives(), newVerdict);
+	}
+	
+	/**
+	 * Processes adding of votes
+	 * @param model
+	 * @param event
+	 * @return
+	 */
+	public static QuoteProjectionModel apply(QuoteProjectionModel model, QuoteVoteAddedEvent event) {
+		Map<String, Vote> newVotes = new HashMap<>();
+		newVotes.putAll(model.getVotes());
+		newVotes.put(event.getUserId(), new Vote(event.getUserId(), event.getType(), event.getTimestamp()));
+		
+		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
+				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
+				model.getMessageId(), newVotes, model.getReceives(), model.getVerdict());
+	}
+	
+	/**
+	 * Processes adding of votes
+	 * @param model
+	 * @param event
+	 * @return
+	 */
+	public static QuoteProjectionModel apply(QuoteProjectionModel model, QuoteVoteRemovedEvent event) {
+		Map<String, Vote> newVotes = new HashMap<>();
+		newVotes.putAll(model.getVotes());
+		newVotes.remove(event.getUserId());
+	
+		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
+				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
+				model.getMessageId(), newVotes, model.getReceives(), model.getVerdict());
 	}
 }
