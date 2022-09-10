@@ -4,7 +4,7 @@ import java.time.Instant;
 
 import com.wisdom.eventsourcing.Event;
 
-public class QuoteCreatedEvent implements Event {
+public class QuoteSubmittedEvent implements Event {
 	private String id;
 
 	private String content;
@@ -18,7 +18,7 @@ public class QuoteCreatedEvent implements Event {
 	private String channelId;
 	private String messageId;
 
-	public QuoteCreatedEvent(String id, String content, String authorId, String submitterId, Instant createDt,
+	public QuoteSubmittedEvent(String id, String content, String authorId, String submitterId, Instant createDt,
 			Instant expirationDt, String serverId, String channelId, String messageId) {
 		this.id = id;
 		this.content = content;
@@ -34,7 +34,7 @@ public class QuoteCreatedEvent implements Event {
 	@Override
 	public String getEventType() {
 		// TODO Auto-generated method stub
-		return "QUOTE_CREATED";
+		return "QUOTE_SUBMITTED";
 	}
 
 	public String getId() {
