@@ -19,7 +19,7 @@ import com.eventstore.dbclient.WriteResult;
  * @author Felix
  *
  */
-public class EventBuffer {
+public class EventAppendBuilder {
 	private String streamId;
 	private List<Event> events;
 
@@ -30,7 +30,7 @@ public class EventBuffer {
 	 * 
 	 * @param streamId
 	 */
-	public EventBuffer(String streamId) {
+	public EventAppendBuilder(String streamId) {
 		this.streamId = streamId;
 		this.events = new ArrayList<>();
 	}
@@ -42,7 +42,7 @@ public class EventBuffer {
 	 * @param streamId
 	 * @param expectedRevision The revision no. that we expect the stream to be in.
 	 */
-	public EventBuffer(String streamId, long expectedRevision) {
+	public EventAppendBuilder(String streamId, long expectedRevision) {
 		this(streamId);
 		this.expectedRevision = expectedRevision;
 	}
