@@ -35,8 +35,8 @@ public class QuoteWriteModel {
 	private QuoteAggregate aggregate;
 	private EventBuffer buffer;
 
-	public QuoteWriteModel(String quoteId, QuoteAggregate aggregate, long revision) {
-		this(quoteId, aggregate, new EventBuffer(getStreamId(quoteId), revision));
+	public QuoteWriteModel(String quoteId, QuoteAggregate aggregate, long expectedRevision) {
+		this(quoteId, aggregate, new EventBuffer(getStreamId(quoteId), expectedRevision));
 	}
 
 	private QuoteWriteModel(String quoteId, QuoteAggregate aggregate, EventBuffer buffer) {
