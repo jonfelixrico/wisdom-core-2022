@@ -51,7 +51,7 @@ public class QuoteAggregate {
 			throw new IllegalStateException("Quote can no longer be approved.");
 		}
 
-		verdict = new VerdictImpl(VerdictStatus.APPROVED, acceptDt);
+		verdict = new Verdict(VerdictStatus.APPROVED, acceptDt);
 	}
 
 	public void flagAsExpired(Instant expireDt) {
@@ -63,7 +63,7 @@ public class QuoteAggregate {
 			throw new IllegalStateException("Provided expiration date is earlier than quote expiration date.");
 		}
 
-		verdict = new VerdictImpl(VerdictStatus.EXPIRED, expireDt);
+		verdict = new Verdict(VerdictStatus.EXPIRED, expireDt);
 	}
 
 	public Instant getExpirationDt() {

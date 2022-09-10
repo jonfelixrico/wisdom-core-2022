@@ -2,8 +2,20 @@ package com.wisdom.quote.aggregate;
 
 import java.time.Instant;
 
-public interface Verdict {
-	Instant getVerdictDt();
+public class Verdict {
+	private Instant verdictDt;
+	private VerdictStatus status;
 
-	VerdictStatus getStatus();
+	public Verdict(VerdictStatus status, Instant verdictDt) {
+		this.verdictDt = verdictDt;
+		this.status = status;
+	}
+
+	public Instant getVerdictDt() {
+		return verdictDt;
+	}
+
+	public VerdictStatus getStatus() {
+		return status;
+	}
 }
