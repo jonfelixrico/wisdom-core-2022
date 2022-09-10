@@ -11,21 +11,25 @@ public class QuoteReceivedEvent implements Event {
 	private String receiveId;
 
 	private String userId;
-	private Instant createDt;
+	private Instant timestamp;
 
 	private String serverId;
 	private String channelId;
 	private String messageId;
 
-	public QuoteReceivedEvent(String quoteId, String receiveId, String userId, Instant createDt, String serverId,
+	public QuoteReceivedEvent(String quoteId, String receiveId, String userId, Instant timestamp, String serverId,
 			String channelId, String messageId) {
 		this.quoteId = quoteId;
 		this.receiveId = receiveId;
 		this.userId = userId;
-		this.createDt = createDt;
+		this.timestamp = timestamp;
 		this.serverId = serverId;
 		this.channelId = channelId;
 		this.messageId = messageId;
+	}
+
+	public Instant getTimestamp() {
+		return timestamp;
 	}
 
 	public String getQuoteId() {
@@ -38,10 +42,6 @@ public class QuoteReceivedEvent implements Event {
 
 	public String getUserId() {
 		return userId;
-	}
-
-	public Instant getCreateDt() {
-		return createDt;
 	}
 
 	public String getServerId() {

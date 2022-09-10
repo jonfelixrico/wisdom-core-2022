@@ -13,13 +13,13 @@ public class QuoteVoteAddedEvent implements Event {
 	private String userId;
 	private VoteType type;
 
-	private Instant createDt;
+	private Instant timestamp;
 
-	public QuoteVoteAddedEvent(String quoteId, String userId, VoteType type, Instant createDt) {
+	public QuoteVoteAddedEvent(String quoteId, String userId, VoteType type, Instant timestamp) {
 		this.quoteId = quoteId;
 		this.userId = userId;
 		this.type = type;
-		this.createDt = createDt;
+		this.timestamp = timestamp;
 	}
 
 	public String getQuoteId() {
@@ -34,8 +34,8 @@ public class QuoteVoteAddedEvent implements Event {
 		return type;
 	}
 
-	public Instant getCreateDt() {
-		return createDt;
+	public Instant getTimestamp() {
+		return timestamp;
 	}
 
 	@Override

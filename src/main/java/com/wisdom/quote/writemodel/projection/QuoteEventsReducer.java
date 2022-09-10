@@ -20,7 +20,7 @@ public class QuoteEventsReducer {
 	 */
 	public static QuoteProjectionModel apply(QuoteProjectionModel model, QuoteSubmittedEvent event) {
 		return new QuoteProjectionModel(event.getId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
-				event.getCreateDt(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
+				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
 				event.getMessageId(), Map.of(), List.of(), null);
 	}
 
@@ -33,7 +33,7 @@ public class QuoteEventsReducer {
 	public static QuoteProjectionModel apply(QuoteProjectionModel model, QuoteReceivedEvent event) {
 		List<Receive> newReceives = new ArrayList<>();
 		newReceives.addAll(model.getReceives());
-		newReceives.add(new Receive(event.getReceiveId(), event.getCreateDt(), event.getUserId(), event.getServerId(),
+		newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
 				event.getChannelId(), event.getMessageId()));
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),

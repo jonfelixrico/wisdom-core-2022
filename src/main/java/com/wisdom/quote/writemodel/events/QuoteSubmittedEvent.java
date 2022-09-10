@@ -13,20 +13,20 @@ public class QuoteSubmittedEvent implements Event {
 	private String authorId;
 	private String submitterId;
 
-	private Instant createDt;
+	private Instant timestamp;
 	private Instant expirationDt;
 
 	private String serverId;
 	private String channelId;
 	private String messageId;
 
-	public QuoteSubmittedEvent(String id, String content, String authorId, String submitterId, Instant createDt,
+	public QuoteSubmittedEvent(String id, String content, String authorId, String submitterId, Instant timestamp,
 			Instant expirationDt, String serverId, String channelId, String messageId) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
 		this.submitterId = submitterId;
-		this.createDt = createDt;
+		this.timestamp = timestamp;
 		this.expirationDt = expirationDt;
 		this.serverId = serverId;
 		this.channelId = channelId;
@@ -55,8 +55,8 @@ public class QuoteSubmittedEvent implements Event {
 		return submitterId;
 	}
 
-	public Instant getCreateDt() {
-		return createDt;
+	public Instant getTimestamp() {
+		return timestamp;
 	}
 
 	public Instant getExpirationDt() {
