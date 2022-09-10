@@ -49,6 +49,10 @@ public class EventBuffer {
 		return List.copyOf(events);
 	}
 
+	/**
+	 * @return If null, then that means that we will not apply any revision no. checking.
+	 * If a BigInteger was provided, then the output of this buffer will have revision no. checking.
+	 */
 	public BigInteger getRevision() {
 		return revision;
 	}
