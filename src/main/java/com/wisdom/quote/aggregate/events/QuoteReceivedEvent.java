@@ -15,7 +15,35 @@ public class QuoteReceivedEvent implements Event {
 	private String serverId;
 	private String channelId;
 	private String messageId;
-	
+
+	public String getQuoteId() {
+		return quoteId;
+	}
+
+	public String getReceiveId() {
+		return receiveId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public Instant getCreateDt() {
+		return createDt;
+	}
+
+	public String getServerId() {
+		return serverId;
+	}
+
+	public String getChannelId() {
+		return channelId;
+	}
+
+	public String getMessageId() {
+		return messageId;
+	}
+
 	@Override
 	public String getEventType() {
 		return "QUOTE_RECEIVED";

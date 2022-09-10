@@ -10,14 +10,27 @@ public class QuoteCreatedEvent implements Event {
 	private String content;
 	private String authorId;
 	private String submitterId;
-	
+
 	private Instant createDt;
 	private Instant expirationDt;
-	
+
 	private String serverId;
 	private String channelId;
 	private String messageId;
-	
+
+	public QuoteCreatedEvent(String id, String content, String authorId, String submitterId, Instant createDt,
+			Instant expirationDt, String serverId, String channelId, String messageId) {
+		this.id = id;
+		this.content = content;
+		this.authorId = authorId;
+		this.submitterId = submitterId;
+		this.createDt = createDt;
+		this.expirationDt = expirationDt;
+		this.serverId = serverId;
+		this.channelId = channelId;
+		this.messageId = messageId;
+	}
+
 	@Override
 	public String getEventType() {
 		// TODO Auto-generated method stub
