@@ -26,7 +26,7 @@ public class QuoteAggregate {
 		this.verdict = verdict;
 	}
 
-	void addVote(String voterId, VoteType voteType, Instant voteDt) {
+	public void addVote(String voterId, VoteType voteType, Instant voteDt) {
 		if (verdict != null) {
 			throw new IllegalStateException("Quote no longer accepts votes.");
 		}
@@ -38,7 +38,7 @@ public class QuoteAggregate {
 		votes.put(voterId, voteType);
 	}
 
-	void receive(String receiveId) {
+	public void receive(String receiveId) {
 		if (verdict == null || verdict.getStatus() != VerdictStatus.APPROVED) {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
@@ -46,7 +46,7 @@ public class QuoteAggregate {
 		receiveIds.add(receiveId);
 	}
 
-	void approve(Instant acceptDt) {
+	public void approve(Instant acceptDt) {
 		if (verdict != null) {
 			throw new IllegalStateException("Quote can no longer be approved.");
 		}
@@ -54,7 +54,7 @@ public class QuoteAggregate {
 		verdict = new VerdictImpl(VerdictStatus.APPROVED, acceptDt);
 	}
 
-	void flagAsExpired(Instant expireDt) {
+	public void flagAsExpired(Instant expireDt) {
 		if (verdict != null) {
 			throw new IllegalStateException("Quote can no longer be flagged as expired.");
 		}
