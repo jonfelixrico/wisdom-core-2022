@@ -62,7 +62,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModel reduce(@AlwaysNull QuoteProjectionModel model, QuoteSubmittedEvent event) {
+	private QuoteProjectionModel reduce(@AlwaysNull QuoteProjectionModel model, QuoteSubmittedEvent event) {
 		return new QuoteProjectionModel(event.getId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
 				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
 				event.getMessageId(), Map.of(), List.of(), null);
@@ -74,7 +74,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteReceivedEvent event) {
+	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteReceivedEvent event) {
 		List<Receive> newReceives = new ArrayList<>();
 		newReceives.addAll(model.getReceives());
 		newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
@@ -91,7 +91,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteFlaggedAsExpiredBySystemEvent event) {
+	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteFlaggedAsExpiredBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.EXPIRED, event.getTimestamp());
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
@@ -105,7 +105,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteApprovedBySystemEvent event) {
+	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteApprovedBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.APPROVED, event.getTimestamp());
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
@@ -119,7 +119,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVoteAddedEvent event) {
+	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVoteAddedEvent event) {
 		Map<String, Vote> newVotes = new HashMap<>();
 		newVotes.putAll(model.getVotes());
 		newVotes.put(event.getUserId(), new Vote(event.getUserId(), event.getType(), event.getTimestamp()));
@@ -135,7 +135,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVoteRemovedEvent event) {
+	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVoteRemovedEvent event) {
 		Map<String, Vote> newVotes = new HashMap<>();
 		newVotes.putAll(model.getVotes());
 		newVotes.remove(event.getUserId());
