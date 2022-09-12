@@ -26,29 +26,29 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public static QuoteProjectionModel apply(QuoteProjectionModel model, Event event) {
+	public static QuoteProjectionModel reduce(QuoteProjectionModel model, Event event) {
 		if (event instanceof QuoteSubmittedEvent) {
-			return apply(model, (QuoteSubmittedEvent) event);
+			return reduce(model, (QuoteSubmittedEvent) event);
 		}
 		
 		if (event instanceof QuoteReceivedEvent) {
-			return apply(model, (QuoteReceivedEvent) event);
+			return reduce(model, (QuoteReceivedEvent) event);
 		}
 		
 		if (event instanceof QuoteFlaggedAsExpiredBySystemEvent) {
-			return apply(model, (QuoteFlaggedAsExpiredBySystemEvent) event);
+			return reduce(model, (QuoteFlaggedAsExpiredBySystemEvent) event);
 		}
 		
 		if (event instanceof QuoteApprovedBySystemEvent) {
-			return apply(model, (QuoteApprovedBySystemEvent) event);
+			return reduce(model, (QuoteApprovedBySystemEvent) event);
 		}
 		
 		if (event instanceof QuoteVoteAddedEvent) {
-			return apply(model, (QuoteVoteAddedEvent) event);
+			return reduce(model, (QuoteVoteAddedEvent) event);
 		}
 		
 		if (event instanceof QuoteVoteRemovedEvent) {
-			return apply(model, (QuoteVoteRemovedEvent) event);
+			return reduce(model, (QuoteVoteRemovedEvent) event);
 		}
 		
 		return null;
@@ -60,7 +60,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public static QuoteProjectionModel apply(@AlwaysNull QuoteProjectionModel model, QuoteSubmittedEvent event) {
+	public static QuoteProjectionModel reduce(@AlwaysNull QuoteProjectionModel model, QuoteSubmittedEvent event) {
 		return new QuoteProjectionModel(event.getId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
 				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
 				event.getMessageId(), Map.of(), List.of(), null);
@@ -72,7 +72,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public static QuoteProjectionModel apply(@NonNull QuoteProjectionModel model, QuoteReceivedEvent event) {
+	public static QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteReceivedEvent event) {
 		List<Receive> newReceives = new ArrayList<>();
 		newReceives.addAll(model.getReceives());
 		newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
@@ -89,7 +89,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public static QuoteProjectionModel apply(@NonNull QuoteProjectionModel model, QuoteFlaggedAsExpiredBySystemEvent event) {
+	public static QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteFlaggedAsExpiredBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.EXPIRED, event.getTimestamp());
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
@@ -103,7 +103,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public static QuoteProjectionModel apply(@NonNull QuoteProjectionModel model, QuoteApprovedBySystemEvent event) {
+	public static QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteApprovedBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.APPROVED, event.getTimestamp());
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
@@ -117,7 +117,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public static QuoteProjectionModel apply(@NonNull QuoteProjectionModel model, QuoteVoteAddedEvent event) {
+	public static QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVoteAddedEvent event) {
 		Map<String, Vote> newVotes = new HashMap<>();
 		newVotes.putAll(model.getVotes());
 		newVotes.put(event.getUserId(), new Vote(event.getUserId(), event.getType(), event.getTimestamp()));
@@ -133,7 +133,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public static QuoteProjectionModel apply(@NonNull QuoteProjectionModel model, QuoteVoteRemovedEvent event) {
+	public static QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVoteRemovedEvent event) {
 		Map<String, Vote> newVotes = new HashMap<>();
 		newVotes.putAll(model.getVotes());
 		newVotes.remove(event.getUserId());
