@@ -24,6 +24,9 @@ public class QuoteEventsProjectionService {
 	@Autowired
 	private EventStoreDBClient client;
 	
+	@Autowired
+	private QuoteEventsReducer reducer;
+	
 	private final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
 			QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class,
 			QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
@@ -47,7 +50,7 @@ public class QuoteEventsProjectionService {
 			var eventClass = EVENT_TYPE_TO_EVENT_CLASS.get(event.getEventType());
 			var eventData = event.getEventDataAs(eventClass);
 			
-			state = Pair.of(QuoteEventsReducer.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
+			state = Pair.of(reducer.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
 		}
 		
 		return state;
