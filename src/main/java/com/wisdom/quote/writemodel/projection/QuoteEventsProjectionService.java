@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 
@@ -21,6 +23,8 @@ import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
 public class QuoteEventsProjectionService { 
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsProjectionService.class);
+	
 	@Autowired
 	private EventStoreDBClient client;
 	
@@ -48,6 +52,12 @@ public class QuoteEventsProjectionService {
 			RecordedEvent event = result.getEvent();
 			
 			var eventClass = EVENT_TYPE_TO_EVENT_CLASS.get(event.getEventType());
+			if (eventClass == null) {
+				// TODO throw exception
+				LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
+				continue;
+			}
+			
 			var eventData = event.getEventDataAs(eventClass);
 			
 			state = Pair.of(reducer.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
