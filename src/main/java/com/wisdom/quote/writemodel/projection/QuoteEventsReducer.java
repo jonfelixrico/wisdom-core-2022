@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.lang.NonNull;
 
+import com.wisdom.eventsourcing.Event;
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.aggregate.VerdictStatus;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
@@ -19,6 +20,40 @@ import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 import net.bytebuddy.utility.nullability.AlwaysNull;
 
 public class QuoteEventsReducer {
+	/**
+	 * 
+	 * @param model
+	 * @param event
+	 * @return
+	 */
+	public static QuoteProjectionModel apply(QuoteProjectionModel model, Event event) {
+		if (event instanceof QuoteSubmittedEvent) {
+			return apply(model, (QuoteSubmittedEvent) event);
+		}
+		
+		if (event instanceof QuoteReceivedEvent) {
+			return apply(model, (QuoteReceivedEvent) event);
+		}
+		
+		if (event instanceof QuoteFlaggedAsExpiredBySystemEvent) {
+			return apply(model, (QuoteFlaggedAsExpiredBySystemEvent) event);
+		}
+		
+		if (event instanceof QuoteApprovedBySystemEvent) {
+			return apply(model, (QuoteApprovedBySystemEvent) event);
+		}
+		
+		if (event instanceof QuoteVoteAddedEvent) {
+			return apply(model, (QuoteVoteAddedEvent) event);
+		}
+		
+		if (event instanceof QuoteVoteRemovedEvent) {
+			return apply(model, (QuoteVoteRemovedEvent) event);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Processes quote submissions
 	 * @param model
