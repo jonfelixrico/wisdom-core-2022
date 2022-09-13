@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.wisdom.eventsourcing.Event;
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.aggregate.VerdictStatus;
+import com.wisdom.quote.writemodel.events.BaseQuoteEvent;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
@@ -22,6 +25,8 @@ import net.bytebuddy.utility.nullability.AlwaysNull;
 
 @Service
 public class QuoteEventsReducer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
+	
 	/**
 	 * 
 	 * @param model
@@ -29,6 +34,15 @@ public class QuoteEventsReducer {
 	 * @return
 	 */
 	public QuoteProjectionModel reduce(QuoteProjectionModel model, Event event) {
+		if (!(event instanceof BaseQuoteEvent)) {
+			/*
+			 * We're only concerned with events under the quote aggregate.
+			 * Such events are expected to extend BaseQuoteEvent, hence, we can use an `instanceof`
+			 * check to quickly terminate non-quote events.
+			 */
+			return null;
+		}
+		
 		if (event instanceof QuoteSubmittedEvent) {
 			return reduce(model, (QuoteSubmittedEvent) event);
 		}
@@ -53,6 +67,7 @@ public class QuoteEventsReducer {
 			return reduce(model, (QuoteVoteRemovedEvent) event);
 		}
 		
+		LOGGER.warn("Unregistered Quote class {} detected.", event.getClass());
 		return null;
 	}
 	
