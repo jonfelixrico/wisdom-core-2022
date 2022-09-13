@@ -47,6 +47,7 @@ public class QuoteEventsProjectionService {
 		
 		Pair<QuoteProjectionModel, Long> state = Pair.of(baseModel, fromRevision);
 		
+		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
 		ReadResult results = client.readStream(String.format("quote/%s", quoteId), options).get();
 		for (ResolvedEvent result : results.getEvents()) {
 			RecordedEvent event = result.getEvent();
@@ -59,7 +60,6 @@ public class QuoteEventsProjectionService {
 			}
 			
 			var eventData = event.getEventDataAs(eventClass);
-			
 			state = Pair.of(reducer.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
 		}
 		
