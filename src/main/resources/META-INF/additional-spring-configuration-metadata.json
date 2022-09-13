@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "esdb.connectionString",
+  "type": "java.lang.String",
+  "description": "The connection string for the ESDB instance that the application will use"
+}]}
