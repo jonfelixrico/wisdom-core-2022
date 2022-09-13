@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Service;
 
 import com.eventstore.dbclient.EventStoreDBClient;
 import com.eventstore.dbclient.ReadResult;
@@ -22,6 +23,7 @@ import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
+@Service
 public class QuoteEventsProjectionService { 
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsProjectionService.class);
 	
