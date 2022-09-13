@@ -2,9 +2,7 @@ package com.wisdom.quote.writemodel.events;
 
 import java.time.Instant;
 
-import com.wisdom.eventsourcing.Event;
-
-public class QuoteVoteRemovedEvent implements Event {
+public class QuoteVoteRemovedEvent extends BaseQuoteEvent {
 	public static final String EVENT_TYPE = "QUOTE_VOTE_REMOVED";
 
 	private String quoteId;

@@ -2,10 +2,9 @@ package com.wisdom.quote.writemodel.events;
 
 import java.time.Instant;
 
-import com.wisdom.eventsourcing.Event;
 import com.wisdom.quote.aggregate.VoteType;
 
-public class QuoteVoteAddedEvent implements Event {
+public class QuoteVoteAddedEvent extends BaseQuoteEvent {
 	public static final String EVENT_TYPE = "QUOTE_VOTE_ADDED";
 
 	private String quoteId;

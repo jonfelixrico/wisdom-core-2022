@@ -2,9 +2,7 @@ package com.wisdom.quote.writemodel.events;
 
 import java.time.Instant;
 
-import com.wisdom.eventsourcing.Event;
-
-public class QuoteFlaggedAsExpiredBySystemEvent implements Event {
+public class QuoteFlaggedAsExpiredBySystemEvent extends BaseQuoteEvent {
 	public static final String EVENT_TYPE = "QUOTE_FLAGGED_AS_EXPIRED_BY_SYSTEM";
 
 	private String quoteId;

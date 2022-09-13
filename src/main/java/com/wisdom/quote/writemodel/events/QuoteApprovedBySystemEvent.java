@@ -2,9 +2,7 @@ package com.wisdom.quote.writemodel.events;
 
 import java.time.Instant;
 
-import com.wisdom.eventsourcing.Event;
-
-public class QuoteApprovedBySystemEvent implements Event {
+public class QuoteApprovedBySystemEvent extends BaseQuoteEvent {
 	public static final String EVENT_TYPE = "QUOTE_APPROVED_BY_SYSTEM";
 
 	private String quoteId;
