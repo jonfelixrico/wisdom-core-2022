@@ -21,8 +21,6 @@ import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
-import net.bytebuddy.utility.nullability.AlwaysNull;
-
 @Service
 public class QuoteEventsReducer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
@@ -77,7 +75,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteProjectionModel reduce(@AlwaysNull QuoteProjectionModel model, QuoteSubmittedEvent event) {
+	private QuoteProjectionModel reduce(QuoteProjectionModel model, QuoteSubmittedEvent event) {
 		return new QuoteProjectionModel(event.getId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
 				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
 				event.getMessageId(), Map.of(), List.of(), null);
