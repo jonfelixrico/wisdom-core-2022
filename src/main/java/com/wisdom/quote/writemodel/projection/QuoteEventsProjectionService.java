@@ -16,6 +16,7 @@ import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.wisdom.eventsourcing.Event;
+import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
@@ -28,7 +29,7 @@ public class QuoteEventsProjectionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsProjectionService.class);
 	
 	@Autowired
-	private EventStoreDBClient client;
+	private EventStoreDBProvider esdbProvider;
 	
 	@Autowired
 	private QuoteEventsReducer reducer;
@@ -50,7 +51,7 @@ public class QuoteEventsProjectionService {
 		Pair<QuoteProjectionModel, Long> state = Pair.of(baseModel, fromRevision);
 		
 		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
-		ReadResult results = client.readStream(String.format("quote/%s", quoteId), options).get();
+		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
 		for (ResolvedEvent result : results.getEvents()) {
 			RecordedEvent event = result.getEvent();
 			
