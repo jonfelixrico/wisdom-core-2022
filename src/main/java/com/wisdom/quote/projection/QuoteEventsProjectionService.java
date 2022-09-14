@@ -1,6 +1,7 @@
 package com.wisdom.quote.projection;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -8,6 +9,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -27,67 +32,69 @@ import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
 @Service
-public class QuoteEventsProjectionService { 
+public class QuoteEventsProjectionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsProjectionService.class);
-	
+
 	@Autowired
 	private EventStoreDBProvider esdbProvider;
-	
+
 	@Autowired
 	private QuoteEventsReducer reducer;
+
+	@Autowired
+	QuoteMongoRepository repo;
 	
 	@Autowired
-	
-	private final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
-			QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class,
-			QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
+	MongoTemplate template;
+
+	private final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(QuoteSubmittedEvent.EVENT_TYPE,
+			QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
 			QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE, QuoteFlaggedAsExpiredBySystemEvent.class,
-			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class,
-			QuoteVoteAddedEvent.EVENT_TYPE, QuoteVoteAddedEvent.class,
-			QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class
-	);
-	
-	Pair<QuoteProjectionModel, Long> getProjection(String quoteId) throws InterruptedException, ExecutionException, IOException {
+			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVoteAddedEvent.EVENT_TYPE,
+			QuoteVoteAddedEvent.class, QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class);
+
+	Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
+			throws InterruptedException, ExecutionException, IOException {
 		var snapshot = getSnapshot(quoteId);
-		
+
 		if (snapshot != null) {
 			return buildState(quoteId, snapshot.getSecond(), snapshot.getFirst());
 		}
-		
-		return buildState(quoteId, null, null);
+
+		var projection = buildState(quoteId, null, null);
+		saveSnapshot(projection.getFirst(), projection.getSecond());
+		return projection;
 	}
 
-
-	private Pair<QuoteProjectionModel, Long> buildState (String quoteId, Long fromRevision, QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
+	private Pair<QuoteProjectionModel, Long> buildState(String quoteId, Long fromRevision,
+			QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
 		ReadStreamOptions options = ReadStreamOptions.get();
 		if (fromRevision == null) {
 			options.fromStart();
 		} else {
 			options.fromRevision(fromRevision);
 		}
-		
+
 		Pair<QuoteProjectionModel, Long> state = Pair.of(baseModel, fromRevision);
-		
+
 		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
 		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
 		for (ResolvedEvent result : results.getEvents()) {
 			RecordedEvent event = result.getEvent();
-			
+
 			var eventClass = EVENT_TYPE_TO_EVENT_CLASS.get(event.getEventType());
 			if (eventClass == null) {
 				// TODO throw exception
 				LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
 				continue;
 			}
-			
+
 			var eventData = event.getEventDataAs(eventClass);
 			state = Pair.of(reducer.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
 		}
-		
+
 		return state;
 	}
-	
-	QuoteMongoRepository repo;
 
 	private static Pair<QuoteProjectionModel, Long> convertMongoModelToProjectionModel(QuoteMongoModel input) {
 		Map<String, Vote> votes = input.getVotes().stream().collect(Collectors.toMap(v -> v.getUserId(), v -> v));
@@ -98,14 +105,39 @@ public class QuoteEventsProjectionService {
 
 		return Pair.of(projModel, input.getRevision());
 	}
-	
+
 	private Pair<QuoteProjectionModel, Long> getSnapshot(String quoteId) {
 		var result = repo.findById(quoteId);
 		if (result.isEmpty()) {
 			return null;
 		}
-		
+
 		return convertMongoModelToProjectionModel(result.get());
 	}
-}
 
+	private static QuoteMongoModel convertProjectionModelToMongoModel(QuoteProjectionModel model, long revision) {
+		List<Vote> votes = model.getVotes().values().stream().sorted((a, b) -> a.getVoteDt().compareTo(b.getVoteDt()))
+				.collect(Collectors.toList());
+		
+		return new QuoteMongoModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
+				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
+				model.getMessageId(), votes, model.getReceives(), model.getVerdict(), revision);
+	}
+	
+	private void saveSnapshot(QuoteProjectionModel model, long revision) {
+		var mongoModel = convertProjectionModelToMongoModel(model, revision);
+		if (!repo.existsById(model.getId())) {
+			repo.insert(mongoModel);
+			LOGGER.debug("Created snapshot of quote {} revision {}", model.getId(), revision);
+			return;
+		}
+		
+		
+		Query query = new Query().addCriteria(Criteria.where("id").is(model.getId()).and("revision").lt(revision));
+		var result = template.findAndReplace(query, mongoModel);
+
+		if (result != null) {
+			LOGGER.debug("Updated the snapshot of quote {} revision {}", model.getId(), revision);
+		}
+	}
+}
