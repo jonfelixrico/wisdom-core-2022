@@ -11,7 +11,7 @@ import com.wisdom.quote.projection.Receive;
 import com.wisdom.quote.projection.Vote;
 
 @Document("quotes")
-public class QuoteMongoEntity {
+public class QuoteMongoModel {
 	@Id
 	private String id;
 
@@ -30,9 +30,11 @@ public class QuoteMongoEntity {
 	private List<Receive> receives;
 	private Verdict verdict;
 
-	public QuoteMongoEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
+	private Long revision;
+
+	public QuoteMongoModel(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Vote> votes,
-			List<Receive> receives, Verdict verdict) {
+			List<Receive> receives, Verdict verdict, Long revision) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -45,6 +47,15 @@ public class QuoteMongoEntity {
 		this.votes = votes;
 		this.receives = receives;
 		this.verdict = verdict;
+		this.revision = revision;
+	}
+
+	public Long getRevision() {
+		return revision;
+	}
+
+	public void setRevision(Long revision) {
+		this.revision = revision;
 	}
 
 	public String getId() {
