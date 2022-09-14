@@ -3,6 +3,7 @@ package com.wisdom.quote.projection;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.wisdom.eventsourcing.Event;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
+import com.wisdom.quote.mongodb.QuoteMongoModel;
+import com.wisdom.quote.mongodb.QuoteMongoRepository;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
@@ -33,6 +36,8 @@ public class QuoteEventsProjectionService {
 	@Autowired
 	private QuoteEventsReducer reducer;
 	
+	@Autowired
+	
 	private final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
 			QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class,
 			QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
@@ -43,7 +48,7 @@ public class QuoteEventsProjectionService {
 	);
 
 
-	public Pair<QuoteProjectionModel, Long> buildState (String quoteId, long fromRevision, QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
+	private Pair<QuoteProjectionModel, Long> buildState (String quoteId, long fromRevision, QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
 		ReadStreamOptions options = ReadStreamOptions.get();
 		options.fromRevision(fromRevision);
 		
@@ -66,6 +71,27 @@ public class QuoteEventsProjectionService {
 		}
 		
 		return state;
+	}
+	
+	QuoteMongoRepository repo;
+
+	private static Pair<QuoteProjectionModel, Long> convertMongoModelToSnapshotModel(QuoteMongoModel input) {
+		Map<String, Vote> votes = input.getVotes().stream().collect(Collectors.toMap(v -> v.getUserId(), v -> v));
+		QuoteProjectionModel projModel = new QuoteProjectionModel(input.getId(), input.getContent(),
+				input.getAuthorId(), input.getSubmitterId(), input.getSubmitDt(), input.getExpirationDt(),
+				input.getServerId(), input.getChannelId(), input.getMessageId(), votes, input.getReceives(),
+				input.getVerdict());
+
+		return Pair.of(projModel, input.getRevision());
+	}
+	
+	private Pair<QuoteProjectionModel, Long> getSnapshot(String quoteId) {
+		var result = repo.findById(quoteId);
+		if (result.isEmpty()) {
+			return null;
+		}
+		
+		return convertMongoModelToSnapshotModel(result.get());
 	}
 }
 
