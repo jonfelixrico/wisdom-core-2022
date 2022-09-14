@@ -46,11 +46,25 @@ public class QuoteEventsProjectionService {
 			QuoteVoteAddedEvent.EVENT_TYPE, QuoteVoteAddedEvent.class,
 			QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class
 	);
+	
+	Pair<QuoteProjectionModel, Long> getProjection(String quoteId) throws InterruptedException, ExecutionException, IOException {
+		var snapshot = getSnapshot(quoteId);
+		
+		if (snapshot != null) {
+			return buildState(quoteId, snapshot.getSecond(), snapshot.getFirst());
+		}
+		
+		return buildState(quoteId, null, null);
+	}
 
 
-	private Pair<QuoteProjectionModel, Long> buildState (String quoteId, long fromRevision, QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
+	private Pair<QuoteProjectionModel, Long> buildState (String quoteId, Long fromRevision, QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
 		ReadStreamOptions options = ReadStreamOptions.get();
-		options.fromRevision(fromRevision);
+		if (fromRevision == null) {
+			options.fromStart();
+		} else {
+			options.fromRevision(fromRevision);
+		}
 		
 		Pair<QuoteProjectionModel, Long> state = Pair.of(baseModel, fromRevision);
 		
@@ -75,7 +89,7 @@ public class QuoteEventsProjectionService {
 	
 	QuoteMongoRepository repo;
 
-	private static Pair<QuoteProjectionModel, Long> convertMongoModelToSnapshotModel(QuoteMongoModel input) {
+	private static Pair<QuoteProjectionModel, Long> convertMongoModelToProjectionModel(QuoteMongoModel input) {
 		Map<String, Vote> votes = input.getVotes().stream().collect(Collectors.toMap(v -> v.getUserId(), v -> v));
 		QuoteProjectionModel projModel = new QuoteProjectionModel(input.getId(), input.getContent(),
 				input.getAuthorId(), input.getSubmitterId(), input.getSubmitDt(), input.getExpirationDt(),
@@ -91,7 +105,7 @@ public class QuoteEventsProjectionService {
 			return null;
 		}
 		
-		return convertMongoModelToSnapshotModel(result.get());
+		return convertMongoModelToProjectionModel(result.get());
 	}
 }
 
