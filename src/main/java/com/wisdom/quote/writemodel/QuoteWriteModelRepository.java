@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wisdom.eventsourcing.EventAppendService;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.aggregate.VoteType;
@@ -21,7 +22,7 @@ public class QuoteWriteModelRepository {
 	QuoteEventsProjectionService projectionService;
 
 	@Autowired
-	EventStoreDBProvider esdbProvider;
+	EventAppendService eventAppendService;
 
 	private static QuoteAggregate projectionToAggregate(QuoteProjectionModel projection) {
 		Map<String, VoteType> votes = projection.getVotes().values().stream()
@@ -37,6 +38,6 @@ public class QuoteWriteModelRepository {
 	}
 
 	public void saveWriteModel(QuoteWriteModel model) throws InterruptedException, ExecutionException {
-		model.getEventBuilder().appendtoStream(esdbProvider.getClient());
+		eventAppendService.appendToStream(model.getEventBuilder());
 	}
 }
