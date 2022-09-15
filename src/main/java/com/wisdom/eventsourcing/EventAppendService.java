@@ -2,7 +2,6 @@ package com.wisdom.eventsourcing;
 
 import java.util.Iterator;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.eventstore.dbclient.AppendToStreamOptions;
 import com.eventstore.dbclient.EventData;
+import com.eventstore.dbclient.ExpectedRevision;
 import com.eventstore.dbclient.WriteResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +35,7 @@ public class EventAppendService {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public CompletableFuture<WriteResult> appendToStream(EventAppendBuilder buffer)
+	public WriteResult appendToStream(EventAppendBuilder buffer)
 			throws InterruptedException, ExecutionException {
 		var options = AppendToStreamOptions.get();
 		Iterator<EventData> eventDataIterator = buffer.getEvents().stream().map(event -> {
@@ -43,8 +43,6 @@ public class EventAppendService {
 				return new EventData(UUID.randomUUID(), event.getEventType(), MediaType.APPLICATION_JSON.toString(),
 						mapper.writeValueAsBytes(event), null);
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 				LOGGER.error("An error occurred while trying to serialize an event", e);
 				return null;
 			}
@@ -57,8 +55,11 @@ public class EventAppendService {
 			}
 
 			options.expectedRevision(buffer.getExpectedRevision());
+		} else {
+			options.expectedRevision(ExpectedRevision.ANY);
 		}
 
-		return provider.getClient().appendToStream(buffer.getStreamId(), options, eventDataIterator);
+		LOGGER.debug("Pushing to stream {} expecting revision {}", buffer.getStreamId(), options.getExpectedRevision().toString());
+		return provider.getClient().appendToStream(buffer.getStreamId(), options, eventDataIterator).get();
 	}
 }
