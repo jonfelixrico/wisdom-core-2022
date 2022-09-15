@@ -32,4 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 
-application.properties
+### Docker dev env ###
+# We want to ignore everything in the dev-env deployment except for the compose file to avoid
+# Git from detecting changes in the volume bindings of the containers
+deploy/dev-env/*
+!deploy/dev-env/docker-compose.yml
