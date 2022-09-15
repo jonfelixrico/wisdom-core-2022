@@ -3,11 +3,9 @@
  */
 package com.wisdom.quote.controller;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +32,7 @@ public class QuoteController {
 	@Autowired
 	QuoteEventsProjectionService projectionService;
 
-	@PostMapping("/guild/{serverId}/quote")
+	@PostMapping("/server/{serverId}/quote")
 	void submitQuote(@RequestBody SubmitQuoteReqDto body, @PathVariable String serverId) throws Exception {
 		var quoteId = UUID.randomUUID().toString();
 		var createDt = Instant.now();
