@@ -1,0 +1,31 @@
+version: "3.4"
+
+services:
+  esdb:
+    image: eventstore/eventstore:21.10.0-buster-slim
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_EXT_TCP_PORT=1113
+      - EVENTSTORE_HTTP_PORT=2113
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - "9113:2113"
+      - "9114:1113"
+    volumes:
+      - ./esdb/data:/var/lib/eventstore
+      - ./esdb/logs:/var/log/eventstore
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "9115:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: wisdom
+    volumes:
+      - ./mongo/data:/data/db

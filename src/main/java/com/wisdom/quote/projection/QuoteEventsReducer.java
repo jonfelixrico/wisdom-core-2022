@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel.projection;
+package com.wisdom.quote.projection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
