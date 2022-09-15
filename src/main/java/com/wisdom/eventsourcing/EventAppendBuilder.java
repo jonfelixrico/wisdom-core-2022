@@ -70,7 +70,7 @@ public class EventAppendBuilder {
 	 *         checking. If a BigInteger was provided, then the output of this
 	 *         buffer will have revision no. checking.
 	 */
-	public long getExpectedRevision() {
+	public Long getExpectedRevision() {
 		return expectedRevision;
 	}
 
