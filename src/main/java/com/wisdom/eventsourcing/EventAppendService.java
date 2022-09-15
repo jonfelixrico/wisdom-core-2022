@@ -29,8 +29,6 @@ public class EventAppendService {
 	private EventStoreDBProvider provider;
 
 	/**
-	 * Uses the data in this buffer to append the data to an actual ESDB client.
-	 * 
 	 * @param client
 	 * @param options
 	 * @return
