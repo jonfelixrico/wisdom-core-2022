@@ -31,12 +31,12 @@ public class QuoteWriteModelRepository {
 		return new QuoteAggregate(projection.getExpirationDt(), votes, receives, projection.getVerdict());
 	}
 
-	QuoteWriteModel getWriteModel(String quoteId) throws InterruptedException, ExecutionException, IOException {
+	public QuoteWriteModel getWriteModel(String quoteId) throws InterruptedException, ExecutionException, IOException {
 		var proj = projectionService.getProjection(quoteId);
 		return new QuoteWriteModel(quoteId, projectionToAggregate(proj.getFirst()), proj.getSecond());
 	}
 
-	void saveWriteModel(QuoteWriteModel model) throws InterruptedException, ExecutionException {
+	public void saveWriteModel(QuoteWriteModel model) throws InterruptedException, ExecutionException {
 		model.getEventBuilder().appendtoStream(esdbProvider.getClient());
 	}
 }
