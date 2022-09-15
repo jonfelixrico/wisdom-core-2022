@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.eventsourcing.EventAppendBuilder;
 import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.aggregate.VoteType;
@@ -22,7 +23,7 @@ public class QuoteWriteModel {
 	public static QuoteWriteModel submit(String quoteId, String content, String authorId, String submitterId,
 			Instant createDt, Instant expirationDt, String serverId, String channelId, String messageId) {
 		// push the initial event
-		EventAppendBuilder builder = new EventAppendBuilder(getStreamId(quoteId), 0L);
+		EventAppendBuilder builder = new EventAppendBuilder(getStreamId(quoteId), ExpectedRevision.NO_STREAM);
 		builder.pushEvent(new QuoteSubmittedEvent(quoteId, content, authorId, submitterId, createDt, expirationDt,
 				serverId, channelId, messageId));
 
@@ -36,7 +37,7 @@ public class QuoteWriteModel {
 	private EventAppendBuilder builder;
 
 	public QuoteWriteModel(String quoteId, QuoteAggregate aggregate, long expectedRevision) {
-		this(quoteId, aggregate, new EventAppendBuilder(getStreamId(quoteId), expectedRevision));
+		this(quoteId, aggregate, new EventAppendBuilder(getStreamId(quoteId), ExpectedRevision.expectedRevision(expectedRevision)));
 	}
 
 	/**

@@ -1,19 +1,13 @@
 package com.wisdom.eventsourcing;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 
-import com.eventstore.dbclient.AppendToStreamOptions;
-import com.eventstore.dbclient.EventData;
-import com.eventstore.dbclient.EventDataBuilder;
-import com.eventstore.dbclient.EventStoreDBClient;
-import com.eventstore.dbclient.WriteResult;
+import com.eventstore.dbclient.ExpectedRevision;
 
 /**
  * This is a class that helps with pushing several events to the same stream.
@@ -28,7 +22,7 @@ public class EventAppendBuilder {
 	private String streamId;
 	private List<Event> events;
 
-	private Long expectedRevision;
+	private ExpectedRevision expectedRevision;
 
 	/**
 	 * This will create an EventBuffer without an expected revision.
@@ -47,7 +41,7 @@ public class EventAppendBuilder {
 	 * @param streamId
 	 * @param expectedRevision The revision no. that we expect the stream to be in.
 	 */
-	public EventAppendBuilder(String streamId, long expectedRevision) {
+	public EventAppendBuilder(String streamId, ExpectedRevision expectedRevision) {
 		this(streamId);
 		this.expectedRevision = expectedRevision;
 	}
@@ -70,46 +64,12 @@ public class EventAppendBuilder {
 	 *         checking. If a BigInteger was provided, then the output of this
 	 *         buffer will have revision no. checking.
 	 */
-	public Long getExpectedRevision() {
+	public ExpectedRevision getExpectedRevision() {
 		return expectedRevision;
 	}
 
 	public void pushEvent(@NonNull Event event) {
 		events.add(event);
 		logger.debug("Pushed event type {} to stream {}", event.getEventType(), streamId);
-	}
-
-	/**
-	 * Uses the data in this buffer to append the data to an actual ESDB client.
-	 * 
-	 * @param client
-	 * @param options
-	 * @return
-	 */
-	public CompletableFuture<WriteResult> appendToStream(EventStoreDBClient client,
-			@NonNull AppendToStreamOptions options) {
-		Iterator<EventData> eventDataIterator = events.stream()
-				.map(event -> EventDataBuilder.json(event.getEventType(), event).build()).iterator();
-
-		if (expectedRevision != null) {
-			if (options.getExpectedRevision() != null) {
-				logger.debug("Replaced original expectedRevision value of {} with {}", options.getExpectedRevision(), expectedRevision);
-			}
-
-			options.expectedRevision(expectedRevision);
-		}
-
-		return client.appendToStream(streamId, options, eventDataIterator);
-	}
-
-	/**
-	 * Uses the data in this buffer to append the data to an actual ESDB client.
-	 * Default append options will be used.
-	 * 
-	 * @param client
-	 * @return
-	 */
-	public CompletableFuture<WriteResult> appendtoStream(EventStoreDBClient client) {
-		return appendToStream(client, AppendToStreamOptions.get());
 	}
 }
