@@ -83,4 +83,8 @@ public class QuoteWriteModel {
 		aggregate.flagAsExpired(timestamp);
 		builder.pushEvent(new QuoteFlaggedAsExpiredBySystemEvent(quoteId, timestamp));
 	}
+	
+	EventAppendBuilder getEventBuilder () {
+		return builder;
+	}
 }
