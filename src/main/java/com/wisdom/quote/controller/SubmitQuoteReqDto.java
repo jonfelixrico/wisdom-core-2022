@@ -1,10 +1,12 @@
 package com.wisdom.quote.controller;
 
+import java.time.Instant;
+
 class SubmitQuoteReqDto {
 	private String content;
 	private String authorId;
 	private String submitterId;
-	private String expirationDt;
+	private Instant expirationDt;
 
 	private String channelId;
 	private String messageId;
@@ -21,7 +23,7 @@ class SubmitQuoteReqDto {
 		return submitterId;
 	}
 
-	public String getExpirationDt() {
+	public Instant getExpirationDt() {
 		return expirationDt;
 	}
 
