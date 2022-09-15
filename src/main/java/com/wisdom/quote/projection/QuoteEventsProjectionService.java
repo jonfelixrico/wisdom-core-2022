@@ -74,7 +74,7 @@ public class QuoteEventsProjectionService {
 			options.fromRevision(fromRevision);
 		}
 
-		Pair<QuoteProjectionModel, Long> state = Pair.of(baseModel, fromRevision);
+		Pair<QuoteProjectionModel, Long> state = baseModel == null ? null : Pair.of(baseModel, fromRevision);
 
 		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
 		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
