@@ -3,11 +3,16 @@
  */
 package com.wisdom.quote.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.wisdom.quote.writemodel.QuoteWriteModel;
 
 /**
  * @author Felix
@@ -15,18 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class QuoteController {
-	@GetMapping("/guild/{guildId}/quotes/random")
-	QuoteRespDto getRandomQuote(@PathVariable String guildId) throws Exception {
-		throw new Exception("noop");
-	}
-	
-	@PostMapping("/guild/{guildId}/quotes/{quoteId}/receives")
-	void receiveQuote(@RequestBody QuoteReceiveReqDto body, @PathVariable String guildId, @PathVariable String quoteId) throws Exception {
-		throw new Exception("noop");
-	}
-	
-	@PostMapping("/guild/{guildId}/quotes")
-	void submitQuote(@RequestBody QuoteReqDto body, @PathVariable String guildId) throws Exception {
-		throw new Exception("noop");
+	@PostMapping("/guild/{serverId}/quote")
+	void submitQuote(@RequestBody SubmitQuoteReqDto body, @PathVariable String serverId) throws Exception {
+		var quoteId = UUID.randomUUID().toString();
+		var createDt = Instant.now();
+		var expireDt = createDt.plus(3, ChronoUnit.DAYS);
+
+		QuoteWriteModel.submit(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(), createDt,
+				expireDt, serverId, body.getChannelId(), body.getMessageId());
 	}
 }
