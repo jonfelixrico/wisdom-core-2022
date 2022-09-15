@@ -52,7 +52,7 @@ public class QuoteEventsProjectionService {
 			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVoteAddedEvent.EVENT_TYPE,
 			QuoteVoteAddedEvent.class, QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class);
 
-	Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
+	public Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
 		var snapshot = getSnapshot(quoteId);
 
