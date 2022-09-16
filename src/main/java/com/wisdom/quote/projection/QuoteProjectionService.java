@@ -28,8 +28,7 @@ import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
+import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 @Service
 public class QuoteProjectionService {
@@ -43,18 +42,18 @@ public class QuoteProjectionService {
 
 	@Autowired
 	QuoteMongoRepository repo;
-	
+
 	@Autowired
 	MongoTemplate template;
-	
+
 	@Autowired
 	ObjectMapper mapper;
 
 	private final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(QuoteSubmittedEvent.EVENT_TYPE,
 			QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
 			QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE, QuoteFlaggedAsExpiredBySystemEvent.class,
-			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVoteAddedEvent.EVENT_TYPE,
-			QuoteVoteAddedEvent.class, QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class);
+			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE,
+			QuoteVotesModifiedEvent.class);
 
 	public Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
@@ -100,11 +99,10 @@ public class QuoteProjectionService {
 	}
 
 	private static Pair<QuoteProjectionModel, Long> convertMongoModelToProjectionModel(QuoteMongoModel input) {
-		Map<String, Vote> votes = input.getVotes().stream().collect(Collectors.toMap(v -> v.getUserId(), v -> v));
 		QuoteProjectionModel projModel = new QuoteProjectionModel(input.getId(), input.getContent(),
 				input.getAuthorId(), input.getSubmitterId(), input.getSubmitDt(), input.getExpirationDt(),
-				input.getServerId(), input.getChannelId(), input.getMessageId(), votes, input.getReceives(),
-				input.getVerdict());
+				input.getServerId(), input.getChannelId(), input.getMessageId(), input.getVoterIds(),
+				input.getReceives(), input.getVerdict());
 
 		return Pair.of(projModel, input.getRevision());
 	}
@@ -119,14 +117,11 @@ public class QuoteProjectionService {
 	}
 
 	private static QuoteMongoModel convertProjectionModelToMongoModel(QuoteProjectionModel model, long revision) {
-		List<Vote> votes = model.getVotes().values().stream().sorted((a, b) -> a.getVoteDt().compareTo(b.getVoteDt()))
-				.collect(Collectors.toList());
-		
 		return new QuoteMongoModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), votes, model.getReceives(), model.getVerdict(), revision);
+				model.getMessageId(), model.getVoterIds(), model.getReceives(), model.getVerdict(), revision);
 	}
-	
+
 	private void saveSnapshot(QuoteProjectionModel model, long revision) {
 		var mongoModel = convertProjectionModelToMongoModel(model, revision);
 		if (!repo.existsById(model.getId())) {
@@ -134,8 +129,7 @@ public class QuoteProjectionService {
 			LOGGER.debug("Created snapshot of quote {} revision {}", model.getId(), revision);
 			return;
 		}
-		
-		
+
 		Query query = new Query().addCriteria(Criteria.where("id").is(model.getId()).and("revision").lt(revision));
 		var result = template.findAndReplace(query, mongoModel);
 

@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.projection.Receive;
-import com.wisdom.quote.projection.Vote;
 
 @Document("quotes")
 public class QuoteMongoModel {
@@ -26,14 +25,14 @@ public class QuoteMongoModel {
 	private String channelId;
 	private String messageId;
 
-	private List<Vote> votes;
+	private List<String> voterIds;
 	private List<Receive> receives;
 	private Verdict verdict;
 
 	private Long revision;
 
 	public QuoteMongoModel(String id, String content, String authorId, String submitterId, Instant submitDt,
-			Instant expirationDt, String serverId, String channelId, String messageId, List<Vote> votes,
+			Instant expirationDt, String serverId, String channelId, String messageId, List<String> voterIds,
 			List<Receive> receives, Verdict verdict, Long revision) {
 		this.id = id;
 		this.content = content;
@@ -44,10 +43,18 @@ public class QuoteMongoModel {
 		this.serverId = serverId;
 		this.channelId = channelId;
 		this.messageId = messageId;
-		this.votes = votes;
+		this.voterIds = voterIds;
 		this.receives = receives;
 		this.verdict = verdict;
 		this.revision = revision;
+	}
+
+	public List<String> getVoterIds() {
+		return voterIds;
+	}
+
+	public void setVoterIds(List<String> voterIds) {
+		this.voterIds = voterIds;
 	}
 
 	public Long getRevision() {
@@ -128,14 +135,6 @@ public class QuoteMongoModel {
 
 	public void setMessageId(String messageId) {
 		this.messageId = messageId;
-	}
-
-	public List<Vote> getVotes() {
-		return votes;
-	}
-
-	public void setVotes(List<Vote> votes) {
-		this.votes = votes;
 	}
 
 	public List<Receive> getReceives() {

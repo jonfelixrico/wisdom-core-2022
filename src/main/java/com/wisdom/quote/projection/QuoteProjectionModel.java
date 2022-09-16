@@ -2,7 +2,6 @@ package com.wisdom.quote.projection;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 import com.wisdom.quote.aggregate.Verdict;
 
@@ -20,12 +19,12 @@ public class QuoteProjectionModel {
 	private String channelId;
 	private String messageId;
 
-	private Map<String, Vote> votes;
+	private List<String> voterIds;
 	private List<Receive> receives;
 	private Verdict verdict;
 
 	public QuoteProjectionModel(String id, String content, String authorId, String submitterId, Instant submitDt,
-			Instant expirationDt, String serverId, String channelId, String messageId, Map<String, Vote> votes,
+			Instant expirationDt, String serverId, String channelId, String messageId, List<String> voterIds,
 			List<Receive> receives, Verdict verdict) {
 		this.id = id;
 		this.content = content;
@@ -36,8 +35,8 @@ public class QuoteProjectionModel {
 		this.serverId = serverId;
 		this.channelId = channelId;
 		this.messageId = messageId;
-		this.votes = votes == null ? Map.of() : Map.copyOf(votes);
-		this.receives = receives == null ? List.of() : List.copyOf(receives);
+		this.voterIds = voterIds;
+		this.receives = receives;
 		this.verdict = verdict;
 	}
 
@@ -77,8 +76,8 @@ public class QuoteProjectionModel {
 		return messageId;
 	}
 
-	public Map<String, Vote> getVotes() {
-		return votes;
+	public List<String> getVoterIds() {
+		return voterIds;
 	}
 
 	public List<Receive> getReceives() {

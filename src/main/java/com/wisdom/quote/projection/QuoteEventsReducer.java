@@ -1,9 +1,7 @@
 package com.wisdom.quote.projection;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +16,7 @@ import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
+import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 @Service
 public class QuoteEventsReducer {
@@ -57,12 +54,8 @@ public class QuoteEventsReducer {
 			return reduce(model, (QuoteApprovedBySystemEvent) event);
 		}
 		
-		if (event instanceof QuoteVoteAddedEvent) {
-			return reduce(model, (QuoteVoteAddedEvent) event);
-		}
-		
-		if (event instanceof QuoteVoteRemovedEvent) {
-			return reduce(model, (QuoteVoteRemovedEvent) event);
+		if (event instanceof QuoteVotesModifiedEvent) {
+			return reduce(model, (QuoteVotesModifiedEvent) event);
 		}
 		
 		LOGGER.warn("Unregistered Quote class {} detected.", event.getClass());
@@ -78,7 +71,7 @@ public class QuoteEventsReducer {
 	private QuoteProjectionModel reduce(QuoteProjectionModel model, QuoteSubmittedEvent event) {
 		return new QuoteProjectionModel(event.getId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
 				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
-				event.getMessageId(), Map.of(), List.of(), null);
+				event.getMessageId(), List.of(), List.of(), null);
 	}
 
 	/**
@@ -95,7 +88,7 @@ public class QuoteEventsReducer {
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVotes(), newReceives, model.getVerdict());
+				model.getMessageId(), model.getVoterIds(), newReceives, model.getVerdict());
 	}
 	
 	/**
@@ -109,7 +102,7 @@ public class QuoteEventsReducer {
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVotes(), model.getReceives(), newVerdict);
+				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict);
 	}
 	
 	/**
@@ -123,38 +116,12 @@ public class QuoteEventsReducer {
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVotes(), model.getReceives(), newVerdict);
+				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict);
 	}
 	
-	/**
-	 * Processes adding of votes
-	 * @param model
-	 * @param event
-	 * @return
-	 */
-	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVoteAddedEvent event) {
-		Map<String, Vote> newVotes = new HashMap<>();
-		newVotes.putAll(model.getVotes());
-		newVotes.put(event.getUserId(), new Vote(event.getUserId(), event.getType(), event.getTimestamp()));
-		
+	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVotesModifiedEvent event) {
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), newVotes, model.getReceives(), model.getVerdict());
-	}
-	
-	/**
-	 * Processes removing of votes
-	 * @param model
-	 * @param event
-	 * @return
-	 */
-	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVoteRemovedEvent event) {
-		Map<String, Vote> newVotes = new HashMap<>();
-		newVotes.putAll(model.getVotes());
-		newVotes.remove(event.getUserId());
-	
-		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), newVotes, model.getReceives(), model.getVerdict());
+				model.getMessageId(), event.getVoterIds(), model.getReceives(), model.getVerdict());
 	}
 }
