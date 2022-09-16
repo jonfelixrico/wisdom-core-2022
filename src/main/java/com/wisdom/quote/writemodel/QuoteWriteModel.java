@@ -20,7 +20,7 @@ public class QuoteWriteModel {
 		return String.format("quote/%s", quoteId);
 	}
 
-	public static QuoteWriteModel submit(String quoteId, String content, String authorId, String submitterId,
+	static QuoteWriteModel submit(String quoteId, String content, String authorId, String submitterId,
 			Instant createDt, Instant expirationDt, String serverId, String channelId, String messageId) {
 		QuoteAggregate aggregate = new QuoteAggregate(expirationDt, new HashMap<>(), new ArrayList<>(), null);
 
@@ -37,7 +37,7 @@ public class QuoteWriteModel {
 	private QuoteAggregate aggregate;
 	private EventAppendBuffer buffer;
 
-	public QuoteWriteModel(String quoteId, QuoteAggregate aggregate, Long expectedRevision) {
+	QuoteWriteModel(String quoteId, QuoteAggregate aggregate, Long expectedRevision) {
 		this.quoteId = quoteId;
 		this.aggregate = aggregate;
 		this.buffer = new EventAppendBuffer(getStreamId(quoteId), expectedRevision == null ? ExpectedRevision.NO_STREAM
