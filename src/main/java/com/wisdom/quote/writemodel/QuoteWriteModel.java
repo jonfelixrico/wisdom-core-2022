@@ -40,9 +40,8 @@ public class QuoteWriteModel {
 	public QuoteWriteModel(String quoteId, QuoteAggregate aggregate, Long expectedRevision) {
 		this.quoteId = quoteId;
 		this.aggregate = aggregate;
-		this.buffer = new EventAppendBuffer(getStreamId(quoteId),
-				expectedRevision == null ? ExpectedRevision.NO_STREAM
-						: ExpectedRevision.expectedRevision(expectedRevision));
+		this.buffer = new EventAppendBuffer(getStreamId(quoteId), expectedRevision == null ? ExpectedRevision.NO_STREAM
+				: ExpectedRevision.expectedRevision(expectedRevision));
 	}
 
 	public String getQuoteId() {
