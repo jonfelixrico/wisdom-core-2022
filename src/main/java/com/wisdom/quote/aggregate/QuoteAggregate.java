@@ -38,6 +38,10 @@ public class QuoteAggregate {
 		if (verdict != null) {
 			throw new IllegalStateException("This quote is no longer in its voting phase.");
 		}
+		
+		if (!votes.containsKey(voterId)) {
+			throw new IllegalStateException(String.format("User %s has not voted.", voterId));
+		}
 
 		votes.remove(voterId);
 	}
