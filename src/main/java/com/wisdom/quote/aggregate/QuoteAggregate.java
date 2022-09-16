@@ -1,49 +1,31 @@
 package com.wisdom.quote.aggregate;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class QuoteAggregate {
 	private Instant expirationDt;
-
-	private Map<String, VoteType> votes;
+	private List<String> voterIds;
 	private List<String> receiveIds;
-
 	private Verdict verdict;
 
-	public QuoteAggregate(Instant expirationDt, Map<String, VoteType> votes, List<String> receives, Verdict verdict) {
+	public QuoteAggregate(Instant expirationDt, List<String> voterIds, List<String> receiveIds, Verdict verdict) {
 		this.expirationDt = expirationDt;
-
-		this.votes = new HashMap<>();
-		this.votes.putAll(votes);
-
-		this.receiveIds = new ArrayList<>();
-		this.receiveIds.addAll(receives);
-
+		this.voterIds = voterIds;
+		this.receiveIds = receiveIds;
 		this.verdict = verdict;
 	}
 
-	public void addVote(String voterId, VoteType voteType, Instant voteDt) {
-		if (verdict != null) {
-			throw new IllegalStateException("This quote is no longer in its voting phase.");
-		}
-
-		votes.put(voterId, voteType);
+	public List<String> getVoterIds() {
+		return voterIds;
 	}
-	
-	public void removeVote(String voterId) {
+
+	public void setVotes(List<String> voterIds) {
 		if (verdict != null) {
 			throw new IllegalStateException("This quote is no longer in its voting phase.");
 		}
-		
-		if (!votes.containsKey(voterId)) {
-			throw new IllegalStateException(String.format("User %s has not voted.", voterId));
-		}
 
-		votes.remove(voterId);
+		this.voterIds = voterIds;
 	}
 
 	public void receive(String receiveId) {
@@ -76,10 +58,6 @@ public class QuoteAggregate {
 
 	public Instant getExpirationDt() {
 		return expirationDt;
-	}
-
-	public Map<String, VoteType> getVotes() {
-		return Map.copyOf(votes);
 	}
 
 	public List<String> getReceiveIds() {

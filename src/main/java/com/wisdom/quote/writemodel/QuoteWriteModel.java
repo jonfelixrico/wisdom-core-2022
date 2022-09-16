@@ -1,15 +1,15 @@
 package com.wisdom.quote.writemodel;
 
 import java.time.Instant;
+import java.util.List;
+
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.common.writemodel.EventAppendBuffer;
 import com.wisdom.quote.aggregate.QuoteAggregate;
-import com.wisdom.quote.aggregate.VoteType;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
+import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 public class QuoteWriteModel {
 	private static String getStreamId(String quoteId) {
@@ -32,16 +32,6 @@ public class QuoteWriteModel {
 		return quoteId;
 	}
 
-	public void addVote(String voterId, VoteType voteType, Instant timestamp) {
-		aggregate.addVote(voterId, voteType, timestamp);
-		buffer.pushEvent(new QuoteVoteAddedEvent(quoteId, voterId, voteType, timestamp));
-	}
-
-	public void removeVote(String voterId, Instant timestamp) {
-		aggregate.removeVote(voterId);
-		buffer.pushEvent(new QuoteVoteRemovedEvent(quoteId, voterId, timestamp));
-	}
-
 	public void receive(String receiveId, String receiverId, Instant receiveDt, String serverId, String channelId,
 			String messageId) {
 		aggregate.receive(receiveId);
@@ -57,6 +47,11 @@ public class QuoteWriteModel {
 	public void flagAsSystemAsExpired(Instant timestamp) {
 		aggregate.flagAsExpired(timestamp);
 		buffer.pushEvent(new QuoteFlaggedAsExpiredBySystemEvent(quoteId, timestamp));
+	}
+	
+	public void setVoters (List<String> voterIds, Instant timestamp) {
+		aggregate.setVotes(voterIds);
+		buffer.pushEvent(new QuoteVotesModifiedEvent(quoteId, voterIds, timestamp));
 	}
 
 	EventAppendBuffer getEventBuffer() {
