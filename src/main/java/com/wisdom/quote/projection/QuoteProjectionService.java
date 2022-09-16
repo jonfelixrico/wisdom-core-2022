@@ -19,7 +19,8 @@ import com.eventstore.dbclient.ReadResult;
 import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
-import com.wisdom.eventsourcing.Event;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wisdom.common.writemodel.Event;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.mongodb.QuoteMongoModel;
 import com.wisdom.quote.mongodb.QuoteMongoRepository;
@@ -31,8 +32,8 @@ import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
 @Service
-public class QuoteEventsProjectionService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsProjectionService.class);
+public class QuoteProjectionService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
 
 	@Autowired
 	private EventStoreDBProvider esdbProvider;
@@ -45,6 +46,9 @@ public class QuoteEventsProjectionService {
 	
 	@Autowired
 	MongoTemplate template;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	private final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(QuoteSubmittedEvent.EVENT_TYPE,
 			QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
@@ -74,7 +78,7 @@ public class QuoteEventsProjectionService {
 			options.fromRevision(fromRevision);
 		}
 
-		Pair<QuoteProjectionModel, Long> state = Pair.of(baseModel, fromRevision);
+		Pair<QuoteProjectionModel, Long> state = baseModel == null ? null : Pair.of(baseModel, fromRevision);
 
 		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
 		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
@@ -88,7 +92,7 @@ public class QuoteEventsProjectionService {
 				continue;
 			}
 
-			var eventData = event.getEventDataAs(eventClass);
+			var eventData = mapper.readValue(event.getEventData(), eventClass);
 			state = Pair.of(reducer.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
 		}
 
