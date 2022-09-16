@@ -29,13 +29,13 @@ public class QuoteMongoModel {
 	private List<Receive> receives;
 	private Verdict verdict;
 
-	private Long revision;
-
 	private Integer requiredVoteCount;
+
+	private Long revision;
 
 	public QuoteMongoModel(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<String> voterIds,
-			List<Receive> receives, Verdict verdict, Long revision) {
+			List<Receive> receives, Verdict verdict, Integer requiredVoteCount, Long revision) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -48,6 +48,7 @@ public class QuoteMongoModel {
 		this.voterIds = voterIds;
 		this.receives = receives;
 		this.verdict = verdict;
+		this.requiredVoteCount = requiredVoteCount;
 		this.revision = revision;
 	}
 

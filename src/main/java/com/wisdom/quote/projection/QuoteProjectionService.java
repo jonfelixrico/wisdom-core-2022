@@ -100,7 +100,7 @@ public class QuoteProjectionService {
 		QuoteProjectionModel projModel = new QuoteProjectionModel(input.getId(), input.getContent(),
 				input.getAuthorId(), input.getSubmitterId(), input.getSubmitDt(), input.getExpirationDt(),
 				input.getServerId(), input.getChannelId(), input.getMessageId(), input.getVoterIds(),
-				input.getReceives(), input.getVerdict());
+				input.getReceives(), input.getVerdict(), input.getRequiredVoteCount());
 
 		return Pair.of(projModel, input.getRevision());
 	}
@@ -117,7 +117,7 @@ public class QuoteProjectionService {
 	private static QuoteMongoModel convertProjectionModelToMongoModel(QuoteProjectionModel model, long revision) {
 		return new QuoteMongoModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVoterIds(), model.getReceives(), model.getVerdict(), revision);
+				model.getMessageId(), model.getVoterIds(), model.getReceives(), model.getVerdict(), model.getRequiredVoteCount(), revision);
 	}
 
 	private void saveSnapshot(QuoteProjectionModel model, long revision) {

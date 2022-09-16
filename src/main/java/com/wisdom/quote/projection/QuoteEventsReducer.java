@@ -71,7 +71,7 @@ public class QuoteEventsReducer {
 	private QuoteProjectionModel reduce(QuoteProjectionModel model, QuoteSubmittedEvent event) {
 		return new QuoteProjectionModel(event.getId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
 				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
-				event.getMessageId(), List.of(), List.of(), null);
+				event.getMessageId(), List.of(), List.of(), null, model.getRequiredVoteCount());
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class QuoteEventsReducer {
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVoterIds(), newReceives, model.getVerdict());
+				model.getMessageId(), model.getVoterIds(), newReceives, model.getVerdict(), model.getRequiredVoteCount());
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class QuoteEventsReducer {
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict);
+				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict, model.getRequiredVoteCount());
 	}
 	
 	/**
@@ -116,12 +116,12 @@ public class QuoteEventsReducer {
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict);
+				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict, model.getRequiredVoteCount());
 	}
 	
 	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVotesModifiedEvent event) {
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), event.getVoterIds(), model.getReceives(), model.getVerdict());
+				model.getMessageId(), event.getVoterIds(), model.getReceives(), model.getVerdict(), model.getRequiredVoteCount());
 	}
 }
