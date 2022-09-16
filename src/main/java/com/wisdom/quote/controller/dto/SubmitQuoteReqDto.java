@@ -10,6 +10,11 @@ public class SubmitQuoteReqDto {
 
 	private String channelId;
 	private String messageId;
+	private String serverId;
+
+	public String getServerId() {
+		return serverId;
+	}
 
 	public String getContent() {
 		return content;

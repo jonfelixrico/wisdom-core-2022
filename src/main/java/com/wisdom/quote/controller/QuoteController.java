@@ -34,14 +34,14 @@ public class QuoteController {
 	@Autowired
 	QuoteProjectionService projectionService;
 
-	@PostMapping("/server/{serverId}/quote")
-	String submitQuote(@RequestBody SubmitQuoteReqDto body, @PathVariable String serverId) throws Exception {
+	@PostMapping("/quote")
+	String submitQuote(@RequestBody SubmitQuoteReqDto body) throws Exception {
 		var quoteId = UUID.randomUUID().toString();
 		var createDt = Instant.now();
 		var expireDt = createDt.plus(3, ChronoUnit.DAYS);
 
 		var writeModel = QuoteWriteModel.submit(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(),
-				createDt, expireDt, serverId, body.getChannelId(), body.getMessageId());
+				createDt, expireDt, body.getServerId(), body.getChannelId(), body.getMessageId());
 
 		writeRepository.saveWriteModel(writeModel);
 		
