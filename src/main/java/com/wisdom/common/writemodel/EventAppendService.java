@@ -1,4 +1,4 @@
-package com.wisdom.common.eventsourcing;
+package com.wisdom.common.writemodel;
 
 import java.util.Iterator;
 import java.util.UUID;

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wisdom.common.eventsourcing.EventAppendService;
+import com.wisdom.common.writemodel.EventAppendService;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.aggregate.VoteType;

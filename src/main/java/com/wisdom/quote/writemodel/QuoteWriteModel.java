@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.eventstore.dbclient.ExpectedRevision;
-import com.wisdom.common.eventsourcing.EventAppendBuilder;
+import com.wisdom.common.writemodel.EventAppendBuilder;
 import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.aggregate.VoteType;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;

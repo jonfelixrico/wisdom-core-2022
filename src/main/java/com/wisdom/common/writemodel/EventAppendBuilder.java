@@ -1,4 +1,4 @@
-package com.wisdom.common.eventsourcing;
+package com.wisdom.common.writemodel;
 
 import java.util.ArrayList;
 import java.util.List;
