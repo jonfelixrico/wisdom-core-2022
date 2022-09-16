@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.wisdom.quote.controller.dto.GetQuoteRespDto;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.QuoteWriteModel;
