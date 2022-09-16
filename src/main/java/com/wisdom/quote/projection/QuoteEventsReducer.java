@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import com.wisdom.eventsourcing.Event;
+import com.wisdom.common.eventsourcing.Event;
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.aggregate.VerdictStatus;
 import com.wisdom.quote.writemodel.events.BaseQuoteEvent;

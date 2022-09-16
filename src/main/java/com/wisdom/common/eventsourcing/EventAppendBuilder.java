@@ -1,4 +1,4 @@
-package com.wisdom.eventsourcing;
+package com.wisdom.common.eventsourcing;
 
 import java.util.ArrayList;
 import java.util.List;

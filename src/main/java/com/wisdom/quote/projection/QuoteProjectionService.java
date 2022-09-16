@@ -20,7 +20,7 @@ import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wisdom.eventsourcing.Event;
+import com.wisdom.common.eventsourcing.Event;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.mongodb.QuoteMongoModel;
 import com.wisdom.quote.mongodb.QuoteMongoRepository;

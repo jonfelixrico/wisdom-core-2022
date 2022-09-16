@@ -1,4 +1,4 @@
-package com.wisdom.eventsourcing;
+package com.wisdom.common.eventsourcing;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

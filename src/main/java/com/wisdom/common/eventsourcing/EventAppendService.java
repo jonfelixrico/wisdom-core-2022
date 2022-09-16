@@ -1,4 +1,4 @@
-package com.wisdom.eventsourcing;
+package com.wisdom.common.eventsourcing;
 
 import java.util.Iterator;
 import java.util.UUID;
