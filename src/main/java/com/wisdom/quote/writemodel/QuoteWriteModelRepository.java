@@ -32,12 +32,12 @@ public class QuoteWriteModelRepository {
 	}
 
 	public QuoteWriteModel create(String quoteId, String content, String authorId, String submitterId, Instant createDt,
-			Instant expirationDt, String serverId, String channelId, String messageId) {
+			Instant expirationDt, String serverId, String channelId, String messageId, int requiredVoteCount) {
 		var aggregate = new QuoteAggregate(expirationDt, new ArrayList<>(), new ArrayList<>(), null);
 
 		var model = new QuoteWriteModel(quoteId, aggregate, null);
 		model.getEventBuffer().pushEvent(new QuoteSubmittedEvent(quoteId, content, authorId, submitterId, createDt,
-				expirationDt, serverId, channelId, messageId));
+				expirationDt, serverId, channelId, messageId, 3)); // TODO adjust the required vote count
 
 		return model;
 
