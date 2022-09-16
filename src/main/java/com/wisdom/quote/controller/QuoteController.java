@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.wisdom.quote.controller.dto.GetQuoteRespDto;
 import com.wisdom.quote.controller.dto.RemoveVoteReqDto;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.controller.dto.SetVoteReqDto;
+import com.wisdom.quote.projection.QuoteProjectionModel;
 import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
@@ -57,15 +57,13 @@ public class QuoteController {
 	}
 
 	@GetMapping("/{id}")
-	GetQuoteRespDto getQuote(@PathVariable String id) throws Exception {
+	QuoteProjectionModel getQuote(@PathVariable String id) throws Exception {
 		var data = projectionService.getProjection(id);
 		if (data == null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
-		var model = data.getFirst();
-
-		return new GetQuoteRespDto(model.getContent(), model.getAuthorId(), model.getSubmitDt());
+		return data.getFirst();
 	}
 
 	@PutMapping("/{id}/vote")
