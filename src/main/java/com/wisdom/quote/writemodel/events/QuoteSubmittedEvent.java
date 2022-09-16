@@ -18,8 +18,10 @@ public class QuoteSubmittedEvent extends BaseQuoteEvent {
 	private String channelId;
 	private String messageId;
 
+	private Integer requiredVoteCount;
+
 	public QuoteSubmittedEvent(String id, String content, String authorId, String submitterId, Instant timestamp,
-			Instant expirationDt, String serverId, String channelId, String messageId) {
+			Instant expirationDt, String serverId, String channelId, String messageId, Integer requiredVoteCount) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -29,6 +31,7 @@ public class QuoteSubmittedEvent extends BaseQuoteEvent {
 		this.serverId = serverId;
 		this.channelId = channelId;
 		this.messageId = messageId;
+		this.requiredVoteCount = requiredVoteCount;
 	}
 
 	@Override
@@ -72,4 +75,9 @@ public class QuoteSubmittedEvent extends BaseQuoteEvent {
 	public String getMessageId() {
 		return messageId;
 	}
+
+	public Integer getRequiredVoteCount() {
+		return requiredVoteCount;
+	}
+
 }

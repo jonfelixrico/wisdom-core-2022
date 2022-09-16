@@ -23,9 +23,11 @@ public class QuoteProjectionModel {
 	private List<Receive> receives;
 	private Verdict verdict;
 
+	private Integer requiredVoteCount;
+
 	public QuoteProjectionModel(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<String> voterIds,
-			List<Receive> receives, Verdict verdict) {
+			List<Receive> receives, Verdict verdict, Integer requiredVoteCount) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -38,6 +40,11 @@ public class QuoteProjectionModel {
 		this.voterIds = voterIds;
 		this.receives = receives;
 		this.verdict = verdict;
+		this.requiredVoteCount = requiredVoteCount;
+	}
+
+	public Integer getRequiredVoteCount() {
+		return requiredVoteCount;
 	}
 
 	public String getId() {
