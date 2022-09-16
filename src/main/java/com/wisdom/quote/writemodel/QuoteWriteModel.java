@@ -3,6 +3,9 @@ package com.wisdom.quote.writemodel;
 import java.time.Instant;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.common.writemodel.EventAppendBuffer;
 import com.wisdom.quote.aggregate.QuoteAggregate;
@@ -13,6 +16,8 @@ import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 public class QuoteWriteModel extends QuoteAggregate {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteWriteModel.class);
+
 	private String quoteId;
 	private Integer requiredVoteCount;
 	private EventAppendBuffer buffer;
@@ -53,6 +58,12 @@ public class QuoteWriteModel extends QuoteAggregate {
 	public void setVoters(List<String> voterIds, Instant timestamp) {
 		super.setVotes(voterIds);
 		buffer.pushEvent(new QuoteVotesModifiedEvent(quoteId, voterIds, timestamp));
+
+		if (voterIds.size() >= requiredVoteCount) {
+			approveBySystem(timestamp);
+			LOGGER.info("Quote {} has reached the required number of votes ({}). It has been automatically approved.",
+					quoteId, requiredVoteCount);
+		}
 	}
 
 	EventAppendBuffer getEventBuffer() {
