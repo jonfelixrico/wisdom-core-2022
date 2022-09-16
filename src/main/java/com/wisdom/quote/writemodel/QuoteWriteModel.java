@@ -1,9 +1,6 @@
 package com.wisdom.quote.writemodel;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.common.writemodel.EventAppendBuffer;
 import com.wisdom.quote.aggregate.QuoteAggregate;
@@ -11,25 +8,12 @@ import com.wisdom.quote.aggregate.VoteType;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
-import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
 public class QuoteWriteModel {
 	private static String getStreamId(String quoteId) {
 		return String.format("quote/%s", quoteId);
-	}
-
-	static QuoteWriteModel submit(String quoteId, String content, String authorId, String submitterId,
-			Instant createDt, Instant expirationDt, String serverId, String channelId, String messageId) {
-		QuoteAggregate aggregate = new QuoteAggregate(expirationDt, new HashMap<>(), new ArrayList<>(), null);
-
-		var model = new QuoteWriteModel(quoteId, aggregate, null);
-		model.getEventBuffer().pushEvent(new QuoteSubmittedEvent(quoteId, content, authorId, submitterId, createDt,
-				expirationDt, serverId, channelId, messageId));
-
-		return model;
-
 	}
 
 	private String quoteId;

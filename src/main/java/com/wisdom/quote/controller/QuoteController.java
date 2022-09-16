@@ -26,8 +26,6 @@ import com.wisdom.quote.controller.dto.RemoveVoteReqDto;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.controller.dto.SetVoteReqDto;
 import com.wisdom.quote.projection.QuoteProjectionService;
-import com.wisdom.quote.projection.Vote;
-import com.wisdom.quote.writemodel.QuoteWriteModel;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 /**
@@ -48,7 +46,7 @@ public class QuoteController {
 		var createDt = Instant.now();
 		var expireDt = createDt.plus(3, ChronoUnit.DAYS);
 
-		var writeModel = QuoteWriteModel.submit(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(),
+		var writeModel = writeRepository.create(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(),
 				createDt, expireDt, body.getServerId(), body.getChannelId(), body.getMessageId());
 
 		writeRepository.saveWriteModel(writeModel);
@@ -67,16 +65,18 @@ public class QuoteController {
 
 		return new GetQuoteRespDto(model.getContent(), model.getAuthorId(), model.getSubmitDt());
 	}
-	
+
 	@PutMapping("/{id}/vote")
-	void setVote (@PathVariable String id, @RequestBody SetVoteReqDto body) throws InterruptedException, ExecutionException, IOException {
+	void setVote(@PathVariable String id, @RequestBody SetVoteReqDto body)
+			throws InterruptedException, ExecutionException, IOException {
 		var model = writeRepository.getWriteModel(id);
 		model.addVote(body.getUserId(), body.getVoteType(), Instant.now());
 		writeRepository.saveWriteModel(model);
 	}
-	
+
 	@DeleteMapping("/{id}/vote")
-	void removeVote(@PathVariable String id, @RequestBody RemoveVoteReqDto body) throws InterruptedException, ExecutionException, IOException {
+	void removeVote(@PathVariable String id, @RequestBody RemoveVoteReqDto body)
+			throws InterruptedException, ExecutionException, IOException {
 		var model = writeRepository.getWriteModel(id);
 		model.removeVote(body.getUserId(), Instant.now());
 		writeRepository.saveWriteModel(model);
