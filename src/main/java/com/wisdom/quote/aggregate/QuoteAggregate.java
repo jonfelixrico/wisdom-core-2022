@@ -16,10 +16,6 @@ public class QuoteAggregate {
 		this.verdict = verdict;
 	}
 
-	public List<String> getVoterIds() {
-		return voterIds;
-	}
-
 	public void setVotes(List<String> voterIds) {
 		if (verdict != null) {
 			throw new IllegalStateException("This quote is no longer in its voting phase.");
@@ -66,5 +62,9 @@ public class QuoteAggregate {
 
 	public Verdict getVerdict() {
 		return verdict;
+	}
+	
+	public List<String> getVoterIds() {
+		return voterIds;
 	}
 }
