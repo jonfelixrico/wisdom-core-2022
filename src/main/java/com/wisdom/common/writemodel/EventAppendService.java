@@ -35,8 +35,7 @@ public class EventAppendService {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public WriteResult appendToStream(EventAppendBuilder buffer)
-			throws InterruptedException, ExecutionException {
+	public WriteResult appendToStream(EventAppendBuffer buffer) throws InterruptedException, ExecutionException {
 		var options = AppendToStreamOptions.get();
 		Iterator<EventData> eventDataIterator = buffer.getEvents().stream().map(event -> {
 			try {
@@ -59,7 +58,8 @@ public class EventAppendService {
 			options.expectedRevision(ExpectedRevision.ANY);
 		}
 
-		LOGGER.debug("Pushing to stream {} expecting revision {}", buffer.getStreamId(), options.getExpectedRevision().toString());
+		LOGGER.debug("Pushing to stream {} expecting revision {}", buffer.getStreamId(),
+				options.getExpectedRevision().toString());
 		return provider.getClient().appendToStream(buffer.getStreamId(), options, eventDataIterator).get();
 	}
 }

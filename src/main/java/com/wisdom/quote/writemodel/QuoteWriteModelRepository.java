@@ -38,6 +38,6 @@ public class QuoteWriteModelRepository {
 	}
 
 	public void saveWriteModel(QuoteWriteModel model) throws InterruptedException, ExecutionException {
-		eventAppendService.appendToStream(model.getEventBuilder());
+		eventAppendService.appendToStream(model.getEventBuffer());
 	}
 }

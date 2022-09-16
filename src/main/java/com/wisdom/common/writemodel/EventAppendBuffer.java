@@ -16,8 +16,8 @@ import com.eventstore.dbclient.ExpectedRevision;
  * @author Felix
  *
  */
-public class EventAppendBuilder {
-	Logger logger = LoggerFactory.getLogger(EventAppendBuilder.class);
+public class EventAppendBuffer {
+	Logger logger = LoggerFactory.getLogger(EventAppendBuffer.class);
 
 	private String streamId;
 	private List<Event> events;
@@ -29,7 +29,7 @@ public class EventAppendBuilder {
 	 * 
 	 * @param streamId
 	 */
-	public EventAppendBuilder(String streamId) {
+	public EventAppendBuffer(String streamId) {
 		this.streamId = streamId;
 		this.events = new ArrayList<>();
 	}
@@ -41,7 +41,7 @@ public class EventAppendBuilder {
 	 * @param streamId
 	 * @param expectedRevision The revision no. that we expect the stream to be in.
 	 */
-	public EventAppendBuilder(String streamId, ExpectedRevision expectedRevision) {
+	public EventAppendBuffer(String streamId, ExpectedRevision expectedRevision) {
 		this(streamId);
 		this.expectedRevision = expectedRevision;
 	}
