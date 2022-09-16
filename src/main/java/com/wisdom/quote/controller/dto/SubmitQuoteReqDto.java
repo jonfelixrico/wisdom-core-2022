@@ -1,8 +1,8 @@
-package com.wisdom.quote.controller;
+package com.wisdom.quote.controller.dto;
 
 import java.time.Instant;
 
-class SubmitQuoteReqDto {
+public class SubmitQuoteReqDto {
 	private String content;
 	private String authorId;
 	private String submitterId;
