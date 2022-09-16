@@ -6,8 +6,10 @@ package com.wisdom.quote.controller;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import javax.validation.Valid;
 
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +43,7 @@ public class QuoteController {
 	QuoteProjectionService projectionService;
 
 	@PostMapping
-	Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {
+	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {
 		var quoteId = UUID.randomUUID().toString();
 		var createDt = Instant.now();
 		var expireDt = createDt.plus(3, ChronoUnit.DAYS);
@@ -54,12 +57,20 @@ public class QuoteController {
 	}
 
 	@GetMapping("/{id}")
-	QuoteProjectionModel getQuote(@Valid @PathVariable String id) throws Exception {
+	private QuoteProjectionModel getQuote(@PathVariable String id) throws Exception {
 		var data = projectionService.getProjection(id);
 		if (data == null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
 		return data.getFirst();
+	}
+
+	@PutMapping("/{id}/votes")
+	private void setVotes(@PathVariable String id, List<String> voterIds)
+			throws InterruptedException, ExecutionException, IOException {
+		var model = writeRepository.getWriteModel(id);
+		model.setVoters(voterIds, Instant.now());
+		writeRepository.saveWriteModel(model);
 	}
 }
