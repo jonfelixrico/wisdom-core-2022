@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -67,7 +69,7 @@ public class QuoteController {
 	}
 
 	@PutMapping("/{id}/vote")
-	void setVote(@PathVariable String id, @RequestBody SetVoteReqDto body)
+	void setVote(@PathVariable String id, @Valid @RequestBody SetVoteReqDto body)
 			throws InterruptedException, ExecutionException, IOException {
 		var model = writeRepository.getWriteModel(id);
 		model.addVote(body.getUserId(), body.getType(), Instant.now());
