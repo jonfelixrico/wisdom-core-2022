@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -32,7 +33,8 @@ import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
  * @author Felix
  *
  */
-@RestController("/quote/pending")
+@RestController
+@RequestMapping("/quote/pending")
 public class QuoteController {
 	@Autowired
 	QuoteWriteModelRepository writeRepository;
