@@ -31,6 +31,8 @@ public class QuoteMongoModel {
 
 	private Long revision;
 
+	private Integer requiredVoteCount;
+
 	public QuoteMongoModel(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<String> voterIds,
 			List<Receive> receives, Verdict verdict, Long revision) {
@@ -47,6 +49,14 @@ public class QuoteMongoModel {
 		this.receives = receives;
 		this.verdict = verdict;
 		this.revision = revision;
+	}
+
+	public Integer getRequiredVoteCount() {
+		return requiredVoteCount;
+	}
+
+	public void setRequiredVoteCount(Integer requiredVoteCount) {
+		this.requiredVoteCount = requiredVoteCount;
 	}
 
 	public List<String> getVoterIds() {

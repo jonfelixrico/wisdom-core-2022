@@ -3,18 +3,16 @@ package com.wisdom.quote.writemodel;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.common.writemodel.EventAppendService;
-import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
-import com.wisdom.quote.projection.QuoteProjectionModel;
 
 @Service
 public class QuoteWriteModelRepository {
@@ -24,18 +22,11 @@ public class QuoteWriteModelRepository {
 	@Autowired
 	EventAppendService eventAppendService;
 
-	private static QuoteAggregate projectionToAggregate(QuoteProjectionModel projection) {
-		List<String> receives = projection.getReceives().stream().map(r -> r.getId()).collect(Collectors.toList());
-
-		return new QuoteAggregate(projection.getExpirationDt(), projection.getVoterIds(), receives,
-				projection.getVerdict());
-	}
-
 	public QuoteWriteModel create(String quoteId, String content, String authorId, String submitterId, Instant createDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, int requiredVoteCount) {
-		var aggregate = new QuoteAggregate(expirationDt, new ArrayList<>(), new ArrayList<>(), null);
+		var model = new QuoteWriteModel(expirationDt, new ArrayList<>(), new ArrayList<>(), null, quoteId,
+				requiredVoteCount, ExpectedRevision.NO_STREAM);
 
-		var model = new QuoteWriteModel(quoteId, aggregate, null);
 		model.getEventBuffer().pushEvent(new QuoteSubmittedEvent(quoteId, content, authorId, submitterId, createDt,
 				expirationDt, serverId, channelId, messageId, 3)); // TODO adjust the required vote count
 
@@ -44,8 +35,12 @@ public class QuoteWriteModelRepository {
 	}
 
 	public QuoteWriteModel getWriteModel(String quoteId) throws InterruptedException, ExecutionException, IOException {
-		var proj = projectionService.getProjection(quoteId);
-		return new QuoteWriteModel(quoteId, projectionToAggregate(proj.getFirst()), proj.getSecond());
+		var result = projectionService.getProjection(quoteId);
+		var data = result.getFirst();
+		
+		var receives = data.getReceives().stream().map(r -> r.getId()).collect(Collectors.toList());
+		return new QuoteWriteModel(data.getExpirationDt(), data.getVoterIds(), receives, data.getVerdict(),
+				data.getId(), data.getRequiredVoteCount(), ExpectedRevision.expectedRevision(result.getSecond()));
 	}
 
 	public void saveWriteModel(QuoteWriteModel model) throws InterruptedException, ExecutionException {
