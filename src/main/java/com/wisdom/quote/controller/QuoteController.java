@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.wisdom.quote.projection.QuoteEventsProjectionService;
+import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.QuoteWriteModel;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
@@ -30,7 +30,7 @@ public class QuoteController {
 	QuoteWriteModelRepository writeRepository;
 
 	@Autowired
-	QuoteEventsProjectionService projectionService;
+	QuoteProjectionService projectionService;
 
 	@PostMapping("/server/{serverId}/quote")
 	String submitQuote(@RequestBody SubmitQuoteReqDto body, @PathVariable String serverId) throws Exception {

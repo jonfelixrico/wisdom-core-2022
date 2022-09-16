@@ -31,8 +31,8 @@ import com.wisdom.quote.writemodel.events.QuoteVoteAddedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVoteRemovedEvent;
 
 @Service
-public class QuoteEventsProjectionService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsProjectionService.class);
+public class QuoteProjectionService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
 
 	@Autowired
 	private EventStoreDBProvider esdbProvider;

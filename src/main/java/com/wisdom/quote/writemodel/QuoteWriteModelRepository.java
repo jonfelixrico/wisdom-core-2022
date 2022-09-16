@@ -13,13 +13,13 @@ import com.wisdom.eventsourcing.EventAppendService;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.aggregate.VoteType;
-import com.wisdom.quote.projection.QuoteEventsProjectionService;
+import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.projection.QuoteProjectionModel;
 
 @Service
 public class QuoteWriteModelRepository {
 	@Autowired
-	QuoteEventsProjectionService projectionService;
+	QuoteProjectionService projectionService;
 
 	@Autowired
 	EventAppendService eventAppendService;
