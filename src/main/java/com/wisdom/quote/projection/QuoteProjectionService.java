@@ -19,6 +19,7 @@ import com.eventstore.dbclient.ReadResult;
 import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventsourcing.Event;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.mongodb.QuoteMongoModel;
@@ -45,6 +46,9 @@ public class QuoteProjectionService {
 	
 	@Autowired
 	MongoTemplate template;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	private final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(QuoteSubmittedEvent.EVENT_TYPE,
 			QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
@@ -88,7 +92,7 @@ public class QuoteProjectionService {
 				continue;
 			}
 
-			var eventData = event.getEventDataAs(eventClass);
+			var eventData = mapper.readValue(event.getEventData(), eventClass);
 			state = Pair.of(reducer.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
 		}
 
