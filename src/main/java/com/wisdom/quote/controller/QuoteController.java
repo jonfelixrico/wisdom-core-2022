@@ -45,7 +45,7 @@ public class QuoteController {
 	QuoteProjectionService projectionService;
 
 	@PostMapping
-	Map<String, String> submitQuote(@RequestBody SubmitQuoteReqDto body) throws Exception {
+	Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {
 		var quoteId = UUID.randomUUID().toString();
 		var createDt = Instant.now();
 		var expireDt = createDt.plus(3, ChronoUnit.DAYS);
@@ -59,7 +59,7 @@ public class QuoteController {
 	}
 
 	@GetMapping("/{id}")
-	QuoteProjectionModel getQuote(@PathVariable String id) throws Exception {
+	QuoteProjectionModel getQuote(@Valid @PathVariable String id) throws Exception {
 		var data = projectionService.getProjection(id);
 		if (data == null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
@@ -77,7 +77,7 @@ public class QuoteController {
 	}
 
 	@DeleteMapping("/{id}/vote")
-	void removeVote(@PathVariable String id, @RequestBody RemoveVoteReqDto body)
+	void removeVote(@PathVariable String id, @Valid @RequestBody RemoveVoteReqDto body)
 			throws InterruptedException, ExecutionException, IOException {
 		var model = writeRepository.getWriteModel(id);
 		model.removeVote(body.getUserId(), Instant.now());

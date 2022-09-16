@@ -2,9 +2,19 @@ package com.wisdom.quote.controller.dto;
 
 import java.time.Instant;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class GetQuoteRespDto {
+	@NotNull
+	@NotBlank
 	private String content;
+
+	@NotNull
+	@NotBlank
 	private String authorId;
+
+	@NotNull
 	private Instant submitDt;
 
 	public GetQuoteRespDto(String content, String authorId, Instant submitDt) {
