@@ -66,8 +66,8 @@ public class QuoteController {
 		return data.getFirst();
 	}
 
-	@PutMapping("/{id}/votes")
-	private void setVotes(@PathVariable String id, List<String> voterIds)
+	@PutMapping("/{id}/vote")
+	private void setVotes(@PathVariable String id, @RequestBody List<String> voterIds)
 			throws InterruptedException, ExecutionException, IOException {
 		var model = writeRepository.getWriteModel(id);
 		model.setVoters(voterIds, Instant.now());
