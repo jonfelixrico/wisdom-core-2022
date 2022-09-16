@@ -70,7 +70,7 @@ public class QuoteController {
 	void setVote(@PathVariable String id, @RequestBody SetVoteReqDto body)
 			throws InterruptedException, ExecutionException, IOException {
 		var model = writeRepository.getWriteModel(id);
-		model.addVote(body.getUserId(), body.getVoteType(), Instant.now());
+		model.addVote(body.getUserId(), body.getType(), Instant.now());
 		writeRepository.saveWriteModel(model);
 	}
 
