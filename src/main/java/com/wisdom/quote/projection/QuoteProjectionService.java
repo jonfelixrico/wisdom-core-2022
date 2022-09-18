@@ -14,14 +14,12 @@ import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wisdom.common.projection.snapshot.ProjectionMetaService;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.projection.snapshot.QuoteSnapshotRepository;
 
 @Service
 public class QuoteProjectionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
-	private static String PROJECTION_NAME = "quote";
 
 	@Autowired
 	private EventStoreDBProvider esdbProvider;
@@ -34,9 +32,6 @@ public class QuoteProjectionService {
 
 	private @Autowired
 	ObjectMapper mapper;
-	
-	@Autowired
-	private ProjectionMetaService metaSvc;
 
 	public Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
@@ -48,7 +43,6 @@ public class QuoteProjectionService {
 
 		var projection = buildState(quoteId, null, null);
 		snapshotRepo.save(projection.getFirst(), projection.getSecond());
-		metaSvc.setLastRevision(PROJECTION_NAME, projection.getSecond());
 		return projection;
 	}
 
