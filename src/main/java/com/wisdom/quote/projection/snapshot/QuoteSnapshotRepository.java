@@ -41,10 +41,12 @@ public class QuoteSnapshotRepository {
 	public Pair<QuoteProjectionModel, Long> get(String id) {
 		var result = repo.findById(id);
 		if (result.isEmpty()) {
+			LOGGER.debug("Did not find snapshot for quote {}", id);
 			return null;
 		}
 
 		var data = result.get();
+		LOGGER.debug("Retrieved snapshot for quote {} with revision {}", id, data.getRevision());
 
 		return Pair.of(data, data.getRevision());
 	}
