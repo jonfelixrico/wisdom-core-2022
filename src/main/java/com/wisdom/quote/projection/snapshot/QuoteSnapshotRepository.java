@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
-import com.wisdom.quote.projection.BaseQuoteProjectionModel;
+import com.wisdom.quote.projection.QuoteProjectionModel;
 
 @Service
 public class QuoteSnapshotRepository {
@@ -21,7 +21,7 @@ public class QuoteSnapshotRepository {
 	@Autowired
 	MongoTemplate template;
 
-	public void save(BaseQuoteProjectionModel baseQuoteProjectionModel, long revision) {
+	public void save(QuoteProjectionModel baseQuoteProjectionModel, long revision) {
 		var dbModel = new QuoteMongoModel(baseQuoteProjectionModel, revision);
 		if (!repo.existsById(baseQuoteProjectionModel.getId())) {
 			repo.insert(dbModel);
@@ -38,7 +38,7 @@ public class QuoteSnapshotRepository {
 		}
 	}
 
-	public Pair<BaseQuoteProjectionModel, Long> get(String id) {
+	public Pair<QuoteProjectionModel, Long> get(String id) {
 		var result = repo.findById(id);
 		if (result.isEmpty()) {
 			return null;

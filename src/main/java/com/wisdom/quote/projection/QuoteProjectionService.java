@@ -46,7 +46,7 @@ public class QuoteProjectionService {
 			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE,
 			QuoteVotesModifiedEvent.class);
 
-	public Pair<BaseQuoteProjectionModel, Long> getProjection(String quoteId)
+	public Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
 		var snapshot = snapshotRepo.get(quoteId);
 
@@ -59,8 +59,8 @@ public class QuoteProjectionService {
 		return projection;
 	}
 
-	private Pair<BaseQuoteProjectionModel, Long> buildState(String quoteId, Long fromRevision,
-			BaseQuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
+	private Pair<QuoteProjectionModel, Long> buildState(String quoteId, Long fromRevision,
+			QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
 		ReadStreamOptions options = ReadStreamOptions.get();
 		if (fromRevision == null) {
 			options.fromStart();
