@@ -20,8 +20,8 @@ import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 @Service
-class QuoteEventsReducer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
+class QuoteEventsHelper {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsHelper.class);
 
 	public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
 			QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
@@ -30,7 +30,7 @@ class QuoteEventsReducer {
 			QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE, QuoteVotesModifiedEvent.class);
 
 	@SuppressWarnings("unchecked")
-	public static Class<BaseQuoteEvent> getEventClassFromType(String eventType) {
+	public Class<BaseQuoteEvent> getEventClassFromType(String eventType) {
 		var value = EVENT_TYPE_TO_EVENT_CLASS.get(eventType);
 		if (value == null) {
 			return null;

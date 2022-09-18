@@ -25,7 +25,7 @@ public class QuoteProjectionService {
 	private EventStoreDBProvider esdbProvider;
 
 	@Autowired
-	private QuoteEventsReducer reducer;
+	private QuoteEventsReducer helper;
 
 	@Autowired
 	private QuoteSnapshotRepository snapshotRepo;
@@ -62,7 +62,7 @@ public class QuoteProjectionService {
 		for (ResolvedEvent result : results.getEvents()) {
 			RecordedEvent event = result.getEvent();
 
-			var eventClass = QuoteEventsReducer.EVENT_TYPE_TO_EVENT_CLASS.get(event.getEventType());
+			var eventClass = helper.getEventClassFromType(event.getEventType());
 			if (eventClass == null) {
 				// TODO throw exception
 				LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
@@ -70,7 +70,7 @@ public class QuoteProjectionService {
 			}
 
 			var eventData = mapper.readValue(event.getEventData(), eventClass);
-			state = Pair.of(reducer.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
+			state = Pair.of(helper.reduce(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
 		}
 
 		return state;
