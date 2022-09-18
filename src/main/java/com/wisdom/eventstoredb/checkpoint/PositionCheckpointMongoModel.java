@@ -5,7 +5,7 @@ import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("positionCheckpoint")
-public class PositionCheckpointMongoModel {
+class PositionCheckpointMongoModel {
 	@Id
 	private String id;
 
