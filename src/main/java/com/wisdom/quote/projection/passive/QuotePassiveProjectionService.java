@@ -7,6 +7,10 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 
 import com.eventstore.dbclient.ReadAllOptions;
+import com.eventstore.dbclient.ResolvedEvent;
+import com.eventstore.dbclient.SubscribeToAllOptions;
+import com.eventstore.dbclient.Subscription;
+import com.eventstore.dbclient.SubscriptionListener;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.eventstoredb.checkpoint.PositionCheckpointService;
 
@@ -18,15 +22,20 @@ class QuotePassiveProjectionService {
 
 	@Autowired
 	private PositionCheckpointService posSvc;
+	
+	private SubscriptionListener listener = new SubscriptionListener() {
+		@Override
+		public void onEvent(Subscription subscription, ResolvedEvent event) {
+			// TODO Auto-generated method stub
+			super.onEvent(subscription, event);
+			posSvc.getPosition("hi");
+		}
+	};
 
-	@Autowired
-	private QuotePassiveProjectionSubscriber subscriber;
-
-	@EventListener
-	private void onStart(ApplicationStartedEvent event) throws InterruptedException, ExecutionException {
-		ReadAllOptions options = ReadAllOptions.get();
+	@EventListener(ApplicationStartedEvent.class)
+	private void onStart() throws InterruptedException, ExecutionException {
+		SubscribeToAllOptions options = SubscribeToAllOptions.get();
 		options.fromPosition(posSvc.getPosition(POSITION_CHECKPOINT_ID));
-
-		provider.getClient().readAllReactive(options).subscribe(subscriber);
+		provider.getClient().subscribeToAll(listener, options);
 	}
 }
