@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.wisdom.quote.aggregate.Verdict;
 
-public class QuoteProjectionModelImpl extends QuoteProjectionModel {
+class QuoteProjectionModelImpl extends QuoteProjectionModel {
 
 	public QuoteProjectionModelImpl(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<String> voterIds,
