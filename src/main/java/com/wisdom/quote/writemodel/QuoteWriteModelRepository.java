@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 
 @Service
 public class QuoteWriteModelRepository {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteWriteModelRepository.class);
+
 	@Autowired
 	QuoteProjectionService projectionService;
 
@@ -46,5 +50,6 @@ public class QuoteWriteModelRepository {
 
 	public void saveWriteModel(QuoteWriteModel model) throws InterruptedException, ExecutionException {
 		eventAppendService.appendToStream(model.getEventBuffer());
+		LOGGER.debug("Added {} events to quote {}", model.getEventBuffer().getEvents().size(), model.getQuoteId());
 	}
 }
