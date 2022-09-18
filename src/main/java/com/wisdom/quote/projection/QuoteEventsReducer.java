@@ -2,6 +2,7 @@ package com.wisdom.quote.projection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,15 @@ import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 @Service
-public class QuoteEventsReducer {
+class QuoteEventsReducer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
-	
+
+	public static final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(QuoteSubmittedEvent.EVENT_TYPE,
+			QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
+			QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE, QuoteFlaggedAsExpiredBySystemEvent.class,
+			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE,
+			QuoteVotesModifiedEvent.class);
+
 	/**
 	 * 
 	 * @param baseModel
@@ -31,51 +38,53 @@ public class QuoteEventsReducer {
 	public QuoteProjectionModelImpl reduce(QuoteProjectionModel baseModel, Event event) {
 		if (!(event instanceof BaseQuoteEvent)) {
 			/*
-			 * We're only concerned with events under the quote aggregate.
-			 * Such events are expected to extend BaseQuoteEvent, hence, we can use an `instanceof`
-			 * check to quickly terminate non-quote events.
+			 * We're only concerned with events under the quote aggregate. Such events are
+			 * expected to extend BaseQuoteEvent, hence, we can use an `instanceof` check to
+			 * quickly terminate non-quote events.
 			 */
 			return null;
 		}
-		
+
 		if (event instanceof QuoteSubmittedEvent) {
 			return reduce(baseModel, (QuoteSubmittedEvent) event);
 		}
-		
+
 		if (event instanceof QuoteReceivedEvent) {
 			return reduce(baseModel, (QuoteReceivedEvent) event);
 		}
-		
+
 		if (event instanceof QuoteFlaggedAsExpiredBySystemEvent) {
 			return reduce(baseModel, (QuoteFlaggedAsExpiredBySystemEvent) event);
 		}
-		
+
 		if (event instanceof QuoteApprovedBySystemEvent) {
 			return reduce(baseModel, (QuoteApprovedBySystemEvent) event);
 		}
-		
+
 		if (event instanceof QuoteVotesModifiedEvent) {
 			return reduce(baseModel, (QuoteVotesModifiedEvent) event);
 		}
-		
+
 		LOGGER.warn("Unregistered Quote class {} detected.", event.getClass());
 		return null;
 	}
-	
+
 	/**
 	 * Processes quote submissions
+	 * 
 	 * @param model
 	 * @param event
 	 * @return
 	 */
 	private QuoteProjectionModelImpl reduce(QuoteProjectionModel model, QuoteSubmittedEvent event) {
-		return new QuoteProjectionModelImpl(event.getId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
-				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
-				event.getMessageId(), List.of(), List.of(), null, event.getRequiredVoteCount());
+		return new QuoteProjectionModelImpl(event.getId(), event.getContent(), event.getAuthorId(),
+				event.getSubmitterId(), event.getTimestamp(), event.getExpirationDt(), event.getServerId(),
+				event.getChannelId(), event.getMessageId(), List.of(), List.of(), null, event.getRequiredVoteCount());
 	}
 
 	/**
 	 * Processes quote receives
+	 * 
 	 * @param model
 	 * @param event
 	 * @return
@@ -86,27 +95,32 @@ public class QuoteEventsReducer {
 		newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
 				event.getChannelId(), event.getMessageId()));
 
-		return new QuoteProjectionModelImpl(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVoterIds(), newReceives, model.getVerdict(), model.getRequiredVoteCount());
+		return new QuoteProjectionModelImpl(model.getId(), model.getContent(), model.getAuthorId(),
+				model.getSubmitterId(), model.getSubmitDt(), model.getExpirationDt(), model.getServerId(),
+				model.getChannelId(), model.getMessageId(), model.getVoterIds(), newReceives, model.getVerdict(),
+				model.getRequiredVoteCount());
 	}
-	
+
 	/**
 	 * Processes system-triggered expiration-flagging
+	 * 
 	 * @param model
 	 * @param event
 	 * @return
 	 */
-	private QuoteProjectionModelImpl reduce(@NonNull QuoteProjectionModel model, QuoteFlaggedAsExpiredBySystemEvent event) {
+	private QuoteProjectionModelImpl reduce(@NonNull QuoteProjectionModel model,
+			QuoteFlaggedAsExpiredBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.EXPIRED, event.getTimestamp());
 
-		return new QuoteProjectionModelImpl(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict, model.getRequiredVoteCount());
+		return new QuoteProjectionModelImpl(model.getId(), model.getContent(), model.getAuthorId(),
+				model.getSubmitterId(), model.getSubmitDt(), model.getExpirationDt(), model.getServerId(),
+				model.getChannelId(), model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict,
+				model.getRequiredVoteCount());
 	}
-	
+
 	/**
 	 * Processes system-triggered approval
+	 * 
 	 * @param model
 	 * @param event
 	 * @return
@@ -114,14 +128,16 @@ public class QuoteEventsReducer {
 	private QuoteProjectionModelImpl reduce(@NonNull QuoteProjectionModel model, QuoteApprovedBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.APPROVED, event.getTimestamp());
 
-		return new QuoteProjectionModelImpl(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict, model.getRequiredVoteCount());
+		return new QuoteProjectionModelImpl(model.getId(), model.getContent(), model.getAuthorId(),
+				model.getSubmitterId(), model.getSubmitDt(), model.getExpirationDt(), model.getServerId(),
+				model.getChannelId(), model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict,
+				model.getRequiredVoteCount());
 	}
-	
+
 	private QuoteProjectionModelImpl reduce(@NonNull QuoteProjectionModel model, QuoteVotesModifiedEvent event) {
-		return new QuoteProjectionModelImpl(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), event.getVoterIds(), model.getReceives(), model.getVerdict(), model.getRequiredVoteCount());
+		return new QuoteProjectionModelImpl(model.getId(), model.getContent(), model.getAuthorId(),
+				model.getSubmitterId(), model.getSubmitDt(), model.getExpirationDt(), model.getServerId(),
+				model.getChannelId(), model.getMessageId(), event.getVoterIds(), model.getReceives(),
+				model.getVerdict(), model.getRequiredVoteCount());
 	}
 }

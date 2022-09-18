@@ -1,7 +1,6 @@
 package com.wisdom.quote.projection;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
@@ -15,14 +14,8 @@ import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wisdom.common.writemodel.Event;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.projection.snapshot.QuoteSnapshotRepository;
-import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
-import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
-import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
-import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 @Service
 public class QuoteProjectionService {
@@ -39,12 +32,6 @@ public class QuoteProjectionService {
 
 	@Autowired
 	ObjectMapper mapper;
-
-	private final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(QuoteSubmittedEvent.EVENT_TYPE,
-			QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
-			QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE, QuoteFlaggedAsExpiredBySystemEvent.class,
-			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE,
-			QuoteVotesModifiedEvent.class);
 
 	public Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
@@ -75,7 +62,7 @@ public class QuoteProjectionService {
 		for (ResolvedEvent result : results.getEvents()) {
 			RecordedEvent event = result.getEvent();
 
-			var eventClass = EVENT_TYPE_TO_EVENT_CLASS.get(event.getEventType());
+			var eventClass = QuoteEventsReducer.EVENT_TYPE_TO_EVENT_CLASS.get(event.getEventType());
 			if (eventClass == null) {
 				// TODO throw exception
 				LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
