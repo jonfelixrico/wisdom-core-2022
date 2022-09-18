@@ -13,6 +13,7 @@ public class QuoteApprovedBySystemEvent extends BaseQuoteEvent {
 		this.timestamp = timestamp;
 	}
 
+	@Override
 	public String getQuoteId() {
 		return quoteId;
 	}

@@ -20,14 +20,24 @@ import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 @Service
-class QuoteEventsReducer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
+class QuoteEventsHelper {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsHelper.class);
 
-	public static final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(QuoteSubmittedEvent.EVENT_TYPE,
-			QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
-			QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE, QuoteFlaggedAsExpiredBySystemEvent.class,
-			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE,
-			QuoteVotesModifiedEvent.class);
+	public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
+			QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
+			QuoteReceivedEvent.class, QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE,
+			QuoteFlaggedAsExpiredBySystemEvent.class, QuoteApprovedBySystemEvent.EVENT_TYPE,
+			QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE, QuoteVotesModifiedEvent.class);
+
+	@SuppressWarnings("unchecked")
+	public Class<BaseQuoteEvent> getEventClassFromType(String eventType) {
+		var value = EVENT_TYPE_TO_EVENT_CLASS.get(eventType);
+		if (value == null) {
+			return null;
+		}
+
+		return (Class<BaseQuoteEvent>) value; // it's guaranteed that only base quote events are in the map so we can suppress the warning
+	}
 
 	/**
 	 * 
@@ -35,7 +45,7 @@ class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModel reduce(QuoteProjectionModel baseModel, Event event) {
+	public QuoteProjectionModel reduceEvent(QuoteProjectionModel baseModel, Event event) {
 		if (!(event instanceof BaseQuoteEvent)) {
 			/*
 			 * We're only concerned with events under the quote aggregate. Such events are
@@ -77,7 +87,7 @@ class QuoteEventsReducer {
 	 * @return
 	 */
 	private QuoteProjectionModelImpl reduce(QuoteProjectionModel model, QuoteSubmittedEvent event) {
-		return new QuoteProjectionModelImpl(event.getId(), event.getContent(), event.getAuthorId(),
+		return new QuoteProjectionModelImpl(event.getQuoteId(), event.getContent(), event.getAuthorId(),
 				event.getSubmitterId(), event.getTimestamp(), event.getExpirationDt(), event.getServerId(),
 				event.getChannelId(), event.getMessageId(), List.of(), List.of(), null, event.getRequiredVoteCount());
 	}

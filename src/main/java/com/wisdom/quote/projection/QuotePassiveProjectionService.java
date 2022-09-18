@@ -27,7 +27,7 @@ class QuotePassiveProjectionService {
 	private PositionCheckpointService posSvc;
 	
 	@Autowired
-	private QuoteEventsReducer reducer;
+	private QuoteEventsHelper reducer;
 	
 	@Autowired
 	private QuoteSnapshotRepository snapshotRepo;
@@ -43,7 +43,7 @@ class QuotePassiveProjectionService {
 		var event = resolvedEvent.getEvent();
 		
 		try {
-			var eventClass = QuoteEventsReducer.EVENT_TYPE_TO_EVENT_CLASS.get(event.getEventType());
+			var eventClass = QuoteEventsHelper.EVENT_TYPE_TO_EVENT_CLASS.get(event.getEventType());
 			if (eventClass == null) {
 				// TODO throw exception
 				LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
