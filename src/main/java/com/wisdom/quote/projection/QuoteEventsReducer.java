@@ -23,11 +23,21 @@ import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 class QuoteEventsReducer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
 
-	public static final Map<String, Class<? extends Event>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(QuoteSubmittedEvent.EVENT_TYPE,
-			QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE, QuoteReceivedEvent.class,
-			QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE, QuoteFlaggedAsExpiredBySystemEvent.class,
-			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE,
-			QuoteVotesModifiedEvent.class);
+	public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
+			QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
+			QuoteReceivedEvent.class, QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE,
+			QuoteFlaggedAsExpiredBySystemEvent.class, QuoteApprovedBySystemEvent.EVENT_TYPE,
+			QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE, QuoteVotesModifiedEvent.class);
+
+	@SuppressWarnings("unchecked")
+	public static Class<BaseQuoteEvent> getEventClassFromType(String eventType) {
+		var value = EVENT_TYPE_TO_EVENT_CLASS.get(eventType);
+		if (value == null) {
+			return null;
+		}
+
+		return (Class<BaseQuoteEvent>) value; // it's guaranteed that only base quote events are in the map so we can suppress the warning
+	}
 
 	/**
 	 * 
