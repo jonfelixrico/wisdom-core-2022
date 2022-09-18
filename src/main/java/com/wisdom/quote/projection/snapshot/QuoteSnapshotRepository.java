@@ -22,7 +22,7 @@ public class QuoteSnapshotRepository {
 	MongoTemplate template;
 
 	public void save(QuoteProjectionModel baseQuoteProjectionModel, long revision) {
-		var dbModel = QuoteMongoModel.convertFromBase(baseQuoteProjectionModel, revision);
+		var dbModel = new QuoteMongoModel(baseQuoteProjectionModel, revision);
 		if (!repo.existsById(baseQuoteProjectionModel.getId())) {
 			repo.insert(dbModel);
 			LOGGER.debug("Created snapshot of quote {} revision {}", baseQuoteProjectionModel.getId(), revision);
