@@ -10,7 +10,6 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import com.wisdom.quote.projection.BaseQuoteProjectionModel;
-import com.wisdom.quote.projection.QuoteProjectionModel;
 
 @Service
 public class QuoteSnapshotRepository {
@@ -22,23 +21,24 @@ public class QuoteSnapshotRepository {
 	@Autowired
 	MongoTemplate template;
 
-	public void save(QuoteProjectionModel model, long revision) {
-		var dbModel = new QuoteMongoModel(model, revision);
-		if (!repo.existsById(model.getId())) {
+	public void save(BaseQuoteProjectionModel baseQuoteProjectionModel, long revision) {
+		var dbModel = new QuoteMongoModel(baseQuoteProjectionModel, revision);
+		if (!repo.existsById(baseQuoteProjectionModel.getId())) {
 			repo.insert(dbModel);
-			LOGGER.debug("Created snapshot of quote {} revision {}", model.getId(), revision);
+			LOGGER.debug("Created snapshot of quote {} revision {}", baseQuoteProjectionModel.getId(), revision);
 			return;
 		}
 
-		Query query = new Query().addCriteria(Criteria.where("id").is(model.getId()).and("revision").lt(revision));
+		Query query = new Query()
+				.addCriteria(Criteria.where("id").is(baseQuoteProjectionModel.getId()).and("revision").lt(revision));
 		var result = template.findAndReplace(query, dbModel);
 
 		if (result != null) {
-			LOGGER.debug("Updated the snapshot of quote {} revision {}", model.getId(), revision);
+			LOGGER.debug("Updated the snapshot of quote {} revision {}", baseQuoteProjectionModel.getId(), revision);
 		}
 	}
 
-	public Pair<String, BaseQuoteProjectionModel> get(String id) {
+	public Pair<BaseQuoteProjectionModel, Long> get(String id) {
 		var result = repo.findById(id);
 		if (result.isEmpty()) {
 			return null;
@@ -46,6 +46,6 @@ public class QuoteSnapshotRepository {
 
 		var data = result.get();
 
-		return Pair.of(data.getId(), data);
+		return Pair.of(data, data.getRevision());
 	}
 }

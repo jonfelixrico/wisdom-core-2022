@@ -57,7 +57,7 @@ public class QuoteController {
 	}
 
 	@GetMapping("/{id}")
-	private QuoteProjectionModel getQuote(@PathVariable String id) throws Exception {
+	private BaseQuoteProjectionModel getQuote(@PathVariable String id) throws Exception {
 		var data = projectionService.getProjection(id);
 		if (data == null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);

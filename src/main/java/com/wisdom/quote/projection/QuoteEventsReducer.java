@@ -24,11 +24,11 @@ public class QuoteEventsReducer {
 	
 	/**
 	 * 
-	 * @param model
+	 * @param baseModel
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModel reduce(QuoteProjectionModel model, Event event) {
+	public QuoteProjectionModel reduce(BaseQuoteProjectionModel baseModel, Event event) {
 		if (!(event instanceof BaseQuoteEvent)) {
 			/*
 			 * We're only concerned with events under the quote aggregate.
@@ -39,23 +39,23 @@ public class QuoteEventsReducer {
 		}
 		
 		if (event instanceof QuoteSubmittedEvent) {
-			return reduce(model, (QuoteSubmittedEvent) event);
+			return reduce(baseModel, (QuoteSubmittedEvent) event);
 		}
 		
 		if (event instanceof QuoteReceivedEvent) {
-			return reduce(model, (QuoteReceivedEvent) event);
+			return reduce(baseModel, (QuoteReceivedEvent) event);
 		}
 		
 		if (event instanceof QuoteFlaggedAsExpiredBySystemEvent) {
-			return reduce(model, (QuoteFlaggedAsExpiredBySystemEvent) event);
+			return reduce(baseModel, (QuoteFlaggedAsExpiredBySystemEvent) event);
 		}
 		
 		if (event instanceof QuoteApprovedBySystemEvent) {
-			return reduce(model, (QuoteApprovedBySystemEvent) event);
+			return reduce(baseModel, (QuoteApprovedBySystemEvent) event);
 		}
 		
 		if (event instanceof QuoteVotesModifiedEvent) {
-			return reduce(model, (QuoteVotesModifiedEvent) event);
+			return reduce(baseModel, (QuoteVotesModifiedEvent) event);
 		}
 		
 		LOGGER.warn("Unregistered Quote class {} detected.", event.getClass());
@@ -68,7 +68,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteProjectionModel reduce(QuoteProjectionModel model, QuoteSubmittedEvent event) {
+	private QuoteProjectionModel reduce(BaseQuoteProjectionModel model, QuoteSubmittedEvent event) {
 		return new QuoteProjectionModel(event.getId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
 				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
 				event.getMessageId(), List.of(), List.of(), null, event.getRequiredVoteCount());
@@ -80,7 +80,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteReceivedEvent event) {
+	private QuoteProjectionModel reduce(@NonNull BaseQuoteProjectionModel model, QuoteReceivedEvent event) {
 		List<Receive> newReceives = new ArrayList<>();
 		newReceives.addAll(model.getReceives());
 		newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
@@ -97,7 +97,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteFlaggedAsExpiredBySystemEvent event) {
+	private QuoteProjectionModel reduce(@NonNull BaseQuoteProjectionModel model, QuoteFlaggedAsExpiredBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.EXPIRED, event.getTimestamp());
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
@@ -111,7 +111,7 @@ public class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteApprovedBySystemEvent event) {
+	private QuoteProjectionModel reduce(@NonNull BaseQuoteProjectionModel model, QuoteApprovedBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.APPROVED, event.getTimestamp());
 
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
@@ -119,7 +119,7 @@ public class QuoteEventsReducer {
 				model.getMessageId(), model.getVoterIds(), model.getReceives(), newVerdict, model.getRequiredVoteCount());
 	}
 	
-	private QuoteProjectionModel reduce(@NonNull QuoteProjectionModel model, QuoteVotesModifiedEvent event) {
+	private QuoteProjectionModel reduce(@NonNull BaseQuoteProjectionModel model, QuoteVotesModifiedEvent event) {
 		return new QuoteProjectionModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
 				model.getMessageId(), event.getVoterIds(), model.getReceives(), model.getVerdict(), model.getRequiredVoteCount());

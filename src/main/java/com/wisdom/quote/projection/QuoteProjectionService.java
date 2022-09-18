@@ -7,9 +7,6 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +17,7 @@ import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.common.writemodel.Event;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
-import com.wisdom.quote.projection.snapshot.QuoteMongoModel;
-import com.wisdom.quote.projection.snapshot.QuoteMongoRepository;
+import com.wisdom.quote.projection.snapshot.QuoteSnapshotRepository;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
@@ -39,10 +35,7 @@ public class QuoteProjectionService {
 	private QuoteEventsReducer reducer;
 
 	@Autowired
-	QuoteMongoRepository repo;
-
-	@Autowired
-	MongoTemplate template;
+	QuoteSnapshotRepository snapshotRepo;
 
 	@Autowired
 	ObjectMapper mapper;
@@ -53,21 +46,21 @@ public class QuoteProjectionService {
 			QuoteApprovedBySystemEvent.EVENT_TYPE, QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE,
 			QuoteVotesModifiedEvent.class);
 
-	public Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
+	public Pair<BaseQuoteProjectionModel, Long> getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
-		var snapshot = getSnapshot(quoteId);
+		var snapshot = snapshotRepo.get(quoteId);
 
 		if (snapshot != null) {
 			return buildState(quoteId, snapshot.getSecond(), snapshot.getFirst());
 		}
 
 		var projection = buildState(quoteId, null, null);
-		saveSnapshot(projection.getFirst(), projection.getSecond());
+		snapshotRepo.save(projection.getFirst(), projection.getSecond());
 		return projection;
 	}
 
-	private Pair<QuoteProjectionModel, Long> buildState(String quoteId, Long fromRevision,
-			QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
+	private Pair<BaseQuoteProjectionModel, Long> buildState(String quoteId, Long fromRevision,
+			BaseQuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
 		ReadStreamOptions options = ReadStreamOptions.get();
 		if (fromRevision == null) {
 			options.fromStart();
@@ -75,7 +68,7 @@ public class QuoteProjectionService {
 			options.fromRevision(fromRevision);
 		}
 
-		Pair<QuoteProjectionModel, Long> state = baseModel == null ? null : Pair.of(baseModel, fromRevision);
+		var state = baseModel == null ? null : Pair.of(baseModel, fromRevision);
 
 		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
 		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
@@ -94,45 +87,5 @@ public class QuoteProjectionService {
 		}
 
 		return state;
-	}
-
-	private static Pair<QuoteProjectionModel, Long> convertMongoModelToProjectionModel(QuoteMongoModel input) {
-		QuoteProjectionModel projModel = new QuoteProjectionModel(input.getId(), input.getContent(),
-				input.getAuthorId(), input.getSubmitterId(), input.getSubmitDt(), input.getExpirationDt(),
-				input.getServerId(), input.getChannelId(), input.getMessageId(), input.getVoterIds(),
-				input.getReceives(), input.getVerdict(), input.getRequiredVoteCount());
-
-		return Pair.of(projModel, input.getRevision());
-	}
-
-	private Pair<QuoteProjectionModel, Long> getSnapshot(String quoteId) {
-		var result = repo.findById(quoteId);
-		if (result.isEmpty()) {
-			return null;
-		}
-
-		return convertMongoModelToProjectionModel(result.get());
-	}
-
-	private static QuoteMongoModel convertProjectionModelToMongoModel(QuoteProjectionModel model, long revision) {
-		return new QuoteMongoModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getVoterIds(), model.getReceives(), model.getVerdict(), model.getRequiredVoteCount(), revision);
-	}
-
-	private void saveSnapshot(QuoteProjectionModel model, long revision) {
-		var mongoModel = convertProjectionModelToMongoModel(model, revision);
-		if (!repo.existsById(model.getId())) {
-			repo.insert(mongoModel);
-			LOGGER.debug("Created snapshot of quote {} revision {}", model.getId(), revision);
-			return;
-		}
-
-		Query query = new Query().addCriteria(Criteria.where("id").is(model.getId()).and("revision").lt(revision));
-		var result = template.findAndReplace(query, mongoModel);
-
-		if (result != null) {
-			LOGGER.debug("Updated the snapshot of quote {} revision {}", model.getId(), revision);
-		}
 	}
 }
