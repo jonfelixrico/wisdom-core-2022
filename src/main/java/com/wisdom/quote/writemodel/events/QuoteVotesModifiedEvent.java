@@ -21,6 +21,7 @@ public class QuoteVotesModifiedEvent extends BaseQuoteEvent {
 		return EVENT_TYPE;
 	}
 
+	@Override
 	public String getQuoteId() {
 		return quoteId;
 	}

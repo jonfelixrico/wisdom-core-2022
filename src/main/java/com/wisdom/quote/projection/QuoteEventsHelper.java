@@ -87,7 +87,7 @@ class QuoteEventsHelper {
 	 * @return
 	 */
 	private QuoteProjectionModelImpl reduce(QuoteProjectionModel model, QuoteSubmittedEvent event) {
-		return new QuoteProjectionModelImpl(event.getId(), event.getContent(), event.getAuthorId(),
+		return new QuoteProjectionModelImpl(event.getQuoteId(), event.getContent(), event.getAuthorId(),
 				event.getSubmitterId(), event.getTimestamp(), event.getExpirationDt(), event.getServerId(),
 				event.getChannelId(), event.getMessageId(), List.of(), List.of(), null, event.getRequiredVoteCount());
 	}
