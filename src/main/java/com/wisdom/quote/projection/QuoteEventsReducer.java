@@ -35,7 +35,7 @@ class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	public QuoteProjectionModelImpl reduce(QuoteProjectionModel baseModel, Event event) {
+	public QuoteProjectionModel reduce(QuoteProjectionModel baseModel, Event event) {
 		if (!(event instanceof BaseQuoteEvent)) {
 			/*
 			 * We're only concerned with events under the quote aggregate. Such events are
