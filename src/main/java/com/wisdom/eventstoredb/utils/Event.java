@@ -1,4 +1,4 @@
-package com.wisdom.common.writemodel;
+package com.wisdom.eventstoredb.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -62,13 +62,14 @@ public class QuoteController {
 		if (data == null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-		
+
 		var projection = data.getFirst();
 		if (projection.getVerdict() != null) {
-			// We treat pending quotes as separate entities from approved quotes on the business-side of things
+			// We treat pending quotes as separate entities from approved quotes on the
+			// business-side of things
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
-		
+
 		return projection;
 	}
 

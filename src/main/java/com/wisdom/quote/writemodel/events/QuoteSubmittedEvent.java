@@ -5,7 +5,7 @@ import java.time.Instant;
 public class QuoteSubmittedEvent extends BaseQuoteEvent {
 	public static final String EVENT_TYPE = "QUOTE_SUBMITTED";
 
-	private String id;
+	private String quoteId;
 
 	private String content;
 	private String authorId;
@@ -20,9 +20,9 @@ public class QuoteSubmittedEvent extends BaseQuoteEvent {
 
 	private Integer requiredVoteCount;
 
-	public QuoteSubmittedEvent(String id, String content, String authorId, String submitterId, Instant timestamp,
+	public QuoteSubmittedEvent(String quoteId, String content, String authorId, String submitterId, Instant timestamp,
 			Instant expirationDt, String serverId, String channelId, String messageId, Integer requiredVoteCount) {
-		this.id = id;
+		this.quoteId = quoteId;
 		this.content = content;
 		this.authorId = authorId;
 		this.submitterId = submitterId;
@@ -40,8 +40,9 @@ public class QuoteSubmittedEvent extends BaseQuoteEvent {
 		return EVENT_TYPE;
 	}
 
-	public String getId() {
-		return id;
+	@Override
+	public String getQuoteId() {
+		return quoteId;
 	}
 
 	public String getContent() {

@@ -5,25 +5,25 @@ import java.util.List;
 
 import com.wisdom.quote.aggregate.Verdict;
 
-public class QuoteProjectionModel {
-	private String id;
+public abstract class QuoteProjectionModel {
+	protected String id;
 
-	private String content;
-	private String authorId;
-	private String submitterId;
+	protected String content;
+	protected String authorId;
+	protected String submitterId;
 
-	private Instant submitDt;
-	private Instant expirationDt;
+	protected Instant submitDt;
+	protected Instant expirationDt;
 
-	private String serverId;
-	private String channelId;
-	private String messageId;
+	protected String serverId;
+	protected String channelId;
+	protected String messageId;
 
-	private List<String> voterIds;
-	private List<Receive> receives;
-	private Verdict verdict;
+	protected List<String> voterIds;
+	protected List<Receive> receives;
+	protected Verdict verdict;
 
-	private Integer requiredVoteCount;
+	protected Integer requiredVoteCount;
 
 	public QuoteProjectionModel(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<String> voterIds,
@@ -94,5 +94,4 @@ public class QuoteProjectionModel {
 	public Verdict getVerdict() {
 		return verdict;
 	}
-
 }

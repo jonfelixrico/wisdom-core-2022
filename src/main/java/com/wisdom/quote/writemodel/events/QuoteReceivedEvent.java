@@ -30,6 +30,7 @@ public class QuoteReceivedEvent extends BaseQuoteEvent {
 		return timestamp;
 	}
 
+	@Override
 	public String getQuoteId() {
 		return quoteId;
 	}
