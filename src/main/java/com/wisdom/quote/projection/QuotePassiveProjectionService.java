@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection.passive;
+package com.wisdom.quote.projection;
 
 import java.util.concurrent.ExecutionException;
 
