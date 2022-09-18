@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eventstore.dbclient.ExpectedRevision;
-import com.wisdom.common.writemodel.EventAppendBuffer;
+import com.wisdom.eventstoredb.utils.EventAppendBuffer;
 import com.wisdom.quote.aggregate.QuoteAggregate;
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;

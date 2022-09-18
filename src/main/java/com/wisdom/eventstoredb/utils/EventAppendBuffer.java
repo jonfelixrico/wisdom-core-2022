@@ -1,4 +1,4 @@
-package com.wisdom.common.writemodel;
+package com.wisdom.eventstoredb.utils;
 
 import java.util.ArrayList;
 import java.util.List;

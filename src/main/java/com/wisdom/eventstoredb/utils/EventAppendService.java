@@ -1,4 +1,4 @@
-package com.wisdom.common.writemodel;
+package com.wisdom.eventstoredb.utils;
 
 import java.util.Iterator;
 import java.util.UUID;
