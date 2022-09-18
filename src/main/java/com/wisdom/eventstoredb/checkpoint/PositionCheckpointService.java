@@ -19,7 +19,7 @@ public class PositionCheckpointService {
 		return new Position(data.getCommit(), data.getPrepare());
 	}
 	
-	public void setPosition(String id, long commit, long prepare) {
+	private void setPosition(String id, long commit, long prepare) {
 		var readResult = repo.findById(id);
 		
 		var data = readResult.isEmpty() ? new PositionCheckpointMongoModel(id) : readResult.get();
@@ -27,5 +27,9 @@ public class PositionCheckpointService {
 		data.setPrepare(prepare);
 		
 		repo.save(data);
+	}
+	
+	public void setPosition(String id, Position position) {
+		setPosition(id, position.getCommitUnsigned(), position.getPrepareUnsigned());
 	}
 }
