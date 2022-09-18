@@ -1,9 +1,11 @@
 package com.wisdom.eventstoredb.checkpoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.eventstore.dbclient.Position;
 
+@Service
 public class PositionCheckpointService {
 	@Autowired
 	private PositionCheckpointMongoRepository repo;
