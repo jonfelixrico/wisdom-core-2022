@@ -17,8 +17,8 @@ public class QuoteReadModel {
 
 	private List<Receive> receives;
 
-	QuoteReadModel(String id, String content, String authorId, String submitterId, Instant submitDt,
-			Instant approveDt, List<Receive> receives) {
+	QuoteReadModel(String id, String content, String authorId, String submitterId, Instant submitDt, Instant approveDt,
+			List<Receive> receives) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
