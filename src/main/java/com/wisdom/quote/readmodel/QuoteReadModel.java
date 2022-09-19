@@ -3,7 +3,6 @@ package com.wisdom.quote.readmodel;
 import java.time.Instant;
 import java.util.List;
 
-import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.projection.Receive;
 
 public class QuoteReadModel {
@@ -14,19 +13,19 @@ public class QuoteReadModel {
 	private String submitterId;
 
 	private Instant submitDt;
+	private Instant approveDt;
 
 	private List<Receive> receives;
-	private Verdict verdict;
 
 	QuoteReadModel(String id, String content, String authorId, String submitterId, Instant submitDt,
-			List<Receive> receives, Verdict verdict) {
+			Instant approveDt, List<Receive> receives) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
 		this.submitterId = submitterId;
 		this.submitDt = submitDt;
+		this.approveDt = approveDt;
 		this.receives = receives;
-		this.verdict = verdict;
 	}
 
 	public String getId() {
@@ -49,12 +48,12 @@ public class QuoteReadModel {
 		return submitDt;
 	}
 
-	public List<Receive> getReceives() {
-		return receives;
+	public Instant getApproveDt() {
+		return approveDt;
 	}
 
-	public Verdict getVerdict() {
-		return verdict;
+	public List<Receive> getReceives() {
+		return receives;
 	}
 
 }
