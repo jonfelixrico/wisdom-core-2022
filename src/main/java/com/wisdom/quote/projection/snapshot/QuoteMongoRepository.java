@@ -1,6 +1,14 @@
 package com.wisdom.quote.projection.snapshot;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import java.util.List;
 
-interface QuoteMongoRepository extends MongoRepository<QuoteMongoModel, String> {
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+
+public interface QuoteMongoRepository extends MongoRepository<QuoteMongoModel, String> {
+	@Query("{ serverId: '?0', verdict: null }")
+	public List<QuoteMongoModel> getPendingQuotes(String serverId);
+	
+	@Query("{ serverId: '?0', verdict.status: 'APPROVED' }")
+	public List<QuoteMongoModel> getQuotes(String serverId);
 }
