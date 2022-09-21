@@ -3,6 +3,8 @@ package com.wisdom.quote.readmodel;
 import java.time.Instant;
 import java.util.List;
 
+import com.wisdom.quote.projection.snapshot.QuoteMongoModel;
+
 public class PendingQuoteReadModel {
 	private String id;
 
@@ -26,6 +28,12 @@ public class PendingQuoteReadModel {
 		this.expirationDt = expirationDt;
 		this.voterIds = voterIds;
 		this.requiredVoteCount = requiredVoteCount;
+	}
+
+	PendingQuoteReadModel(QuoteMongoModel dbModel) {
+		this(dbModel.getId(), dbModel.getContent(), dbModel.getAuthorId(), dbModel.getSubmitterId(),
+				dbModel.getSubmitDt(), dbModel.getExpirationDt(), dbModel.getVoterIds(),
+				dbModel.getRequiredVoteCount());
 	}
 
 	public String getId() {
