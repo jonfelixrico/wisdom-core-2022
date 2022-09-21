@@ -1,4 +1,4 @@
-package com.wisdom.quote.readmodel;
+package com.wisdom.quote.service;
 
 import java.time.Instant;
 import java.util.List;

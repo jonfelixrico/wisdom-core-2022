@@ -1,5 +1,6 @@
 package com.wisdom.quote.projection.snapshot;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -17,4 +18,7 @@ public interface QuoteMongoRepository extends MongoRepository<QuoteMongoModel, S
 	
 	@Query("{ serverId: '?0', verdict.status: 'APPROVED' }")
 	public QuoteMongoModel getQuoteByIdAndServer(String serverId);
+	
+	@Query(value="{ verdict: null, expirationDt: { lt: '?0' } }", fields="{ 'id': 1 }")
+	public List<QuoteMongoModel> getAllPendingQuotesForExpirationFlagging(Instant referenceDt);
 }

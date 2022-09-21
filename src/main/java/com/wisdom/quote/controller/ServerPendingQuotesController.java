@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
-import com.wisdom.quote.readmodel.PendingQuoteReadModel;
-import com.wisdom.quote.readmodel.PendingQuoteReadModelRepository;
+import com.wisdom.quote.service.PendingQuoteReadModel;
+import com.wisdom.quote.service.PendingQuoteReadModelRepository;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 /**
