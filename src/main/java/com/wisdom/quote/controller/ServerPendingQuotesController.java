@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.service.PendingQuoteReadModel;
-import com.wisdom.quote.service.PendingQuoteReadModelRepository;
+import com.wisdom.quote.service.PendingQuoteService;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 /**
@@ -38,7 +38,7 @@ public class ServerPendingQuotesController {
 	QuoteWriteModelRepository writeRepository;
 
 	@Autowired
-	PendingQuoteReadModelRepository readRepo;
+	PendingQuoteService readRepo;
 
 	@PostMapping
 	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {

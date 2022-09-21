@@ -13,8 +13,8 @@ import com.wisdom.quote.projection.snapshot.QuoteMongoRepository;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 @Service
-public class PendingQuoteReadModelRepository {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PendingQuoteReadModelRepository.class);
+public class PendingQuoteService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PendingQuoteService.class);
 
 	@Autowired
 	private QuoteMongoRepository mongoRepo;
@@ -32,7 +32,7 @@ public class PendingQuoteReadModelRepository {
 		return results.stream().map(i -> new PendingQuoteReadModel(i)).toList();
 	}
 
-	@Scheduled(cron = "0 */1 * * * *")
+	@Scheduled(cron = "0 */5 * * * *")
 	private void doExpirationFlagging() {
 		var ids = mongoRepo.getAllPendingQuotesForExpirationFlagging(Instant.now()).stream().map(i -> i.getId())
 				.toList();
@@ -42,6 +42,7 @@ public class PendingQuoteReadModelRepository {
 			return;
 		}
 
+		LOGGER.debug("Attempting to flag {} quotes as expired", ids.size());
 		int successCount = 0;
 		for (String id : ids) {
 			try {
