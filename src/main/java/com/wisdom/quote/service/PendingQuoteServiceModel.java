@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.wisdom.quote.projection.snapshot.QuoteMongoModel;
 
-public class PendingQuoteReadModel {
+public class PendingQuoteServiceModel {
 	private String id;
 
 	private String content;
@@ -18,7 +18,7 @@ public class PendingQuoteReadModel {
 	private List<String> voterIds;
 	private Integer requiredVoteCount;
 
-	PendingQuoteReadModel(String id, String content, String authorId, String submitterId, Instant submitDt,
+	PendingQuoteServiceModel(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, List<String> voterIds, Integer requiredVoteCount) {
 		this.id = id;
 		this.content = content;
@@ -30,7 +30,7 @@ public class PendingQuoteReadModel {
 		this.requiredVoteCount = requiredVoteCount;
 	}
 
-	PendingQuoteReadModel(QuoteMongoModel dbModel) {
+	PendingQuoteServiceModel(QuoteMongoModel dbModel) {
 		this(dbModel.getId(), dbModel.getContent(), dbModel.getAuthorId(), dbModel.getSubmitterId(),
 				dbModel.getSubmitDt(), dbModel.getExpirationDt(), dbModel.getVoterIds(),
 				dbModel.getRequiredVoteCount());

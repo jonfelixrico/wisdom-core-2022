@@ -22,14 +22,14 @@ public class PendingQuoteService {
 	@Autowired
 	private QuoteWriteModelRepository writeRepo;
 
-	public PendingQuoteReadModel getPendingQuote(String quoteId, String serverId) {
+	public PendingQuoteServiceModel getPendingQuote(String quoteId, String serverId) {
 		var result = mongoRepo.getPendingQuoteByIdAndServer(quoteId, serverId);
-		return result == null ? null : new PendingQuoteReadModel(result);
+		return result == null ? null : new PendingQuoteServiceModel(result);
 	}
 
-	public List<PendingQuoteReadModel> getPendingQuotes(String serverId) {
+	public List<PendingQuoteServiceModel> getPendingQuotes(String serverId) {
 		var results = mongoRepo.getPendingQuotesByServer(serverId);
-		return results.stream().map(i -> new PendingQuoteReadModel(i)).toList();
+		return results.stream().map(i -> new PendingQuoteServiceModel(i)).toList();
 	}
 
 	@Scheduled(cron = "0 */5 * * * *")

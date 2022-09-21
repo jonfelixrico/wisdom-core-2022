@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
-import com.wisdom.quote.service.PendingQuoteReadModel;
+import com.wisdom.quote.service.PendingQuoteServiceModel;
 import com.wisdom.quote.service.PendingQuoteService;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
@@ -63,12 +63,12 @@ public class ServerPendingQuotesController {
 	}
 
 	@GetMapping("/{id}")
-	private PendingQuoteReadModel getPendingQuote(@PathVariable String serverId, @PathVariable String id) {
+	private PendingQuoteServiceModel getPendingQuote(@PathVariable String serverId, @PathVariable String id) {
 		return this.pendingQuoteSvc.getPendingQuote(id, serverId);
 	}
 
 	@GetMapping
-	private List<PendingQuoteReadModel> getPendingQuotes(@PathVariable String serverId) {
+	private List<PendingQuoteServiceModel> getPendingQuotes(@PathVariable String serverId) {
 		return this.pendingQuoteSvc.getPendingQuotes(serverId);
 	}
 
