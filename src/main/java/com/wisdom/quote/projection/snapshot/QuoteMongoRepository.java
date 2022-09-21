@@ -7,14 +7,14 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface QuoteMongoRepository extends MongoRepository<QuoteMongoModel, String> {
 	@Query("{ serverId: '?0', verdict: null }")
-	public List<QuoteMongoModel> getPendingQuotes(String serverId);
+	public List<QuoteMongoModel> getPendingQuotesByServer(String serverId);
 	
 	@Query("{ serverId: '?0', verdict: null }")
-	public QuoteMongoModel getPendingQuoteById(String quoteId, String serverId);	
+	public QuoteMongoModel getPendingQuoteByIdAndServer(String quoteId, String serverId);	
 	
 	@Query("{ serverId: '?0', verdict.status: 'APPROVED' }")
-	public List<QuoteMongoModel> getQuotes(String serverId);
+	public List<QuoteMongoModel> getQuotesByServer(String serverId);
 	
 	@Query("{ serverId: '?0', verdict.status: 'APPROVED' }")
-	public QuoteMongoModel getQuoteById(String serverId);
+	public QuoteMongoModel getQuoteByIdAndServer(String serverId);
 }
