@@ -35,10 +35,10 @@ import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 @RequestMapping("/server/{serverId}/quote/pending")
 public class ServerPendingQuotesController {
 	@Autowired
-	QuoteWriteModelRepository writeRepo;
+	private QuoteWriteModelRepository writeRepo;
 
 	@Autowired
-	PendingQuoteService pendingQuoteSvc;
+	private PendingQuoteService pendingQuoteSvc;
 
 	@PostMapping
 	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {
