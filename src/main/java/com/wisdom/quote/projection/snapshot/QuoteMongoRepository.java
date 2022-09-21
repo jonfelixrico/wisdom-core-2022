@@ -9,6 +9,12 @@ public interface QuoteMongoRepository extends MongoRepository<QuoteMongoModel, S
 	@Query("{ serverId: '?0', verdict: null }")
 	public List<QuoteMongoModel> getPendingQuotes(String serverId);
 	
+	@Query("{ serverId: '?0', verdict: null }")
+	public QuoteMongoModel getPendingQuoteById(String quoteId, String serverId);	
+	
 	@Query("{ serverId: '?0', verdict.status: 'APPROVED' }")
 	public List<QuoteMongoModel> getQuotes(String serverId);
+	
+	@Query("{ serverId: '?0', verdict.status: 'APPROVED' }")
+	public QuoteMongoModel getQuoteById(String serverId);
 }
