@@ -14,16 +14,17 @@ public interface QuoteMongoRepository extends MongoRepository<QuoteMongoModel, S
 	@Query("{ serverId: '?0', verdict: null }")
 	public QuoteMongoModel getPendingQuoteByIdAndServer(String quoteId, String serverId);
 
-	@Query("{ serverId: '?0', verdict.status: 'APPROVED' }")
+	@Query("{ serverId: '?0', 'verdict.status': 'APPROVED' }")
 	public List<QuoteMongoModel> getQuotesByServer(String serverId);
 
-	@Query("{ serverId: '?0', verdict.status: 'APPROVED' }")
+	@Query("{ serverId: '?0', 'verdict.status': 'APPROVED' }")
 	public QuoteMongoModel getQuoteByIdAndServer(String serverId);
 
 	@Query(value = "{ verdict: null, expirationDt: { lt: '?0' } }", fields = "{ 'id': 1 }")
 	public List<QuoteMongoModel> getAllPendingQuotesForExpirationFlagging(Instant referenceDt);
 
-	@Aggregation(pipeline = { "{ $match: { serverId: '?0', verdict.status: 'APPROVED' }, $sample: { size: 1 } }" })
+	@Aggregation(pipeline = { "{ $match: { serverId: '?0', 'verdict.status': 'APPROVED' } }",
+			"{ $sample: { size: 1 } }" })
 	public List<QuoteMongoModel> getRandomQuote(String serverId);
 
 }
