@@ -1,11 +1,11 @@
-package com.wisdom.quote.readmodel;
+package com.wisdom.quote.service;
 
 import java.time.Instant;
 import java.util.List;
 
 import com.wisdom.quote.projection.Receive;
 
-public class QuoteReadModel {
+public class QuoteServiceModel {
 	private String id;
 
 	private String content;
@@ -17,7 +17,7 @@ public class QuoteReadModel {
 
 	private List<Receive> receives;
 
-	QuoteReadModel(String id, String content, String authorId, String submitterId, Instant submitDt, Instant approveDt,
+	QuoteServiceModel(String id, String content, String authorId, String submitterId, Instant submitDt, Instant approveDt,
 			List<Receive> receives) {
 		this.id = id;
 		this.content = content;
