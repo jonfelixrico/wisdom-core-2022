@@ -9,4 +9,13 @@ import com.wisdom.quote.projection.snapshot.QuoteMongoRepository;
 public class QuoteService {
 	@Autowired
 	private QuoteMongoRepository repo;
+
+	public QuoteServiceModel getRandomQuote(String serverId) {
+		var results = repo.getRandomQuote(serverId);
+		if (results.size() == 0) {
+			return null;
+		}
+		
+		return new QuoteServiceModel(results.get(0));
+	}
 }

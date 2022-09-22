@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 import com.wisdom.quote.projection.Receive;
+import com.wisdom.quote.projection.snapshot.QuoteMongoModel;
 
 public class QuoteServiceModel {
 	private String id;
@@ -17,8 +18,8 @@ public class QuoteServiceModel {
 
 	private List<Receive> receives;
 
-	QuoteServiceModel(String id, String content, String authorId, String submitterId, Instant submitDt, Instant approveDt,
-			List<Receive> receives) {
+	private QuoteServiceModel(String id, String content, String authorId, String submitterId, Instant submitDt,
+			Instant approveDt, List<Receive> receives) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -26,6 +27,11 @@ public class QuoteServiceModel {
 		this.submitDt = submitDt;
 		this.approveDt = approveDt;
 		this.receives = receives;
+	}
+
+	QuoteServiceModel(QuoteMongoModel dbModel) {
+		this(dbModel.getId(), dbModel.getContent(), dbModel.getAuthorId(), dbModel.getSubmitterId(),
+				dbModel.getSubmitDt(), dbModel.getVerdict().getVerdictDt(), dbModel.getReceives());
 	}
 
 	public String getId() {
