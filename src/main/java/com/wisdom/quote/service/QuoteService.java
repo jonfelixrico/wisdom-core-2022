@@ -21,5 +21,11 @@ public class QuoteService {
 	
 	public void receiveQuote(ReceiveQuoteInput data) {
 		// TODO do something
+		
+		// fetch quote write model by id
+		// verify if server checks out
+		// verify if verdict checks out
+		// add receive
+		// return
 	}
 }
