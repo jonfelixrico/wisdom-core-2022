@@ -14,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +21,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
-import com.wisdom.quote.projection.QuoteProjectionModel;
-import com.wisdom.quote.projection.QuoteProjectionService;
+import com.wisdom.quote.service.PendingQuoteServiceModel;
+import com.wisdom.quote.service.PendingQuoteService;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 /**
@@ -34,13 +32,13 @@ import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
  *
  */
 @RestController
-@RequestMapping("/quote/pending")
-public class QuoteController {
+@RequestMapping("/server/{serverId}/quote/pending")
+public class ServerPendingQuotesController {
 	@Autowired
-	QuoteWriteModelRepository writeRepository;
+	private QuoteWriteModelRepository writeRepo;
 
 	@Autowired
-	QuoteProjectionService projectionService;
+	private PendingQuoteService pendingQuoteSvc;
 
 	@PostMapping
 	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {
@@ -48,36 +46,30 @@ public class QuoteController {
 		var createDt = Instant.now();
 		var expireDt = createDt.plus(3, ChronoUnit.DAYS);
 
-		var writeModel = writeRepository.create(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(),
+		var writeModel = writeRepo.create(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(),
 				createDt, expireDt, body.getServerId(), body.getChannelId(), body.getMessageId());
 
-		writeRepository.saveWriteModel(writeModel);
+		writeRepo.saveWriteModel(writeModel);
 
 		return Map.of("quoteId", quoteId);
-	}
-
-	@GetMapping("/{id}")
-	private QuoteProjectionModel getQuote(@PathVariable String id) throws Exception {
-		var data = projectionService.getProjection(id);
-		if (data == null) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-
-		var projection = data.getFirst();
-		if (projection.getVerdict() != null) {
-			// We treat pending quotes as separate entities from approved quotes on the
-			// business-side of things
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-
-		return projection;
 	}
 
 	@PutMapping("/{id}/vote")
 	private void setVotes(@PathVariable String id, @RequestBody List<String> voterIds)
 			throws InterruptedException, ExecutionException, IOException {
-		var model = writeRepository.getWriteModel(id);
+		var model = writeRepo.getWriteModel(id);
 		model.setVoters(voterIds, Instant.now());
-		writeRepository.saveWriteModel(model);
+		writeRepo.saveWriteModel(model);
 	}
+
+	@GetMapping("/{id}")
+	private PendingQuoteServiceModel getPendingQuote(@PathVariable String serverId, @PathVariable String id) {
+		return this.pendingQuoteSvc.getPendingQuote(id, serverId);
+	}
+
+	@GetMapping
+	private List<PendingQuoteServiceModel> getPendingQuotes(@PathVariable String serverId) {
+		return this.pendingQuoteSvc.getPendingQuotes(serverId);
+	}
+
 }

@@ -11,7 +11,7 @@ import com.wisdom.quote.projection.QuoteProjectionModel;
 import com.wisdom.quote.projection.Receive;
 
 @Document("quotes")
-class QuoteMongoModel extends QuoteProjectionModel {
+public class QuoteMongoModel extends QuoteProjectionModel {
 	private Long revision;
 
 	@PersistenceCreator
