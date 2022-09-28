@@ -15,7 +15,7 @@ public class ServerQuotesController {
 	@Autowired
 	private QuoteService svc;
 
-	@GetMapping
+	@GetMapping("/random")
 	private QuoteServiceModel getRandomQuote(@PathVariable String serverId) {
 		return svc.getRandomQuote(serverId);
 	}
