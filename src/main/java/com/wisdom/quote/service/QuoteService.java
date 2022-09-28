@@ -18,4 +18,8 @@ public class QuoteService {
 		
 		return new QuoteServiceModel(results.get(0));
 	}
+	
+	public void receiveQuote(ReceiveQuoteInput data) {
+		// TODO do something
+	}
 }
