@@ -1,5 +1,7 @@
 package com.wisdom.quote.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +26,7 @@ public class ServerQuotesController {
 	}
 	
 	@PostMapping("/{quoteId}/receive")
-	private void receiveQuote (@PathVariable String serverId, @PathVariable String quoteId, @RequestBody ReceiveQuoteReqDto body) {
+	private void receiveQuote (@PathVariable String serverId, @PathVariable String quoteId, @Valid @RequestBody ReceiveQuoteReqDto body) {
 		// NOOP
 	}
 }
