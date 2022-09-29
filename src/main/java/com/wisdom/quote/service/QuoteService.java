@@ -46,7 +46,7 @@ public class QuoteService {
 		}
 
 		var projModel = projection.getFirst();
-		if (projModel.getServerId().equals(serverId)) {
+		if (!projModel.getServerId().equals(serverId)) {
 			LOGGER.debug("Found projection for {}, but server id mismatched (expected {}, actual {})", quoteId,
 					serverId, projModel.getServerId());
 			// TODO throw error
