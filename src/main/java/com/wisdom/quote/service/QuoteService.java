@@ -16,7 +16,11 @@ import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 public class QuoteService {
 	@Autowired
 	private QuoteMongoRepository repo;
+
+	@Autowired
 	private QuoteWriteModelRepository writeRepo;
+
+	@Autowired
 	private QuoteProjectionService projSvc;
 
 	public QuoteServiceModel getRandomQuote(String serverId) {
