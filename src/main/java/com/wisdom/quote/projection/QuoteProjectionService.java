@@ -30,8 +30,8 @@ public class QuoteProjectionService {
 	@Autowired
 	private QuoteSnapshotRepository snapshotRepo;
 
-	private @Autowired
-	ObjectMapper mapper;
+	@Autowired
+	private ObjectMapper mapper;
 
 	public Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {

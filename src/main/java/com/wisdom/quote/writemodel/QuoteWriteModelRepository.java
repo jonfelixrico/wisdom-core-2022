@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.eventstoredb.utils.EventAppendService;
+import com.wisdom.quote.projection.QuoteProjectionModel;
 import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 
@@ -41,11 +42,18 @@ public class QuoteWriteModelRepository {
 
 	public QuoteWriteModel getWriteModel(String quoteId) throws InterruptedException, ExecutionException, IOException {
 		var result = projectionService.getProjection(quoteId);
-		var data = result.getFirst();
+		if (result == null) {
+			return null;
+		}
 
-		var receives = data.getReceives().stream().map(r -> r.getId()).collect(Collectors.toList());
-		return new QuoteWriteModel(data.getExpirationDt(), data.getVoterIds(), receives, data.getVerdict(),
-				data.getId(), data.getRequiredVoteCount(), ExpectedRevision.expectedRevision(result.getSecond()));
+		return convertToWriteModel(result.getFirst(), result.getSecond());
+	}
+
+	public QuoteWriteModel convertToWriteModel(QuoteProjectionModel projection, Long revision) {
+		var receives = projection.getReceives().stream().map(r -> r.getId()).collect(Collectors.toList());
+		return new QuoteWriteModel(projection.getExpirationDt(), projection.getVoterIds(), receives,
+				projection.getVerdict(), projection.getId(), projection.getRequiredVoteCount(),
+				ExpectedRevision.expectedRevision(revision));
 	}
 
 	public void saveWriteModel(QuoteWriteModel model) throws InterruptedException, ExecutionException {
