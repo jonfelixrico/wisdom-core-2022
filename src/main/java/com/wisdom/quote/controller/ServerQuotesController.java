@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wisdom.quote.controller.dto.ReceiveQuoteInputImpl;
 import com.wisdom.quote.controller.dto.ReceiveQuoteReqDto;
 import com.wisdom.quote.service.QuoteService;
 import com.wisdom.quote.service.QuoteServiceModel;
@@ -32,6 +31,6 @@ public class ServerQuotesController {
 	@PostMapping("/{quoteId}/receive")
 	private void receiveQuote(@PathVariable String serverId, @PathVariable String quoteId,
 			@Valid @RequestBody ReceiveQuoteReqDto body) throws InterruptedException, ExecutionException, IOException {
-		svc.receiveQuote(ReceiveQuoteInputImpl.convertDtoToInput(serverId, quoteId, body));
+		svc.receiveQuote(quoteId, serverId, body.getReceiverId(), body.getChannelId(), body.getMessageId());
 	}
 }

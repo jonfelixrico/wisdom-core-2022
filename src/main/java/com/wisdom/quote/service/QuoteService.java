@@ -27,23 +27,23 @@ public class QuoteService {
 
 		return new QuoteServiceModel(results.get(0));
 	}
-
-	public void receiveQuote(ReceiveQuoteInput data) throws InterruptedException, ExecutionException, IOException {
-		var projection = projSvc.getProjection(data.getQuoteId());
+	
+	public void receiveQuote(String quoteId, String serverId, String receiverId, String channelId, String messageId) throws InterruptedException, ExecutionException, IOException {
+		var projection = projSvc.getProjection(quoteId);
 		if (projection == null) {
 			// TODO throw error
 			return;
 		}
 
 		var projModel = projection.getFirst();
-		if (projModel.getServerId() != data.getServerId()) {
+		if (projModel.getServerId() != serverId) {
 			// TODO throw error
 			return;
 		}
 
 		var writeModel = writeRepo.convertToWriteModel(projModel, projection.getSecond());
-		writeModel.receive(UUID.randomUUID().toString(), data.getReceiverId(), Instant.now(), data.getServerId(),
-				data.getChannelId(), data.getMessageId());
+		writeModel.receive(UUID.randomUUID().toString(), receiverId, Instant.now(), serverId,
+				channelId, messageId);
 		writeRepo.saveWriteModel(writeModel);
 	}
 }
