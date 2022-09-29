@@ -18,7 +18,7 @@ public class ReceiveQuoteReqDto {
 	
 	@NotNull
 	@NotBlank
-	private String receivedBy;
+	private String receiverId;
 
 	public String getChannelId() {
 		return channelId;
@@ -32,7 +32,7 @@ public class ReceiveQuoteReqDto {
 		return quoteId;
 	}
 
-	public String getReceivedBy() {
-		return receivedBy;
+	public String getReceiverId() {
+		return receiverId;
 	}
 }
