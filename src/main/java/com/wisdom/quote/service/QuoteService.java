@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 @Service
 public class QuoteService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteService.class);
+
 	@Autowired
 	private QuoteMongoRepository repo;
 
@@ -31,23 +35,26 @@ public class QuoteService {
 
 		return new QuoteServiceModel(results.get(0));
 	}
-	
-	public void receiveQuote(String quoteId, String serverId, String receiverId, String channelId, String messageId) throws InterruptedException, ExecutionException, IOException {
+
+	public void receiveQuote(String quoteId, String serverId, String receiverId, String channelId, String messageId)
+			throws InterruptedException, ExecutionException, IOException {
 		var projection = projSvc.getProjection(quoteId);
 		if (projection == null) {
+			LOGGER.debug("Did not find projeciton for {}", quoteId);
 			// TODO throw error
 			return;
 		}
 
 		var projModel = projection.getFirst();
-		if (projModel.getServerId() != serverId) {
+		if (projModel.getServerId().equals(serverId)) {
+			LOGGER.debug("Found projection for {}, but server id mismatched (expected {}, actual {})", quoteId,
+					serverId, projModel.getServerId());
 			// TODO throw error
 			return;
 		}
 
 		var writeModel = writeRepo.convertToWriteModel(projModel, projection.getSecond());
-		writeModel.receive(UUID.randomUUID().toString(), receiverId, Instant.now(), serverId,
-				channelId, messageId);
+		writeModel.receive(UUID.randomUUID().toString(), receiverId, Instant.now(), serverId, channelId, messageId);
 		writeRepo.saveWriteModel(writeModel);
 	}
 }
