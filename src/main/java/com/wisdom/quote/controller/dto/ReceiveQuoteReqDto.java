@@ -11,10 +11,6 @@ public class ReceiveQuoteReqDto {
 	@NotNull
 	@NotBlank
 	private String messageId;
-
-	@NotNull
-	@NotBlank
-	private String quoteId;
 	
 	@NotNull
 	@NotBlank
@@ -26,10 +22,6 @@ public class ReceiveQuoteReqDto {
 
 	public String getMessageId() {
 		return messageId;
-	}
-
-	public String getQuoteId() {
-		return quoteId;
 	}
 
 	public String getReceiverId() {
