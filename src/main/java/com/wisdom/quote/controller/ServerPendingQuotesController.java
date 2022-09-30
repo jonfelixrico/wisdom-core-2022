@@ -72,4 +72,13 @@ public class ServerPendingQuotesController {
 		return this.pendingQuoteSvc.getPendingQuotes(serverId);
 	}
 
+	@PutMapping("/{quoteId}/expire")
+	private void flagQuoteAsDeleted(@PathVariable String serverId, @PathVariable String quoteId) {
+		// TODO add impl
+	}
+
+	@PutMapping("/{quoteId}/approve")
+	private void approveQuote(@PathVariable String serverId, @PathVariable String quoteId) {
+		// TODO add impl
+	}
 }
