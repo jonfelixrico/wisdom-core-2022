@@ -3,8 +3,6 @@ package com.wisdom.quote.aggregate;
 import java.time.Instant;
 import java.util.List;
 
-import com.wisdom.quote.projection.Receive;
-
 public abstract class QuoteEntity {
 	private String id;
 

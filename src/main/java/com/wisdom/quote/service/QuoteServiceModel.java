@@ -3,7 +3,7 @@ package com.wisdom.quote.service;
 import java.time.Instant;
 import java.util.List;
 
-import com.wisdom.quote.projection.Receive;
+import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.projection.snapshot.QuoteMongoModel;
 
 public class QuoteServiceModel {

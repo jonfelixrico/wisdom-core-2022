@@ -3,6 +3,7 @@ package com.wisdom.quote.projection;
 import java.time.Instant;
 import java.util.List;
 
+import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.aggregate.Verdict;
 
 class QuoteProjectionModelImpl extends QuoteProjectionModel {

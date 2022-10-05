@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.wisdom.eventstoredb.utils.Event;
+import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.aggregate.VerdictStatus;
 import com.wisdom.quote.writemodel.events.BaseQuoteEvent;

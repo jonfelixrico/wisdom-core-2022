@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.projection.QuoteProjectionModel;
-import com.wisdom.quote.projection.Receive;
 
 @Document("quotes")
 public class QuoteMongoModel extends QuoteProjectionModel {
