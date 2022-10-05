@@ -6,6 +6,7 @@ import java.util.List;
 import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.aggregate.Verdict;
 
+@Deprecated
 public abstract class QuoteProjectionModel {
 	protected String id;
 

@@ -22,6 +22,7 @@ import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.eventstoredb.checkpoint.PositionCheckpointService;
 import com.wisdom.quote.projection.snapshot.QuoteSnapshotRepository;
 
+@Deprecated
 @Service
 class QuotePassiveProjectionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuotePassiveProjectionService.class);

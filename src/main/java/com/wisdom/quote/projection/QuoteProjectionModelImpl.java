@@ -6,6 +6,7 @@ import java.util.List;
 import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.aggregate.Verdict;
 
+@Deprecated
 class QuoteProjectionModelImpl extends QuoteProjectionModel {
 
 	public QuoteProjectionModelImpl(String id, String content, String authorId, String submitterId, Instant submitDt,
