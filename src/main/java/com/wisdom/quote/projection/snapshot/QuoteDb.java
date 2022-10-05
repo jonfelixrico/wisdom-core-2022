@@ -12,27 +12,18 @@ import com.wisdom.quote.aggregate.VotingSession;
 import com.wisdom.quote.entity.QuoteEntity;
 
 @Document("quote-snapshot")
-public class QuoteDb extends QuoteEntity {
-	private Long revision;
-
+public class QuoteDb extends QuoteSnapshot {
 	@PersistenceCreator
 	public QuoteDb(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			Verdict verdict, VotingSession votingSession, Integer requiredVoteCount, Long revision) {
 		super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-				verdict, votingSession, requiredVoteCount);
-		this.revision = revision;
+				verdict, votingSession, requiredVoteCount, revision);
 	}
 
 	QuoteDb(QuoteEntity base, long revision) {
 		this(base.getId(), base.getContent(), base.getAuthorId(), base.getSubmitterId(), base.getSubmitDt(),
 				base.getExpirationDt(), base.getServerId(), base.getChannelId(), base.getMessageId(),
-				base.getReceives(), base.getVerdict(), base.getVotingSession(),
-				base.getRequiredVoteCount(), revision);
+				base.getReceives(), base.getVerdict(), base.getVotingSession(), base.getRequiredVoteCount(), revision);
 	}
-
-	Long getRevision() {
-		return revision;
-	}
-
 }
