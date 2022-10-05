@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.wisdom.quote.entity.QuoteEntity;
 
 @Service
-public class QuoteSnapshotService {
+class QuoteSnapshotService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteSnapshotService.class);
 
 	@Autowired

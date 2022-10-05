@@ -8,7 +8,7 @@ import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.aggregate.VotingSession;
 import com.wisdom.quote.entity.QuoteEntity;
 
-public class QuoteEntityImpl extends QuoteEntity {
+class QuoteEntityImpl extends QuoteEntity {
 
 	public QuoteEntityImpl(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
