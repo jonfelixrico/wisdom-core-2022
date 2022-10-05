@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.wisdom.quote.projection.Receive;
 
-public class QuoteEntity {
+public abstract class QuoteEntity {
 	private String id;
 
 	private String content;
