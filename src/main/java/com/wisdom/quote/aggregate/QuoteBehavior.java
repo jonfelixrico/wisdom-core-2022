@@ -14,7 +14,7 @@ public abstract class QuoteBehavior {
 		return entity;
 	}
 	
-	public void setVotes(List<String> voterIds, Instant timestamp) {
+	protected void setVotes(List<String> voterIds, Instant timestamp) {
 		if (entity.getVerdict() != null) {
 			throw new IllegalStateException("This quote is no longer in its voting phase.");
 		}
@@ -22,7 +22,7 @@ public abstract class QuoteBehavior {
 		entity.setVotingSession(new VotingSession(timestamp, voterIds));
 	}
 
-	public void receive(Receive receive) {
+	protected void receive(Receive receive) {
 		if (entity.getVerdict() == null || entity.getVerdict().getStatus() != VerdictStatus.APPROVED) {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
@@ -31,7 +31,7 @@ public abstract class QuoteBehavior {
 		clone.add(receive);
 	}
 
-	public void approve(Instant timestamp) {
+	protected void approve(Instant timestamp) {
 		if (entity.getVerdict() != null) {
 			throw new IllegalStateException("Quote can no longer be approved.");
 		}
@@ -39,7 +39,7 @@ public abstract class QuoteBehavior {
 		entity.setVerdict(new Verdict(VerdictStatus.APPROVED, timestamp));
 	}
 
-	public void flagAsExpired(Instant timestamp) {
+	protected void flagAsExpired(Instant timestamp) {
 		if (entity.getVerdict() != null) {
 			throw new IllegalStateException("Quote can no longer be flagged as expired.");
 		}
