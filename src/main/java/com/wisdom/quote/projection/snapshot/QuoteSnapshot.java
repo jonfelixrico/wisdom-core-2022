@@ -19,7 +19,7 @@ public abstract class QuoteSnapshot extends QuoteEntity {
 		this.revision = revision;
 	}
 
-	Long getRevision() {
+	public Long getRevision() {
 		return revision;
 	}
 
