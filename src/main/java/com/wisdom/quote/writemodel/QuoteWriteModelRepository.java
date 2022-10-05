@@ -17,6 +17,7 @@ import com.wisdom.quote.projection.QuoteProjectionModel;
 import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 
+@Deprecated
 @Service
 public class QuoteWriteModelRepository {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteWriteModelRepository.class);

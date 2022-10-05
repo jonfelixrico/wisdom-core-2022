@@ -15,6 +15,7 @@ import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
+@Deprecated
 public class QuoteWriteModel extends QuoteAggregate {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteWriteModel.class);
 

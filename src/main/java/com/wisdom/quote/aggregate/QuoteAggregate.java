@@ -3,6 +3,7 @@ package com.wisdom.quote.aggregate;
 import java.time.Instant;
 import java.util.List;
 
+@Deprecated
 public abstract class QuoteAggregate {
 	private Instant expirationDt;
 	private List<String> voterIds;
