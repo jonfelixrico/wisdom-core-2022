@@ -3,7 +3,6 @@ package com.wisdom.quote.service;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
