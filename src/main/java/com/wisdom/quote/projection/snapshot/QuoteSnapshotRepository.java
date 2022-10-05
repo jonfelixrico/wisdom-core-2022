@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.wisdom.quote.projection.QuoteProjectionModel;
 
+@Deprecated
 @Service
 public class QuoteSnapshotRepository {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteSnapshotRepository.class);

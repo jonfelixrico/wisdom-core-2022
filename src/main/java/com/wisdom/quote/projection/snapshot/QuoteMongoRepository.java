@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
+@Deprecated
 public interface QuoteMongoRepository extends MongoRepository<QuoteMongoModel, String> {
 	@Query("{ serverId: '?0', verdict: null }")
 	public List<QuoteMongoModel> getPendingQuotesByServer(String serverId);

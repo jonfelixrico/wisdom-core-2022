@@ -10,6 +10,7 @@ import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.projection.QuoteProjectionModel;
 
+@Deprecated
 @Document("quotes")
 public class QuoteMongoModel extends QuoteProjectionModel {
 	private Long revision;
