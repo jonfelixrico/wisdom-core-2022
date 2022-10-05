@@ -15,7 +15,7 @@ public abstract class QuoteBehavior {
 		this.entity = entity;
 	}
 
-	QuoteEntity getEntity() {
+	protected QuoteEntity getEntity() {
 		return entity;
 	}
 	
