@@ -56,7 +56,7 @@ public class PendingQuoteService {
 		}
 
 		var writeModel = writeRepo.convertToWriteModel(projModel, projection.getSecond());
-		writeModel.flagAsSystemAsExpired(null);
+		writeModel.flagAsSystemAsExpired(Instant.now());
 		writeRepo.saveWriteModel(writeModel);
 	}
 
