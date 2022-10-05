@@ -18,6 +18,12 @@ public abstract class QuoteSnapshot extends QuoteEntity {
 				verdict, votingSession, requiredVoteCount);
 		this.revision = revision;
 	}
+	
+	protected QuoteSnapshot(QuoteEntity base, long revision) {
+		this(base.getId(), base.getContent(), base.getAuthorId(), base.getSubmitterId(), base.getSubmitDt(),
+				base.getExpirationDt(), base.getServerId(), base.getChannelId(), base.getMessageId(),
+				base.getReceives(), base.getVerdict(), base.getVotingSession(), base.getRequiredVoteCount(), revision);
+	}
 
 	public Long getRevision() {
 		return revision;
