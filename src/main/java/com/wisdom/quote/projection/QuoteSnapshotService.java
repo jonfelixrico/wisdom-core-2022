@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection.snapshot;
+package com.wisdom.quote.projection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -15,8 +15,6 @@ import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.entity.QuoteEntity;
-import com.wisdom.quote.projection.snapshot.QuoteSnapshot;
-import com.wisdom.quote.projection.snapshot.QuoteSnapshotService;
 
 @Service
 public class QuoteProjectionServiceV2 {

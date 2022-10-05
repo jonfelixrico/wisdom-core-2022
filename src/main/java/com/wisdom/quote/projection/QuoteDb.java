@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection.snapshot;
+package com.wisdom.quote.projection;
 
 import java.time.Instant;
 import java.util.List;

@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.projection.snapshot.QuoteSnapshotRepository;
 
+@Deprecated
 @Service
 public class QuoteProjectionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);

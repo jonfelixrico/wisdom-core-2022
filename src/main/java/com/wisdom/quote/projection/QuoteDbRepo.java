@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection.snapshot;
+package com.wisdom.quote.projection;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
