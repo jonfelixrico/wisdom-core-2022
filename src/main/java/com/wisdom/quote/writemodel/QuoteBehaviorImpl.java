@@ -49,4 +49,8 @@ public class QuoteBehaviorImpl extends QuoteBehavior {
 		buffer.pushEvent(new QuoteFlaggedAsExpiredBySystemEvent(getId(), timestamp));
 	}
 
+	EventAppendBuffer getBuffer() {
+		return buffer;
+	}
+
 }
