@@ -37,7 +37,7 @@ public class QuoteSnapshotService {
 		}
 	}
 
-	public QuoteSnapshot get(String id) {
+	public QuoteProjection get(String id) {
 		var result = repo.findById(id);
 		if (result.isEmpty()) {
 			LOGGER.debug("Did not find snapshot for quote {}", id);

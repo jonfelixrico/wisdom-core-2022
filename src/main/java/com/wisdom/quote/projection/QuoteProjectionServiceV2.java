@@ -32,7 +32,7 @@ public class QuoteProjectionServiceV2 {
 	@Autowired
 	private ObjectMapper mapper;
 
-	public QuoteSnapshot getProjection(String quoteId)
+	public QuoteProjection getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
 		var snapshot = snapshotRepo.get(quoteId);
 
@@ -45,7 +45,7 @@ public class QuoteProjectionServiceV2 {
 		return projection;
 	}
 
-	private QuoteSnapshot buildState(String quoteId, Long fromRevision,
+	private QuoteProjection buildState(String quoteId, Long fromRevision,
 			QuoteEntity baseModel) throws InterruptedException, ExecutionException, IOException {
 		ReadStreamOptions options = ReadStreamOptions.get();
 		if (fromRevision == null) {
@@ -74,6 +74,6 @@ public class QuoteProjectionServiceV2 {
 			revision = event.getStreamRevision().getValueUnsigned();
 		}
 
-		return new QuoteSnapshotImpl(state, revision);
+		return new QuoteProjectionImpl(state, revision);
 	}
 }

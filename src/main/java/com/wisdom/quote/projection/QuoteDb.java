@@ -12,7 +12,7 @@ import com.wisdom.quote.aggregate.VotingSession;
 import com.wisdom.quote.entity.QuoteEntity;
 
 @Document("quote-snapshot")
-class QuoteDb extends QuoteSnapshot {
+class QuoteDb extends QuoteProjection {
 	@PersistenceCreator
 	public QuoteDb(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
