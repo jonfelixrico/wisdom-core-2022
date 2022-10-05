@@ -19,12 +19,12 @@ public abstract class QuoteBehavior {
 		return entity;
 	}
 	
-	protected void setVotes(List<String> voterIds, Instant timestamp) {
+	protected void updateVotingSession(VotingSession votingSession) {
 		if (entity.getVerdict() != null) {
 			throw new IllegalStateException("This quote is no longer in its voting phase.");
 		}
 
-		entity.setVotingSession(new VotingSession(timestamp, voterIds));
+		entity.setVotingSession(votingSession);
 	}
 
 	protected void receive(Receive receive) {
