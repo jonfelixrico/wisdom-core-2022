@@ -20,6 +20,7 @@ import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
+@Deprecated
 @Service
 class QuoteEventsHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsHelper.class);
