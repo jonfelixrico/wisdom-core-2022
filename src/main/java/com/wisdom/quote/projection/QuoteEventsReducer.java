@@ -23,8 +23,8 @@ import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 @Service
-class QuoteReducer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReducer.class);
+class QuoteEventsReducer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
 
 	public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
 			QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
