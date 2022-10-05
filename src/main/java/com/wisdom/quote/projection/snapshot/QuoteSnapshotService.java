@@ -19,7 +19,7 @@ public class QuoteSnapshotService {
 	private QuoteDbRepo repo;
 
 	@Autowired
-	MongoTemplate template;
+	private MongoTemplate template;
 
 	public void save(QuoteEntity baseQuoteProjectionModel, long revision) {
 		var dbModel = new QuoteDb(baseQuoteProjectionModel, revision);
