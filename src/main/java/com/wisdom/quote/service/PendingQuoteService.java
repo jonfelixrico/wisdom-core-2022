@@ -1,7 +1,9 @@
 package com.wisdom.quote.service;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.projection.snapshot.QuoteMongoRepository;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
@@ -22,6 +25,9 @@ public class PendingQuoteService {
 	@Autowired
 	private QuoteWriteModelRepository writeRepo;
 
+	@Autowired
+	private QuoteProjectionService projSvc;
+
 	public PendingQuoteServiceModel getPendingQuote(String quoteId, String serverId) {
 		var result = mongoRepo.getPendingQuoteByIdAndServer(quoteId, serverId);
 		return result == null ? null : new PendingQuoteServiceModel(result);
@@ -32,11 +38,56 @@ public class PendingQuoteService {
 		return results.stream().map(i -> new PendingQuoteServiceModel(i)).toList();
 	}
 
+	public void flagQuoteAsExpired(String quoteId, String serverId)
+			throws InterruptedException, ExecutionException, IOException {
+		var projection = projSvc.getProjection(quoteId);
+		if (projection == null) {
+			LOGGER.debug("Did not find projection for {}", quoteId);
+			// TODO throw error
+			return;
+		}
+
+		var projModel = projection.getFirst();
+		if (!projModel.getServerId().equals(serverId)) {
+			LOGGER.debug("Found projection for {}, but server id mismatched (expected {}, actual {})", quoteId,
+					serverId, projModel.getServerId());
+			// TODO throw error
+			return;
+		}
+
+		var writeModel = writeRepo.convertToWriteModel(projModel, projection.getSecond());
+		writeModel.flagAsSystemAsExpired(Instant.now());
+		writeRepo.saveWriteModel(writeModel);
+	}
+
+	public void approveQuote(String quoteId, String serverId)
+			throws InterruptedException, ExecutionException, IOException {
+		var projection = projSvc.getProjection(quoteId);
+		if (projection == null) {
+			LOGGER.debug("Did not find projection for {}", quoteId);
+			// TODO throw error
+			return;
+		}
+
+		var projModel = projection.getFirst();
+		if (!projModel.getServerId().equals(serverId)) {
+			LOGGER.debug("Found projection for {}, but server id mismatched (expected {}, actual {})", quoteId,
+					serverId, projModel.getServerId());
+			// TODO throw error
+			return;
+		}
+
+		var writeModel = writeRepo.convertToWriteModel(projModel, projection.getSecond());
+		writeModel.approveBySystem(Instant.now());
+		writeRepo.saveWriteModel(writeModel);
+	}
+
+	@Deprecated
 	@Scheduled(cron = "0 */5 * * * *")
 	private void doExpirationFlagging() {
 		var ids = mongoRepo.getAllPendingQuotesForExpirationFlagging(Instant.now()).stream().map(i -> i.getId())
 				.toList();
-		
+
 		if (ids.size() == 0) {
 			LOGGER.debug("Prematurely terminated expired quotes sweep: no expired quotes found");
 			return;
@@ -55,7 +106,7 @@ public class PendingQuoteService {
 				LOGGER.error("An exception was encountered while trying to flag {} as expired", id, e);
 			}
 		}
-		
+
 		LOGGER.debug("Succesfully flagged {} out of {} quotes as expired", successCount, ids.size());
 	}
 }
