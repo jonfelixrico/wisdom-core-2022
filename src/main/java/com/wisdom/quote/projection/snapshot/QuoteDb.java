@@ -24,6 +24,13 @@ public class QuoteDb extends QuoteEntity {
 		this.revision = revision;
 	}
 
+	QuoteDb(QuoteEntity base, long revision) {
+		this(base.getId(), base.getContent(), base.getAuthorId(), base.getSubmitterId(), base.getSubmitDt(),
+				base.getExpirationDt(), base.getServerId(), base.getChannelId(), base.getMessageId(),
+				base.getReceives(), base.getVerdict(), base.getVotingSession(),
+				base.getRequiredVoteCount(), revision);
+	}
+
 	Long getRevision() {
 		return revision;
 	}
