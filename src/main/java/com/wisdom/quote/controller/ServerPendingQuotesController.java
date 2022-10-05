@@ -64,21 +64,21 @@ public class ServerPendingQuotesController {
 
 	@GetMapping("/{id}")
 	private PendingQuoteServiceModel getPendingQuote(@PathVariable String serverId, @PathVariable String id) {
-		return this.pendingQuoteSvc.getPendingQuote(id, serverId);
+		return pendingQuoteSvc.getPendingQuote(id, serverId);
 	}
 
 	@GetMapping
 	private List<PendingQuoteServiceModel> getPendingQuotes(@PathVariable String serverId) {
-		return this.pendingQuoteSvc.getPendingQuotes(serverId);
+		return pendingQuoteSvc.getPendingQuotes(serverId);
 	}
 
 	@PutMapping("/{quoteId}/expire")
-	private void flagQuoteAsDeleted(@PathVariable String serverId, @PathVariable String quoteId) {
-		// TODO add impl
+	private void flagQuoteAsDeleted(@PathVariable String serverId, @PathVariable String quoteId) throws InterruptedException, ExecutionException, IOException {
+		pendingQuoteSvc.flagQuoteAsExpired(quoteId, serverId);
 	}
 
 	@PutMapping("/{quoteId}/approve")
-	private void approveQuote(@PathVariable String serverId, @PathVariable String quoteId) {
-		// TODO add impl
+	private void approveQuote(@PathVariable String serverId, @PathVariable String quoteId) throws InterruptedException, ExecutionException, IOException {
+		pendingQuoteSvc.approveQuote(quoteId, serverId);
 	}
 }
