@@ -73,12 +73,14 @@ public class ServerPendingQuotesController {
 	}
 
 	@PutMapping("/{quoteId}/expire")
-	private void flagQuoteAsDeleted(@PathVariable String serverId, @PathVariable String quoteId) throws InterruptedException, ExecutionException, IOException {
+	private void flagQuoteAsDeleted(@PathVariable String serverId, @PathVariable String quoteId)
+			throws InterruptedException, ExecutionException, IOException {
 		pendingQuoteSvc.flagQuoteAsExpired(quoteId, serverId);
 	}
 
 	@PutMapping("/{quoteId}/approve")
-	private void approveQuote(@PathVariable String serverId, @PathVariable String quoteId) throws InterruptedException, ExecutionException, IOException {
+	private void approveQuote(@PathVariable String serverId, @PathVariable String quoteId)
+			throws InterruptedException, ExecutionException, IOException {
 		pendingQuoteSvc.approveQuote(quoteId, serverId);
 	}
 }
