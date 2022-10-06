@@ -63,7 +63,7 @@ public class ServerPendingQuotesController {
 	private void setVotes(@PathVariable String quoteId, @PathVariable String serverId,
 			@RequestBody List<String> voterIds) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
-		if (!writeModel.getEntity().getServerId().equals(serverId)) {
+		if (!writeModel.getServerId().equals(serverId)) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
@@ -95,7 +95,7 @@ public class ServerPendingQuotesController {
 	@PutMapping("/{quoteId}/expire")
 	private void flagQuoteAsDeleted(@PathVariable String serverId, @PathVariable String quoteId) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
-		if (!writeModel.getEntity().getServerId().equals(serverId) || writeModel.getEntity().getVerdict() != null) {
+		if (!writeModel.getServerId().equals(serverId) || writeModel.getVerdict() != null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
@@ -110,7 +110,7 @@ public class ServerPendingQuotesController {
 	@PutMapping("/{quoteId}/approve")
 	private void approveQuote(@PathVariable String serverId, @PathVariable String quoteId) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
-		if (!writeModel.getEntity().getServerId().equals(serverId) || writeModel.getEntity().getVerdict() != null) {
+		if (!writeModel.getServerId().equals(serverId) || writeModel.getVerdict() != null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 

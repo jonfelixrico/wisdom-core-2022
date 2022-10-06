@@ -38,7 +38,7 @@ public class ServerQuotesController {
 	private void receiveQuote(@PathVariable String serverId, @PathVariable String quoteId,
 			@Valid @RequestBody ReceiveQuoteReqDto body) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
-		if (!writeModel.getEntity().getServerId().equals(serverId)) {
+		if (!writeModel.getServerId().equals(serverId)) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
