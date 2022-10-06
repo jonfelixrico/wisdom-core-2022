@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.eventstoredb.utils.EventAppendBuffer;
+import com.wisdom.eventstoredb.utils.EventAppendService;
 import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.aggregate.VotingSession;
 import com.wisdom.quote.entity.QuoteBehavior;
@@ -14,12 +15,14 @@ import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
-public class QuoteBehaviorImpl extends QuoteBehavior {
+public class QuoteWriteModelV2 extends QuoteBehavior {
 	private EventAppendBuffer buffer;
+	private EventAppendService writeSvc;
 
-	public QuoteBehaviorImpl(QuoteEntity entity, ExpectedRevision revision) {
+	QuoteWriteModelV2(QuoteEntity entity, ExpectedRevision revision, EventAppendService writeSvc) {
 		super(entity);
 		this.buffer = new EventAppendBuffer(String.format("quote/%s", entity.getId()), revision);
+		this.writeSvc = writeSvc;
 	}
 
 	private String getId() {
@@ -47,6 +50,10 @@ public class QuoteBehaviorImpl extends QuoteBehavior {
 	public void flagAsExpiredBySystem(Instant timestamp) {
 		super.flagAsExpired(timestamp);
 		buffer.pushEvent(new QuoteFlaggedAsExpiredBySystemEvent(getId(), timestamp));
+	}
+
+	void save() throws Exception {
+		this.writeSvc.appendToStream(buffer);
 	}
 
 	EventAppendBuffer getBuffer() {
