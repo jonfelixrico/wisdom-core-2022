@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class QuoteBehaviorV2 extends QuoteEntity {
 
-	QuoteBehaviorV2(QuoteEntity entity) {
+	protected QuoteBehaviorV2(QuoteEntity entity) {
 		super(entity.getId(), entity.getContent(), entity.getAuthorId(), entity.getSubmitterId(), entity.getSubmitDt(),
 				entity.getExpirationDt(), entity.getServerId(), entity.getChannelId(), entity.getMessageId(),
 				entity.getReceives(), entity.getVerdict(), entity.getVotingSession(), entity.getRequiredVoteCount());
