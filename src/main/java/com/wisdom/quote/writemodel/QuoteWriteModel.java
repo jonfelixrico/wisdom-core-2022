@@ -25,10 +25,6 @@ public class QuoteWriteModel extends QuoteBehavior {
 		this.writeSvc = writeSvc;
 	}
 
-	private String getId() {
-		return getEntity().getId();
-	}
-
 	public void updateVotingSession(List<String> voterIds, Instant timestamp) {
 		super.updateVotingSession(new VotingSession(timestamp, voterIds));
 		buffer.pushEvent(new QuoteVotesModifiedEvent(getId(), voterIds, timestamp));
