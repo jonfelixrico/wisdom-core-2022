@@ -6,27 +6,23 @@ import java.util.List;
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.eventstoredb.utils.EventAppendBuffer;
 import com.wisdom.eventstoredb.utils.EventAppendService;
-import com.wisdom.quote.aggregate.Receive;
-import com.wisdom.quote.aggregate.VotingSession;
 import com.wisdom.quote.entity.QuoteBehavior;
 import com.wisdom.quote.entity.QuoteEntity;
+import com.wisdom.quote.entity.Receive;
+import com.wisdom.quote.entity.VotingSession;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
-public class QuoteWriteModelV2 extends QuoteBehavior {
+public class QuoteWriteModel extends QuoteBehavior {
 	private EventAppendBuffer buffer;
 	private EventAppendService writeSvc;
 
-	QuoteWriteModelV2(QuoteEntity entity, ExpectedRevision revision, EventAppendService writeSvc) {
+	QuoteWriteModel(QuoteEntity entity, ExpectedRevision revision, EventAppendService writeSvc) {
 		super(entity);
 		this.buffer = new EventAppendBuffer(String.format("quote/%s", entity.getId()), revision);
 		this.writeSvc = writeSvc;
-	}
-
-	private String getId() {
-		return getEntity().getId();
 	}
 
 	public void updateVotingSession(List<String> voterIds, Instant timestamp) {

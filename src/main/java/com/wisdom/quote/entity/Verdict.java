@@ -1,4 +1,4 @@
-package com.wisdom.quote.aggregate;
+package com.wisdom.quote.entity;
 
 import java.time.Instant;
 

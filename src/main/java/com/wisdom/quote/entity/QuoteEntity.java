@@ -3,10 +3,6 @@ package com.wisdom.quote.entity;
 import java.time.Instant;
 import java.util.List;
 
-import com.wisdom.quote.aggregate.Receive;
-import com.wisdom.quote.aggregate.Verdict;
-import com.wisdom.quote.aggregate.VotingSession;
-
 public class QuoteEntity {
 	private String id;
 

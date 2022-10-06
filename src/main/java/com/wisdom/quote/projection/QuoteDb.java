@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.wisdom.quote.aggregate.Receive;
-import com.wisdom.quote.aggregate.Verdict;
-import com.wisdom.quote.aggregate.VotingSession;
 import com.wisdom.quote.entity.QuoteEntity;
+import com.wisdom.quote.entity.Receive;
+import com.wisdom.quote.entity.Verdict;
+import com.wisdom.quote.entity.VotingSession;
 
 @Document("quote-snapshot")
 class QuoteDb extends QuoteProjection {
