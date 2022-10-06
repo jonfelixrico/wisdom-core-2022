@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import com.eventstore.dbclient.ReadResult;
@@ -15,39 +14,39 @@ import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
-import com.wisdom.quote.projection.snapshot.QuoteSnapshotRepository;
+import com.wisdom.quote.entity.QuoteEntity;
 
 @Service
-public class QuoteProjectionService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
+public class QuoteProjectionServiceV2 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionServiceV2.class);
 
 	@Autowired
 	private EventStoreDBProvider esdbProvider;
 
 	@Autowired
-	private QuoteEventsHelper helper;
+	private QuoteEventsReducer reducer;
 
 	@Autowired
-	private QuoteSnapshotRepository snapshotRepo;
+	private QuoteSnapshotService snapshotRepo;
 
 	@Autowired
 	private ObjectMapper mapper;
 
-	public Pair<QuoteProjectionModel, Long> getProjection(String quoteId)
+	public QuoteProjection getProjection(String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
 		var snapshot = snapshotRepo.get(quoteId);
 
 		if (snapshot != null) {
-			return buildState(quoteId, snapshot.getSecond(), snapshot.getFirst());
+			return buildState(quoteId, snapshot.getRevision(), snapshot);
 		}
 
 		var projection = buildState(quoteId, null, null);
-		snapshotRepo.save(projection.getFirst(), projection.getSecond());
+		snapshotRepo.save(projection, projection.getRevision());
 		return projection;
 	}
 
-	private Pair<QuoteProjectionModel, Long> buildState(String quoteId, Long fromRevision,
-			QuoteProjectionModel baseModel) throws InterruptedException, ExecutionException, IOException {
+	private QuoteProjection buildState(String quoteId, Long fromRevision,
+			QuoteEntity baseModel) throws InterruptedException, ExecutionException, IOException {
 		ReadStreamOptions options = ReadStreamOptions.get();
 		if (fromRevision == null) {
 			options.fromStart();
@@ -55,14 +54,15 @@ public class QuoteProjectionService {
 			options.fromRevision(fromRevision);
 		}
 
-		var state = baseModel == null ? null : Pair.of(baseModel, fromRevision);
+		var state = baseModel;
+		var revision = fromRevision;
 
 		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
 		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
 		for (ResolvedEvent result : results.getEvents()) {
 			RecordedEvent event = result.getEvent();
 
-			var eventClass = helper.getEventClassFromType(event.getEventType());
+			var eventClass = reducer.getEventClassFromType(event.getEventType());
 			if (eventClass == null) {
 				// TODO throw exception
 				LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
@@ -70,9 +70,10 @@ public class QuoteProjectionService {
 			}
 
 			var eventData = mapper.readValue(event.getEventData(), eventClass);
-			state = Pair.of(helper.reduceEvent(baseModel, eventData), event.getStreamRevision().getValueUnsigned());
+			state = reducer.reduceEvent(baseModel, eventData);
+			revision = event.getStreamRevision().getValueUnsigned();
 		}
 
-		return state;
+		return new QuoteProjectionImpl(state, revision);
 	}
 }

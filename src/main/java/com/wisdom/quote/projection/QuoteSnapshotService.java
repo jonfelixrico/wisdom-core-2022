@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection.snapshot;
+package com.wisdom.quote.projection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,23 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
-import com.wisdom.quote.projection.QuoteProjectionModel;
+import com.wisdom.quote.entity.QuoteEntity;
 
 @Service
-public class QuoteSnapshotRepository {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteSnapshotRepository.class);
+class QuoteSnapshotService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteSnapshotService.class);
 
 	@Autowired
-	private QuoteMongoRepository repo;
+	private QuoteDbRepo repo;
 
 	@Autowired
-	MongoTemplate template;
+	private MongoTemplate template;
 
-	public void save(QuoteProjectionModel baseQuoteProjectionModel, long revision) {
-		var dbModel = new QuoteMongoModel(baseQuoteProjectionModel, revision);
+	public void save(QuoteEntity baseQuoteProjectionModel, long revision) {
+		var dbModel = new QuoteDb(baseQuoteProjectionModel, revision);
 		if (!repo.existsById(baseQuoteProjectionModel.getId())) {
 			repo.insert(dbModel);
 			LOGGER.debug("Created snapshot of quote {} revision {}", baseQuoteProjectionModel.getId(), revision);
@@ -38,7 +37,7 @@ public class QuoteSnapshotRepository {
 		}
 	}
 
-	public Pair<QuoteProjectionModel, Long> get(String id) {
+	public QuoteProjection get(String id) {
 		var result = repo.findById(id);
 		if (result.isEmpty()) {
 			LOGGER.debug("Did not find snapshot for quote {}", id);
@@ -48,6 +47,6 @@ public class QuoteSnapshotRepository {
 		var data = result.get();
 		LOGGER.debug("Retrieved snapshot for quote {} with revision {}", id, data.getRevision());
 
-		return Pair.of(data, data.getRevision());
+		return data;
 	}
 }
