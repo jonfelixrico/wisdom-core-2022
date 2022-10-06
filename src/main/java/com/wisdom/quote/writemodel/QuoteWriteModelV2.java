@@ -52,7 +52,7 @@ public class QuoteWriteModelV2 extends QuoteBehavior {
 		buffer.pushEvent(new QuoteFlaggedAsExpiredBySystemEvent(getId(), timestamp));
 	}
 
-	void save() throws Exception {
+	public void save() throws Exception {
 		this.writeSvc.appendToStream(buffer);
 	}
 
