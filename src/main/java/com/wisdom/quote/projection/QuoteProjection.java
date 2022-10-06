@@ -3,10 +3,10 @@ package com.wisdom.quote.projection;
 import java.time.Instant;
 import java.util.List;
 
-import com.wisdom.quote.aggregate.Receive;
-import com.wisdom.quote.aggregate.Verdict;
-import com.wisdom.quote.aggregate.VotingSession;
 import com.wisdom.quote.entity.QuoteEntity;
+import com.wisdom.quote.entity.Receive;
+import com.wisdom.quote.entity.Verdict;
+import com.wisdom.quote.entity.VotingSession;
 
 public abstract class QuoteProjection extends QuoteEntity {
 	private Long revision;

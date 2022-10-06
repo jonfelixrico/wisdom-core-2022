@@ -10,11 +10,11 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import com.wisdom.eventstoredb.utils.Event;
-import com.wisdom.quote.aggregate.Receive;
-import com.wisdom.quote.aggregate.Verdict;
-import com.wisdom.quote.aggregate.VerdictStatus;
-import com.wisdom.quote.aggregate.VotingSession;
 import com.wisdom.quote.entity.QuoteEntity;
+import com.wisdom.quote.entity.Receive;
+import com.wisdom.quote.entity.Verdict;
+import com.wisdom.quote.entity.VerdictStatus;
+import com.wisdom.quote.entity.VotingSession;
 import com.wisdom.quote.writemodel.events.BaseQuoteEvent;
 import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
