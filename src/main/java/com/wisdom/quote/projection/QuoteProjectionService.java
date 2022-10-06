@@ -17,8 +17,8 @@ import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.entity.QuoteEntity;
 
 @Service
-public class QuoteProjectionServiceV2 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionServiceV2.class);
+public class QuoteProjectionService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
 
 	@Autowired
 	private EventStoreDBProvider esdbProvider;

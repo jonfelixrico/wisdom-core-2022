@@ -26,7 +26,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.projection.QuoteProjection;
-import com.wisdom.quote.projection.QuoteProjectionServiceV2;
+import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 /**
@@ -44,7 +44,7 @@ public class ServerPendingQuotesController {
 	private TimeService timeSvc;
 
 	@Autowired
-	private QuoteProjectionServiceV2 projSvc;
+	private QuoteProjectionService projSvc;
 
 	@PostMapping
 	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {

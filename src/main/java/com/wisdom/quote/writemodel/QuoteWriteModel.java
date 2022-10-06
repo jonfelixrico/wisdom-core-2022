@@ -15,11 +15,11 @@ import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
-public class QuoteWriteModelV2 extends QuoteBehavior {
+public class QuoteWriteModel extends QuoteBehavior {
 	private EventAppendBuffer buffer;
 	private EventAppendService writeSvc;
 
-	QuoteWriteModelV2(QuoteEntity entity, ExpectedRevision revision, EventAppendService writeSvc) {
+	QuoteWriteModel(QuoteEntity entity, ExpectedRevision revision, EventAppendService writeSvc) {
 		super(entity);
 		this.buffer = new EventAppendBuffer(String.format("quote/%s", entity.getId()), revision);
 		this.writeSvc = writeSvc;
