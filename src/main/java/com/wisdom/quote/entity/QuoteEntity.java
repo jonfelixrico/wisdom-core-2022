@@ -7,7 +7,7 @@ import com.wisdom.quote.aggregate.Receive;
 import com.wisdom.quote.aggregate.Verdict;
 import com.wisdom.quote.aggregate.VotingSession;
 
-public abstract class QuoteEntity {
+public class QuoteEntity {
 	private String id;
 
 	private String content;

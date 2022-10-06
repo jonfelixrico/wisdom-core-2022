@@ -90,8 +90,8 @@ class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteEntityImpl reduce(QuoteEntity model, QuoteSubmittedEvent event) {
-		return new QuoteEntityImpl(event.getQuoteId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
+	private QuoteEntity reduce(QuoteEntity model, QuoteSubmittedEvent event) {
+		return new QuoteEntity(event.getQuoteId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
 				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
 				event.getMessageId(), List.of(), null, null, event.getRequiredVoteCount());
 	}
@@ -103,13 +103,13 @@ class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteEntityImpl reduce(@NonNull QuoteEntity model, QuoteReceivedEvent event) {
+	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteReceivedEvent event) {
 		List<Receive> newReceives = new ArrayList<>();
 		newReceives.addAll(model.getReceives());
 		newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
 				event.getChannelId(), event.getMessageId()));
 
-		return new QuoteEntityImpl(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
+		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
 				model.getMessageId(), newReceives, model.getVerdict(), model.getVotingSession(),
 				model.getRequiredVoteCount());
@@ -122,10 +122,10 @@ class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteEntityImpl reduce(@NonNull QuoteEntity model, QuoteFlaggedAsExpiredBySystemEvent event) {
+	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteFlaggedAsExpiredBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.EXPIRED, event.getTimestamp());
 
-		return new QuoteEntityImpl(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
+		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
 				model.getMessageId(), model.getReceives(), newVerdict, model.getVotingSession(),
 				model.getRequiredVoteCount());
@@ -138,19 +138,19 @@ class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteEntityImpl reduce(@NonNull QuoteEntity model, QuoteApprovedBySystemEvent event) {
+	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteApprovedBySystemEvent event) {
 		Verdict newVerdict = new Verdict(VerdictStatus.APPROVED, event.getTimestamp());
 
-		return new QuoteEntityImpl(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
+		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
 				model.getMessageId(), model.getReceives(), newVerdict, model.getVotingSession(),
 				model.getRequiredVoteCount());
 	}
 
-	private QuoteEntityImpl reduce(@NonNull QuoteEntity model, QuoteVotesModifiedEvent event) {
+	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteVotesModifiedEvent event) {
 		var session = new VotingSession(event.getTimestamp(), event.getVoterIds());
 
-		return new QuoteEntityImpl(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
+		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
 				model.getMessageId(), model.getReceives(), model.getVerdict(), session, model.getRequiredVoteCount());
 	}
