@@ -16,7 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.ReceiveQuoteReqDto;
-import com.wisdom.quote.service.QuoteServiceModel;
+import com.wisdom.quote.projection.QuoteProjection;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 @RestController
@@ -29,7 +29,7 @@ public class ServerQuotesController {
 	private TimeService timeSvc;
 
 	@GetMapping("/random")
-	private QuoteServiceModel getRandomQuote(@PathVariable String serverId) {
+	private QuoteProjection getRandomQuote(@PathVariable String serverId) {
 		// TODO restore this functionality
 		return null;
 	}

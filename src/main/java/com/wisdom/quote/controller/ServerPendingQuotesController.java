@@ -27,7 +27,6 @@ import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.projection.QuoteProjection;
 import com.wisdom.quote.projection.QuoteProjectionServiceV2;
-import com.wisdom.quote.service.PendingQuoteServiceModel;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 /**
@@ -88,7 +87,7 @@ public class ServerPendingQuotesController {
 	}
 
 	@GetMapping
-	private List<PendingQuoteServiceModel> getPendingQuotes(@PathVariable String serverId) {
+	private List<QuoteProjection> getPendingQuotes(@PathVariable String serverId) {
 		// TODO restore this
 		return null;
 	}
