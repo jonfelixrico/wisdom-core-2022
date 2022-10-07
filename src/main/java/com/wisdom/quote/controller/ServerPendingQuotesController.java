@@ -93,8 +93,8 @@ public class ServerPendingQuotesController {
 		return null;
 	}
 
-	@PutMapping("/{quoteId}/status")
-	private void flagQuoteAsDeleted(@PathVariable String serverId, @PathVariable String quoteId,
+	@PostMapping("/{quoteId}/status")
+	private void declareStatus(@PathVariable String serverId, @PathVariable String quoteId,
 			@RequestBody QuoteDeclareStatusDto body) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
 		if (!writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
