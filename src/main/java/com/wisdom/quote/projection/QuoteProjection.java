@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
+import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.Verdict;
 import com.wisdom.quote.entity.VotingSession;
 
@@ -13,16 +14,18 @@ public abstract class QuoteProjection extends QuoteEntity {
 
 	public QuoteProjection(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			Verdict verdict, VotingSession votingSession, Integer requiredVoteCount, Long revision) {
+			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount,
+			Long revision) {
 		super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-				verdict, votingSession, requiredVoteCount);
+				statusDeclaration, votingSession, requiredVoteCount);
 		this.revision = revision;
 	}
-	
+
 	protected QuoteProjection(QuoteEntity base, long revision) {
 		this(base.getId(), base.getContent(), base.getAuthorId(), base.getSubmitterId(), base.getSubmitDt(),
 				base.getExpirationDt(), base.getServerId(), base.getChannelId(), base.getMessageId(),
-				base.getReceives(), base.getVerdict(), base.getVotingSession(), base.getRequiredVoteCount(), revision);
+				base.getReceives(), base.getStatusDeclaration(), base.getVotingSession(), base.getRequiredVoteCount(),
+				revision);
 	}
 
 	public Long getRevision() {
