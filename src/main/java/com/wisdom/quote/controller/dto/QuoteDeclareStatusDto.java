@@ -8,10 +8,6 @@ public class QuoteDeclareStatusDto {
 	@NotNull
 	private Status status;
 
-	public QuoteDeclareStatusDto(Status status) {
-		this.status = status;
-	}
-
 	public Status getStatus() {
 		return status;
 	}
