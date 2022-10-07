@@ -19,7 +19,7 @@ import com.wisdom.quote.writemodel.QuoteWriteService;
 
 @RestController
 @RequestMapping("/server/{serverId}/quote")
-public class ServerQuotesController {
+public class QuotesWriteController {
 	@Autowired
 	private QuoteWriteService writeSvc;
 
