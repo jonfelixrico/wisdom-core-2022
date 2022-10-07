@@ -27,7 +27,6 @@ import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.QuoteDeclareStatusDto;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.writemodel.QuoteProjection;
-import com.wisdom.quote.writemodel.QuoteProjectionService;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 /**
@@ -43,9 +42,6 @@ public class ServerPendingQuotesController {
 
 	@Autowired
 	private TimeService timeSvc;
-
-	@Autowired
-	private QuoteProjectionService projSvc;
 
 	@PostMapping
 	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {
@@ -79,12 +75,8 @@ public class ServerPendingQuotesController {
 	@GetMapping("/{quoteId}")
 	private QuoteProjection getPendingQuote(@PathVariable String serverId, @PathVariable String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
-		var proj = projSvc.getProjection(quoteId);
-		if (!proj.getServerId().equals(serverId) || proj.getStatusDeclaration() != null) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-
-		return proj;
+		// TODO restore this functionality
+		return null;
 	}
 
 	@GetMapping
