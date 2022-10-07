@@ -1,13 +1,19 @@
 package com.wisdom.quote.controller.dto;
 
-import java.time.Instant;
+import javax.validation.constraints.NotNull;
 
 import com.wisdom.quote.entity.Status;
-import com.wisdom.quote.entity.StatusDeclaration;
 
-public class QuoteDeclareStatusDto extends StatusDeclaration {
-	public QuoteDeclareStatusDto(Status type, Instant timestamp) {
-		super(type, timestamp);
-		// TODO Auto-generated constructor stub
+public class QuoteDeclareStatusDto {
+	@NotNull
+	private Status status;
+
+	public QuoteDeclareStatusDto(Status status) {
+		this.status = status;
 	}
+
+	public Status getStatus() {
+		return status;
+	}
+
 }

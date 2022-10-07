@@ -9,6 +9,7 @@ import com.wisdom.eventstoredb.utils.EventAppendService;
 import com.wisdom.quote.entity.QuoteBehavior;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
+import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
@@ -37,9 +38,9 @@ public class QuoteWriteModel extends QuoteBehavior {
 				new QuoteReceivedEvent(getId(), receiveId, receiverId, receiveDt, serverId, channelId, messageId));
 	}
 
-	public void declareStatus(StatusDeclaration declaration) {
-		super.declareStatus(declaration);
-		buffer.pushEvent(new QuoteStatusDeclaredEvent(getId(), declaration.getStatus(), declaration.getTimestamp()));
+	public void declareStatus(Status status, Instant timestamp) {
+		super.declareStatus(new StatusDeclaration(status, timestamp));
+		buffer.pushEvent(new QuoteStatusDeclaredEvent(getId(), status, timestamp));
 	}
 
 	public void save() throws Exception {

@@ -102,7 +102,7 @@ public class ServerPendingQuotesController {
 		}
 
 		try {
-			writeModel.declareStatus(body);
+			writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
 			writeModel.save();
 		} catch (IllegalStateException e) {
 			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
