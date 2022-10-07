@@ -12,13 +12,12 @@ import org.springframework.stereotype.Service;
 import com.wisdom.eventstoredb.utils.Event;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
-import com.wisdom.quote.entity.Verdict;
-import com.wisdom.quote.entity.VerdictStatus;
+import com.wisdom.quote.entity.Status;
+import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 import com.wisdom.quote.writemodel.events.BaseQuoteEvent;
-import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
-import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
+import com.wisdom.quote.writemodel.events.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
@@ -28,9 +27,8 @@ class QuoteEventsReducer {
 
 	public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
 			QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
-			QuoteReceivedEvent.class, QuoteFlaggedAsExpiredBySystemEvent.EVENT_TYPE,
-			QuoteFlaggedAsExpiredBySystemEvent.class, QuoteApprovedBySystemEvent.EVENT_TYPE,
-			QuoteApprovedBySystemEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE, QuoteVotesModifiedEvent.class);
+			QuoteReceivedEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE, QuoteVotesModifiedEvent.class,
+			QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class);
 
 	@SuppressWarnings("unchecked")
 	public Class<BaseQuoteEvent> getEventClassFromType(String eventType) {
@@ -67,12 +65,8 @@ class QuoteEventsReducer {
 			return reduce(baseModel, (QuoteReceivedEvent) event);
 		}
 
-		if (event instanceof QuoteFlaggedAsExpiredBySystemEvent) {
-			return reduce(baseModel, (QuoteFlaggedAsExpiredBySystemEvent) event);
-		}
-
-		if (event instanceof QuoteApprovedBySystemEvent) {
-			return reduce(baseModel, (QuoteApprovedBySystemEvent) event);
+		if (event instanceof QuoteStatusDeclaredEvent) {
+			return reduce(baseModel, (QuoteStatusDeclaredEvent) event);
 		}
 
 		if (event instanceof QuoteVotesModifiedEvent) {
@@ -111,7 +105,7 @@ class QuoteEventsReducer {
 
 		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), newReceives, model.getVerdict(), model.getVotingSession(),
+				model.getMessageId(), newReceives, model.getStatusDeclaration(), model.getVotingSession(),
 				model.getRequiredVoteCount());
 	}
 
@@ -122,28 +116,12 @@ class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteFlaggedAsExpiredBySystemEvent event) {
-		Verdict newVerdict = new Verdict(VerdictStatus.EXPIRED, event.getTimestamp());
+	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteStatusDeclaredEvent event) {
+		StatusDeclaration declaration = new StatusDeclaration(Status.EXPIRED, event.getTimestamp());
 
 		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getReceives(), newVerdict, model.getVotingSession(),
-				model.getRequiredVoteCount());
-	}
-
-	/**
-	 * Processes system-triggered approval
-	 * 
-	 * @param model
-	 * @param event
-	 * @return
-	 */
-	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteApprovedBySystemEvent event) {
-		Verdict newVerdict = new Verdict(VerdictStatus.APPROVED, event.getTimestamp());
-
-		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getReceives(), newVerdict, model.getVotingSession(),
+				model.getMessageId(), model.getReceives(), declaration, model.getVotingSession(),
 				model.getRequiredVoteCount());
 	}
 
@@ -152,6 +130,7 @@ class QuoteEventsReducer {
 
 		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
 				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getReceives(), model.getVerdict(), session, model.getRequiredVoteCount());
+				model.getMessageId(), model.getReceives(), model.getStatusDeclaration(), session,
+				model.getRequiredVoteCount());
 	}
 }
