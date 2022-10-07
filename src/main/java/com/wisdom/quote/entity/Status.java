@@ -11,11 +11,11 @@ public class Status {
 		this.timestamp = timestamp;
 	}
 
-	StatusType getType() {
+	public StatusType getType() {
 		return type;
 	}
 
-	Instant getTimestamp() {
+	public Instant getTimestamp() {
 		return timestamp;
 	}
 
