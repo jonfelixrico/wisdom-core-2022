@@ -24,6 +24,7 @@ public class QuoteEntity {
 	private VotingSession votingSession;
 	private Integer requiredVoteCount;
 
+	@Deprecated
 	public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			Verdict verdict, VotingSession votingSession, Integer requiredVoteCount) {
@@ -44,7 +45,7 @@ public class QuoteEntity {
 
 	public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			Verdict verdict, StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount) {
+			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -55,7 +56,6 @@ public class QuoteEntity {
 		this.channelId = channelId;
 		this.messageId = messageId;
 		this.receives = receives;
-		this.verdict = verdict;
 		this.statusDeclaration = status;
 		this.votingSession = votingSession;
 		this.requiredVoteCount = requiredVoteCount;
