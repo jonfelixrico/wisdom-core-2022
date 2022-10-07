@@ -28,6 +28,7 @@ public abstract class QuoteBehavior extends QuoteEntity {
 		clone.add(receive);
 	}
 
+	@Deprecated
 	protected void approve(Instant timestamp) {
 		if (getVerdict() != null) {
 			throw new IllegalStateException("Quote can no longer be approved.");
@@ -36,6 +37,7 @@ public abstract class QuoteBehavior extends QuoteEntity {
 		setVerdict(new Verdict(VerdictStatus.APPROVED, timestamp));
 	}
 
+	@Deprecated
 	protected void flagAsExpired(Instant timestamp) {
 		if (getVerdict() != null) {
 			throw new IllegalStateException("Quote can no longer be flagged as expired.");

@@ -2,6 +2,7 @@ package com.wisdom.quote.writemodel.events;
 
 import java.time.Instant;
 
+@Deprecated
 public class QuoteApprovedBySystemEvent extends BaseQuoteEvent {
 	public static final String EVENT_TYPE = "QUOTE_APPROVED_BY_SYSTEM";
 

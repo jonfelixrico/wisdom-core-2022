@@ -37,12 +37,14 @@ public class QuoteWriteModel extends QuoteBehavior {
 				new QuoteReceivedEvent(getId(), receiveId, receiverId, receiveDt, serverId, channelId, messageId));
 	}
 
+	@Deprecated
 	public void approveBySystem(Instant timestamp) {
 		// TODO Auto-generated method stub
 		super.approve(timestamp);
 		buffer.pushEvent(new QuoteApprovedBySystemEvent(getId(), timestamp));
 	}
 
+	@Deprecated
 	public void flagAsExpiredBySystem(Instant timestamp) {
 		super.flagAsExpired(timestamp);
 		buffer.pushEvent(new QuoteFlaggedAsExpiredBySystemEvent(getId(), timestamp));

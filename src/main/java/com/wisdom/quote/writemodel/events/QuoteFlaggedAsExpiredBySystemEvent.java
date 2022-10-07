@@ -2,6 +2,7 @@ package com.wisdom.quote.writemodel.events;
 
 import java.time.Instant;
 
+@Deprecated
 public class QuoteFlaggedAsExpiredBySystemEvent extends BaseQuoteEvent {
 	public static final String EVENT_TYPE = "QUOTE_FLAGGED_AS_EXPIRED_BY_SYSTEM";
 
