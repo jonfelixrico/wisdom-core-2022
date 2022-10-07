@@ -24,25 +24,6 @@ public class QuoteEntity {
 	private VotingSession votingSession;
 	private Integer requiredVoteCount;
 
-	@Deprecated
-	public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
-			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			Verdict verdict, VotingSession votingSession, Integer requiredVoteCount) {
-		this.id = id;
-		this.content = content;
-		this.authorId = authorId;
-		this.submitterId = submitterId;
-		this.submitDt = submitDt;
-		this.expirationDt = expirationDt;
-		this.serverId = serverId;
-		this.channelId = channelId;
-		this.messageId = messageId;
-		this.receives = receives;
-		this.verdict = verdict;
-		this.votingSession = votingSession;
-		this.requiredVoteCount = requiredVoteCount;
-	}
-
 	public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount) {
