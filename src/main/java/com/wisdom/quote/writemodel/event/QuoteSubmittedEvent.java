@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel.events;
+package com.wisdom.quote.writemodel.event;
 
 import java.time.Instant;
 

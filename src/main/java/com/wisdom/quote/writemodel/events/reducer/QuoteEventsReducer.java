@@ -15,11 +15,11 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
-import com.wisdom.quote.writemodel.events.BaseQuoteEvent;
-import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
-import com.wisdom.quote.writemodel.events.QuoteStatusDeclaredEvent;
-import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
+import com.wisdom.quote.writemodel.event.BaseQuoteEvent;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
+import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
+import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
+import com.wisdom.quote.writemodel.event.QuoteVotesModifiedEvent;
 
 @Service
 public class QuoteEventsReducer {
