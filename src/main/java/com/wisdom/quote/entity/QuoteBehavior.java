@@ -1,6 +1,5 @@
 package com.wisdom.quote.entity;
 
-import java.time.Instant;
 import java.util.List;
 
 public abstract class QuoteBehavior extends QuoteEntity {
@@ -8,11 +7,12 @@ public abstract class QuoteBehavior extends QuoteEntity {
 	protected QuoteBehavior(QuoteEntity entity) {
 		super(entity.getId(), entity.getContent(), entity.getAuthorId(), entity.getSubmitterId(), entity.getSubmitDt(),
 				entity.getExpirationDt(), entity.getServerId(), entity.getChannelId(), entity.getMessageId(),
-				entity.getReceives(), entity.getVerdict(), entity.getVotingSession(), entity.getRequiredVoteCount());
+				entity.getReceives(), entity.getStatusDeclaration(), entity.getVotingSession(),
+				entity.getRequiredVoteCount());
 	}
 
 	protected void updateVotingSession(VotingSession votingSession) {
-		if (getVerdict() != null) {
+		if (getStatusDeclaration() != null) {
 			throw new IllegalStateException("This quote is no longer in its voting phase.");
 		}
 
@@ -20,7 +20,7 @@ public abstract class QuoteBehavior extends QuoteEntity {
 	}
 
 	protected void receive(Receive receive) {
-		if (getVerdict() == null || getVerdict().getStatus() != VerdictStatus.APPROVED) {
+		if (getStatusDeclaration() == null || getStatusDeclaration().getStatus() != Status.APPROVED) {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
 
@@ -28,24 +28,12 @@ public abstract class QuoteBehavior extends QuoteEntity {
 		clone.add(receive);
 	}
 
-	protected void approve(Instant timestamp) {
-		if (getVerdict() != null) {
-			throw new IllegalStateException("Quote can no longer be approved.");
+	protected void declareStatus(StatusDeclaration declaration) {
+		if (getStatusDeclaration() != null) {
+			throw new IllegalStateException("Quote already has a status.");
 		}
 
-		setVerdict(new Verdict(VerdictStatus.APPROVED, timestamp));
-	}
-
-	protected void flagAsExpired(Instant timestamp) {
-		if (getVerdict() != null) {
-			throw new IllegalStateException("Quote can no longer be flagged as expired.");
-		}
-
-		if (timestamp.isBefore(getExpirationDt())) {
-			throw new IllegalStateException("Provided expiration date is earlier than quote expiration date.");
-		}
-
-		setVerdict(new Verdict(VerdictStatus.EXPIRED, timestamp));
+		setStatusDeclaration(declaration);
 	}
 
 }

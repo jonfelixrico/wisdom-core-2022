@@ -18,14 +18,14 @@ public class QuoteEntity {
 	private String messageId;
 
 	private List<Receive> receives;
-	private Verdict verdict;
+	private StatusDeclaration statusDeclaration;
 
 	private VotingSession votingSession;
 	private Integer requiredVoteCount;
 
 	public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			Verdict verdict, VotingSession votingSession, Integer requiredVoteCount) {
+			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -36,7 +36,7 @@ public class QuoteEntity {
 		this.channelId = channelId;
 		this.messageId = messageId;
 		this.receives = receives;
-		this.verdict = verdict;
+		this.statusDeclaration = status;
 		this.votingSession = votingSession;
 		this.requiredVoteCount = requiredVoteCount;
 	}
@@ -79,10 +79,6 @@ public class QuoteEntity {
 
 	public List<Receive> getReceives() {
 		return receives;
-	}
-
-	public Verdict getVerdict() {
-		return verdict;
 	}
 
 	public VotingSession getVotingSession() {
@@ -133,10 +129,6 @@ public class QuoteEntity {
 		this.receives = receives;
 	}
 
-	void setVerdict(Verdict verdict) {
-		this.verdict = verdict;
-	}
-
 	void setVotingSession(VotingSession votingSession) {
 		this.votingSession = votingSession;
 	}
@@ -145,4 +137,11 @@ public class QuoteEntity {
 		this.requiredVoteCount = requiredVoteCount;
 	}
 
+	public StatusDeclaration getStatusDeclaration() {
+		return statusDeclaration;
+	}
+
+	void setStatusDeclaration(StatusDeclaration status) {
+		this.statusDeclaration = status;
+	}
 }

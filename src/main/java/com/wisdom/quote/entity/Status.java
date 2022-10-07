@@ -1,5 +1,5 @@
 package com.wisdom.quote.entity;
 
-public enum VerdictStatus {
+public enum Status {
 	EXPIRED, APPROVED,
 }

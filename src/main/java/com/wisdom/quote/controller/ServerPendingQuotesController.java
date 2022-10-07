@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.wisdom.common.service.TimeService;
+import com.wisdom.quote.controller.dto.QuoteDeclareStatusDto;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.projection.QuoteProjection;
 import com.wisdom.quote.projection.QuoteProjectionService;
@@ -79,7 +80,7 @@ public class ServerPendingQuotesController {
 	private QuoteProjection getPendingQuote(@PathVariable String serverId, @PathVariable String quoteId)
 			throws InterruptedException, ExecutionException, IOException {
 		var proj = projSvc.getProjection(quoteId);
-		if (!proj.getServerId().equals(serverId) || proj.getVerdict() != null) {
+		if (!proj.getServerId().equals(serverId) || proj.getStatusDeclaration() != null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
@@ -92,30 +93,16 @@ public class ServerPendingQuotesController {
 		return null;
 	}
 
-	@PutMapping("/{quoteId}/expire")
-	private void flagQuoteAsDeleted(@PathVariable String serverId, @PathVariable String quoteId) throws Exception {
+	@PostMapping("/{quoteId}/status")
+	private void declareStatus(@PathVariable String serverId, @PathVariable String quoteId,
+			@RequestBody QuoteDeclareStatusDto body) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
-		if (!writeModel.getServerId().equals(serverId) || writeModel.getVerdict() != null) {
+		if (!writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			writeModel.flagAsExpiredBySystem(timeSvc.getCurrentTime());
-			writeModel.save();
-		} catch (IllegalStateException e) {
-			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
-		}
-	}
-
-	@PutMapping("/{quoteId}/approve")
-	private void approveQuote(@PathVariable String serverId, @PathVariable String quoteId) throws Exception {
-		var writeModel = writeSvc.get(quoteId);
-		if (!writeModel.getServerId().equals(serverId) || writeModel.getVerdict() != null) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-		}
-
-		try {
-			writeModel.approveBySystem(timeSvc.getCurrentTime());
+			writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
 			writeModel.save();
 		} catch (IllegalStateException e) {
 			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);

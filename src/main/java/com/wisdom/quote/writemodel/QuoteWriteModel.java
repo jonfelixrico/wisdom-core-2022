@@ -9,10 +9,11 @@ import com.wisdom.eventstoredb.utils.EventAppendService;
 import com.wisdom.quote.entity.QuoteBehavior;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
+import com.wisdom.quote.entity.Status;
+import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
-import com.wisdom.quote.writemodel.events.QuoteApprovedBySystemEvent;
-import com.wisdom.quote.writemodel.events.QuoteFlaggedAsExpiredBySystemEvent;
 import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
+import com.wisdom.quote.writemodel.events.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
 
 public class QuoteWriteModel extends QuoteBehavior {
@@ -37,15 +38,9 @@ public class QuoteWriteModel extends QuoteBehavior {
 				new QuoteReceivedEvent(getId(), receiveId, receiverId, receiveDt, serverId, channelId, messageId));
 	}
 
-	public void approveBySystem(Instant timestamp) {
-		// TODO Auto-generated method stub
-		super.approve(timestamp);
-		buffer.pushEvent(new QuoteApprovedBySystemEvent(getId(), timestamp));
-	}
-
-	public void flagAsExpiredBySystem(Instant timestamp) {
-		super.flagAsExpired(timestamp);
-		buffer.pushEvent(new QuoteFlaggedAsExpiredBySystemEvent(getId(), timestamp));
+	public void declareStatus(Status status, Instant timestamp) {
+		super.declareStatus(new StatusDeclaration(status, timestamp));
+		buffer.pushEvent(new QuoteStatusDeclaredEvent(getId(), status, timestamp));
 	}
 
 	public void save() throws Exception {
