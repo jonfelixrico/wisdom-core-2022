@@ -8,7 +8,7 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 
-public class QuoteProjection extends QuoteEntity {
+class QuoteProjection extends QuoteEntity {
 	private Long revision;
 
 	public QuoteProjection(String id, String content, String authorId, String submitterId, Instant submitDt,

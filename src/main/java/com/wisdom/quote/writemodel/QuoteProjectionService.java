@@ -18,7 +18,7 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.writemodel.events.reducer.QuoteEventsReducer;
 
 @Service
-public class QuoteProjectionService {
+class QuoteProjectionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
 
 	@Autowired
