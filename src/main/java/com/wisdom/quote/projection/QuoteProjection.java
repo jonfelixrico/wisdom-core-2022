@@ -6,7 +6,6 @@ import java.util.List;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
-import com.wisdom.quote.entity.Verdict;
 import com.wisdom.quote.entity.VotingSession;
 
 public abstract class QuoteProjection extends QuoteEntity {

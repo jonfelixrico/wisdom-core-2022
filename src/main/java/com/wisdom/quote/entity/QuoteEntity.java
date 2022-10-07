@@ -18,7 +18,6 @@ public class QuoteEntity {
 	private String messageId;
 
 	private List<Receive> receives;
-	private Verdict verdict;
 	private StatusDeclaration statusDeclaration;
 
 	private VotingSession votingSession;
@@ -82,10 +81,6 @@ public class QuoteEntity {
 		return receives;
 	}
 
-	public Verdict getVerdict() {
-		return verdict;
-	}
-
 	public VotingSession getVotingSession() {
 		return votingSession;
 	}
@@ -132,10 +127,6 @@ public class QuoteEntity {
 
 	void setReceives(List<Receive> receives) {
 		this.receives = receives;
-	}
-
-	void setVerdict(Verdict verdict) {
-		this.verdict = verdict;
 	}
 
 	void setVotingSession(VotingSession votingSession) {

@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
-import com.wisdom.quote.entity.Verdict;
 import com.wisdom.quote.entity.VotingSession;
 
 @Document("quote-snapshot")

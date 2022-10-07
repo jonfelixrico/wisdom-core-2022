@@ -1,6 +1,5 @@
 package com.wisdom.quote.entity;
 
-import java.time.Instant;
 import java.util.List;
 
 public abstract class QuoteBehavior extends QuoteEntity {
@@ -35,28 +34,6 @@ public abstract class QuoteBehavior extends QuoteEntity {
 		}
 
 		setStatusDeclaration(declaration);
-	}
-
-	@Deprecated
-	protected void approve(Instant timestamp) {
-		if (getVerdict() != null) {
-			throw new IllegalStateException("Quote can no longer be approved.");
-		}
-
-		setVerdict(new Verdict(VerdictStatus.APPROVED, timestamp));
-	}
-
-	@Deprecated
-	protected void flagAsExpired(Instant timestamp) {
-		if (getVerdict() != null) {
-			throw new IllegalStateException("Quote can no longer be flagged as expired.");
-		}
-
-		if (timestamp.isBefore(getExpirationDt())) {
-			throw new IllegalStateException("Provided expiration date is earlier than quote expiration date.");
-		}
-
-		setVerdict(new Verdict(VerdictStatus.EXPIRED, timestamp));
 	}
 
 }
