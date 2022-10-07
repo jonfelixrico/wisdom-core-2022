@@ -2,6 +2,7 @@ package com.wisdom.quote.entity;
 
 import java.time.Instant;
 
+@Deprecated
 public class Verdict {
 	private Instant verdictDt;
 	private VerdictStatus status;
