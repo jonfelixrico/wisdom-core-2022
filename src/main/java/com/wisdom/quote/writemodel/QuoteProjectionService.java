@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel.projection;
+package com.wisdom.quote.writemodel;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -75,6 +75,6 @@ public class QuoteProjectionService {
 			revision = event.getStreamRevision().getValueUnsigned();
 		}
 
-		return new QuoteProjectionImpl(state, revision);
+		return new QuoteProjection(state, revision);
 	}
 }

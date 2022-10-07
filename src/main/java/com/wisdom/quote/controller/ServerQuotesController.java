@@ -16,8 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.ReceiveQuoteReqDto;
+import com.wisdom.quote.writemodel.QuoteProjection;
 import com.wisdom.quote.writemodel.QuoteWriteService;
-import com.wisdom.quote.writemodel.projection.QuoteProjection;
 
 @RestController
 @RequestMapping("/server/{serverId}/quote")

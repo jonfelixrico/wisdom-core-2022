@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel.projection;
+package com.wisdom.quote.writemodel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

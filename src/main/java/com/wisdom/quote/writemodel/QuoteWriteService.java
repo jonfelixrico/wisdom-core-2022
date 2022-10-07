@@ -11,7 +11,6 @@ import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.eventstoredb.utils.EventAppendService;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.projection.QuoteProjectionService;
 
 @Service
 public class QuoteWriteService {

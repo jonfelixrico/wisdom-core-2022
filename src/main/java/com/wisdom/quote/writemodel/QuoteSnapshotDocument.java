@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel.projection;
+package com.wisdom.quote.writemodel;
 
 import java.time.Instant;
 import java.util.List;

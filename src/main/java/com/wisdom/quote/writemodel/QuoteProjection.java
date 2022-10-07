@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel.projection;
+package com.wisdom.quote.writemodel;
 
 import java.time.Instant;
 import java.util.List;
@@ -8,7 +8,7 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 
-public abstract class QuoteProjection extends QuoteEntity {
+public class QuoteProjection extends QuoteEntity {
 	private Long revision;
 
 	public QuoteProjection(String id, String content, String authorId, String submitterId, Instant submitDt,
