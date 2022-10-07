@@ -12,7 +12,7 @@ public abstract class QuoteBehavior extends QuoteEntity {
 	}
 
 	protected void updateVotingSession(VotingSession votingSession) {
-		if (getVerdict() != null) {
+		if (getStatusDeclaration() != null) {
 			throw new IllegalStateException("This quote is no longer in its voting phase.");
 		}
 
@@ -20,12 +20,20 @@ public abstract class QuoteBehavior extends QuoteEntity {
 	}
 
 	protected void receive(Receive receive) {
-		if (getVerdict() == null || getVerdict().getStatus() != VerdictStatus.APPROVED) {
+		if (getStatusDeclaration() == null || getStatusDeclaration().getStatus() != Status.APPROVED) {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
 
 		var clone = List.copyOf(getReceives());
 		clone.add(receive);
+	}
+	
+	protected void declareStatus(StatusDeclaration declaration) {
+		if (getStatusDeclaration() != null) {
+			throw new IllegalStateException("Quote already has a status.");
+		}
+		
+		setStatusDeclaration(declaration);
 	}
 
 	@Deprecated
