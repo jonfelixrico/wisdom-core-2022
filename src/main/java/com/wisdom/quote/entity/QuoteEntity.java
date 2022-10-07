@@ -89,51 +89,51 @@ public class QuoteEntity {
 		return requiredVoteCount;
 	}
 
-	void setId(String id) {
+	protected void setId(String id) {
 		this.id = id;
 	}
 
-	void setContent(String content) {
+	protected void setContent(String content) {
 		this.content = content;
 	}
 
-	void setAuthorId(String authorId) {
+	protected void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
 
-	void setSubmitterId(String submitterId) {
+	protected void setSubmitterId(String submitterId) {
 		this.submitterId = submitterId;
 	}
 
-	void setSubmitDt(Instant submitDt) {
+	protected void setSubmitDt(Instant submitDt) {
 		this.submitDt = submitDt;
 	}
 
-	void setExpirationDt(Instant expirationDt) {
+	protected void setExpirationDt(Instant expirationDt) {
 		this.expirationDt = expirationDt;
 	}
 
-	void setServerId(String serverId) {
+	protected void setServerId(String serverId) {
 		this.serverId = serverId;
 	}
 
-	void setChannelId(String channelId) {
+	protected void setChannelId(String channelId) {
 		this.channelId = channelId;
 	}
 
-	void setMessageId(String messageId) {
+	protected void setMessageId(String messageId) {
 		this.messageId = messageId;
 	}
 
-	void setReceives(List<Receive> receives) {
+	protected void setReceives(List<Receive> receives) {
 		this.receives = receives;
 	}
 
-	void setVotingSession(VotingSession votingSession) {
+	protected void setVotingSession(VotingSession votingSession) {
 		this.votingSession = votingSession;
 	}
 
-	void setRequiredVoteCount(Integer requiredVoteCount) {
+	protected void setRequiredVoteCount(Integer requiredVoteCount) {
 		this.requiredVoteCount = requiredVoteCount;
 	}
 
@@ -141,7 +141,7 @@ public class QuoteEntity {
 		return statusDeclaration;
 	}
 
-	void setStatusDeclaration(StatusDeclaration status) {
+	protected void setStatusDeclaration(StatusDeclaration status) {
 		this.statusDeclaration = status;
 	}
 }

@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,23 +15,16 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.ReceiveQuoteReqDto;
-import com.wisdom.quote.projection.QuoteProjection;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 @RestController
 @RequestMapping("/server/{serverId}/quote")
-public class ServerQuotesController {
+public class QuotesWriteController {
 	@Autowired
 	private QuoteWriteService writeSvc;
 
 	@Autowired
 	private TimeService timeSvc;
-
-	@GetMapping("/random")
-	private QuoteProjection getRandomQuote(@PathVariable String serverId) {
-		// TODO restore this functionality
-		return null;
-	}
 
 	@PostMapping("/{quoteId}/receive")
 	private void receiveQuote(@PathVariable String serverId, @PathVariable String quoteId,

@@ -12,9 +12,9 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
-import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
-import com.wisdom.quote.writemodel.events.QuoteStatusDeclaredEvent;
-import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
+import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
+import com.wisdom.quote.writemodel.event.QuoteVotesModifiedEvent;
 
 public class QuoteWriteModel extends QuoteBehavior {
 	private EventAppendBuffer buffer;

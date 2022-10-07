@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import com.wisdom.quote.entity.Status;
 
-public class QuoteDeclareStatusDto {
+public class QuoteDeclareStatusReqDto {
 	@NotNull
 	private Status status;
 

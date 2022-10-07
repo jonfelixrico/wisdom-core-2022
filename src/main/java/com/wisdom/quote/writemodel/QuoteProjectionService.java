@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection;
+package com.wisdom.quote.writemodel;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -15,9 +15,10 @@ import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.entity.QuoteEntity;
+import com.wisdom.quote.writemodel.events.reducer.QuoteEventsReducer;
 
 @Service
-public class QuoteProjectionService {
+class QuoteProjectionService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
 
 	@Autowired
@@ -74,6 +75,6 @@ public class QuoteProjectionService {
 			revision = event.getStreamRevision().getValueUnsigned();
 		}
 
-		return new QuoteProjectionImpl(state, revision);
+		return new QuoteProjection(state, revision);
 	}
 }

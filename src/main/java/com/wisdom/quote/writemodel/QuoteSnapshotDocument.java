@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection;
+package com.wisdom.quote.writemodel;
 
 import java.time.Instant;
 import java.util.List;
@@ -12,9 +12,9 @@ import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 
 @Document("quote-snapshot")
-class QuoteDb extends QuoteProjection {
+class QuoteSnapshotDocument extends QuoteProjection {
 	@PersistenceCreator
-	public QuoteDb(String id, String content, String authorId, String submitterId, Instant submitDt,
+	public QuoteSnapshotDocument(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount,
 			Long revision) {
@@ -22,7 +22,7 @@ class QuoteDb extends QuoteProjection {
 				statusDeclaration, votingSession, requiredVoteCount, revision);
 	}
 
-	QuoteDb(QuoteEntity base, long revision) {
+	QuoteSnapshotDocument(QuoteEntity base, long revision) {
 		super(base, revision);
 	}
 }
