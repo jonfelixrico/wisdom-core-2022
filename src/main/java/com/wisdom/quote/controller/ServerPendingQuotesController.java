@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.wisdom.common.service.TimeService;
-import com.wisdom.quote.controller.dto.QuoteDeclareStatusDto;
+import com.wisdom.quote.controller.dto.QuoteDeclareStatusReqDto;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
@@ -73,7 +73,7 @@ public class ServerPendingQuotesController {
 
 	@PostMapping("/{quoteId}/status")
 	private void declareStatus(@PathVariable String serverId, @PathVariable String quoteId,
-			@RequestBody QuoteDeclareStatusDto body) throws Exception {
+			@RequestBody QuoteDeclareStatusReqDto body) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
 		if (!writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
