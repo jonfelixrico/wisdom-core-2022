@@ -3,7 +3,6 @@
  */
 package com.wisdom.quote.controller;
 
-import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
