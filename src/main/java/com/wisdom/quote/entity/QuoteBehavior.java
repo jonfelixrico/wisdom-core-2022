@@ -8,7 +8,8 @@ public abstract class QuoteBehavior extends QuoteEntity {
 	protected QuoteBehavior(QuoteEntity entity) {
 		super(entity.getId(), entity.getContent(), entity.getAuthorId(), entity.getSubmitterId(), entity.getSubmitDt(),
 				entity.getExpirationDt(), entity.getServerId(), entity.getChannelId(), entity.getMessageId(),
-				entity.getReceives(), entity.getVerdict(), entity.getVotingSession(), entity.getRequiredVoteCount());
+				entity.getReceives(), entity.getStatusDeclaration(), entity.getVotingSession(),
+				entity.getRequiredVoteCount());
 	}
 
 	protected void updateVotingSession(VotingSession votingSession) {
@@ -27,12 +28,12 @@ public abstract class QuoteBehavior extends QuoteEntity {
 		var clone = List.copyOf(getReceives());
 		clone.add(receive);
 	}
-	
+
 	protected void declareStatus(StatusDeclaration declaration) {
 		if (getStatusDeclaration() != null) {
 			throw new IllegalStateException("Quote already has a status.");
 		}
-		
+
 		setStatusDeclaration(declaration);
 	}
 
