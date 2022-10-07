@@ -8,6 +8,16 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 
+/**
+ * Makes reductions more readable.
+ * 
+ * We could just use the {@link QuoteEntity} constructor to achieve the same goal (of instantiating and "mutating"
+ * an entity), but that has proven itself to be unreadable -- imagine having to call a very large constructor multiple times...
+ * mistakes will be bound to happen. A structured way to do it like this class is the way to go -- less potential for mistakes
+ * but at the same time more readability.
+ *
+ * @author Felix
+ */
 class QuoteReducerModel extends QuoteEntity {
 
 	public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
