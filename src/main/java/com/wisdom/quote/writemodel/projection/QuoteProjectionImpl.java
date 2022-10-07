@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection;
+package com.wisdom.quote.writemodel.projection;
 
 import com.wisdom.quote.entity.QuoteEntity;
 

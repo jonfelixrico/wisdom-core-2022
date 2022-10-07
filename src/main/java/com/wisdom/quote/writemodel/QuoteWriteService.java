@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.eventstoredb.utils.EventAppendService;
 import com.wisdom.quote.entity.QuoteEntity;
-import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
+import com.wisdom.quote.writemodel.projection.QuoteProjectionService;
 
 @Service
 public class QuoteWriteService {

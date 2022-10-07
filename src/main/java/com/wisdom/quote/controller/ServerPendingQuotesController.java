@@ -26,9 +26,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.QuoteDeclareStatusDto;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
-import com.wisdom.quote.projection.QuoteProjection;
-import com.wisdom.quote.projection.QuoteProjectionService;
 import com.wisdom.quote.writemodel.QuoteWriteService;
+import com.wisdom.quote.writemodel.projection.QuoteProjection;
+import com.wisdom.quote.writemodel.projection.QuoteProjectionService;
 
 /**
  * @author Felix

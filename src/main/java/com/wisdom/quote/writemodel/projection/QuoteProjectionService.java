@@ -1,4 +1,4 @@
-package com.wisdom.quote.projection;
+package com.wisdom.quote.writemodel.projection;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
