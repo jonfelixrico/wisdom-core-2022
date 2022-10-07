@@ -26,7 +26,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.QuoteDeclareStatusDto;
 import com.wisdom.quote.controller.dto.SubmitQuoteReqDto;
-import com.wisdom.quote.writemodel.QuoteProjection;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 /**
@@ -70,19 +69,6 @@ public class ServerPendingQuotesController {
 		} catch (IllegalStateException e) {
 			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
 		}
-	}
-
-	@GetMapping("/{quoteId}")
-	private QuoteProjection getPendingQuote(@PathVariable String serverId, @PathVariable String quoteId)
-			throws InterruptedException, ExecutionException, IOException {
-		// TODO restore this functionality
-		return null;
-	}
-
-	@GetMapping
-	private List<QuoteProjection> getPendingQuotes(@PathVariable String serverId) {
-		// TODO restore this
-		return null;
 	}
 
 	@PostMapping("/{quoteId}/status")
