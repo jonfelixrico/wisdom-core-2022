@@ -18,9 +18,10 @@ class QuoteDocument extends QuoteEntity {
 	@PersistenceCreator
 	public QuoteDocument(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount, Long revision) {
+			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount,
+			Long revision) {
 		super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-				status, votingSession, requiredVoteCount);
+				statusDeclaration, votingSession, requiredVoteCount);
 		this.revision = revision;
 	}
 
