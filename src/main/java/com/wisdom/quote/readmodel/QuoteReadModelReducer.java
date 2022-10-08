@@ -44,7 +44,7 @@ class QuoteReadModelReducer {
 	}
 
 	public void reduce(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
-			QuoteCatchUpRevisionOutOfSyncException, UnrecognizedEventTypeException {
+			QuoteCatchUpRevisionOutOfSyncException, UnrecognizedEventTypeException, LaggingRevisionException {
 		switch (event.getEventType()) {
 		case QuoteReceivedEvent.EVENT_TYPE:
 			reduceReceivedEvent(event);
@@ -63,49 +63,44 @@ class QuoteReadModelReducer {
 		}
 	}
 
-	private static void checkIfRevisionIsInSequence(String quoteId, RecordedEvent event, long docRevision)
-			throws QuoteCatchUpRevisionOutOfSyncException {
-		var expectedRevision = event.getStreamRevision().getValueUnsigned() - 1;
-		if (expectedRevision != docRevision) {
+	private static void checkIfRevisionIsLagging(QuoteDocument dbCopy, RecordedEvent eventToApplyToCopy)
+			throws LaggingRevisionException {
+		var eventRevision = eventToApplyToCopy.getStreamRevision().getValueUnsigned();
+		var expectedDbRevision = eventRevision - 1;
+
+		if (dbCopy.getRevision() >= expectedDbRevision) {
 			return;
 		}
 
-		LOGGER.warn("Detected catch-up desync for quote {}; expected revision {} but received {} instead", quoteId,
-				expectedRevision, docRevision);
-		throw new QuoteCatchUpRevisionOutOfSyncException(quoteId, expectedRevision, docRevision);
-	}
-
-	private static void checkIfRevisionIsInSequence(RecordedEvent event, QuoteDocument doc)
-			throws QuoteCatchUpRevisionOutOfSyncException {
-		checkIfRevisionIsInSequence(doc.getId(), event, doc.getRevision());
+		throw new LaggingRevisionException(dbCopy.getId(), dbCopy.getRevision(), eventRevision);
 	}
 
 	private void reduceReceivedEvent(RecordedEvent event)
-			throws StreamReadException, DatabindException, IOException, QuoteCatchUpRevisionOutOfSyncException {
+			throws StreamReadException, DatabindException, IOException, LaggingRevisionException {
 		var payload = mapper.readValue(event.getEventData(), QuoteReceivedEvent.class);
 		var doc = findById(payload.getQuoteId());
 
-		checkIfRevisionIsInSequence(event, doc);
+		checkIfRevisionIsLagging(doc, event);
 
 		var newReceive = new Receive(payload.getReceiveId(), payload.getTimestamp(), payload.getUserId(),
 				payload.getServerId(), payload.getChannelId(), payload.getMessageId());
 		doc.getReceives().add(newReceive);
-		setRevision(event, doc);
 
+		setRevision(event, doc);
 		repo.save(doc);
 	}
 
 	private void reduceStatusDeclaredEvent(RecordedEvent event)
-			throws StreamReadException, DatabindException, IOException, QuoteCatchUpRevisionOutOfSyncException {
+			throws StreamReadException, DatabindException, IOException, LaggingRevisionException {
 		var data = mapper.readValue(event.getEventData(), QuoteStatusDeclaredEvent.class);
 		var doc = findById(data.getQuoteId());
 
-		checkIfRevisionIsInSequence(event, doc);
-
-		setRevision(event, doc);
+		checkIfRevisionIsLagging(doc, event);
 
 		var newStatus = new StatusDeclaration(data.getStatus(), data.getTimestamp());
 		doc.setStatusDeclaration(newStatus);
+
+		setRevision(event, doc);
 		repo.save(doc);
 	}
 
@@ -129,14 +124,15 @@ class QuoteReadModelReducer {
 	}
 
 	private void reduceVotesModifiedEvent(RecordedEvent event)
-			throws StreamReadException, DatabindException, IOException, QuoteCatchUpRevisionOutOfSyncException {
+			throws StreamReadException, DatabindException, IOException, LaggingRevisionException {
 		var data = mapper.readValue(event.getEventData(), QuoteVotesModifiedEvent.class);
 		var doc = findById(data.getQuoteId());
 
-		checkIfRevisionIsInSequence(event, doc);
+		checkIfRevisionIsLagging(doc, event);
 
 		var votingSession = new VotingSession(data.getTimestamp(), data.getVoterIds());
 		doc.setVotingSession(votingSession);
+
 		setRevision(event, doc);
 		repo.save(doc);
 	}
