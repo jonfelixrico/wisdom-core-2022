@@ -73,11 +73,20 @@ class QuoteReadModelCatchUp {
 	private SubscribeToAllOptions getOptions() {
 		SubscriptionFilter filter = SubscriptionFilter.newBuilder().withStreamNamePrefix("quote/")
 				.withEventTypePrefix("QUOTE_").build();
-		return SubscribeToAllOptions.get().filter(filter);
+		var options = SubscribeToAllOptions.get().filter(filter);
+		
+		var position = posSvc.getPosition(POSITION_ID);
+		if (position != null) {
+			LOGGER.info("Starting catch-up from prepare {}, commit {}", position.getPrepareUnsigned(), position.getCommitUnsigned());
+			options.fromPosition(null);
+		}
+		
+		return options;
 	}
 
 	@EventListener
 	private void startCatchUp(ApplicationStartedEvent ctx) throws InterruptedException, ExecutionException {
+		LOGGER.info("Starting catch-up...");
 		esdb.getClient().subscribeToAll(getListener(), getOptions());
 	}
 }
