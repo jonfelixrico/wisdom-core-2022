@@ -10,6 +10,7 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.eventstore.dbclient.SubscribeToAllOptions;
 import com.eventstore.dbclient.Subscription;
@@ -23,7 +24,7 @@ import com.wisdom.eventstoredb.EventStoreDBProvider;
 @Service
 class QuoteReadModelCatchUp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadModelCatchUp.class);
-	
+
 	private static final String POSITION_ID = "quote-readmodel";
 
 	@Autowired
@@ -31,13 +32,37 @@ class QuoteReadModelCatchUp {
 
 	@Autowired
 	private EventStoreDBProvider esdb;
-	
+
 	@Autowired
 	private PositionService posSvc;
-	
-	private void catchUpLaggingModel (LaggingRevisionException cause) {
-		// TODO implement this
-		LOGGER.error("Encoutnered LRE but it is still NOOP", cause);
+
+	private void processLagCatchUpEvent(ResolvedEvent event)
+			throws StreamReadException, DatabindException, IOException {
+		var recordedEvt = event.getEvent();
+		try {
+			reducer.reduce(recordedEvt);
+		} catch (LaggingRevisionException e) {
+			// impossible to have lagging models at this point since we're especially
+			// catching-up
+		} catch (UnrecognizedEventTypeException e) {
+			// suppressed, we don't care about this in this context
+		}
+	}
+
+	private void catchUpLaggingModel(LaggingRevisionException cause, ResolvedEvent event) {
+		try {
+			var startRevision = cause.getActualRevision() + 1;
+			var maxCount = event.getEvent().getStreamRevision().getValueUnsigned() - startRevision + 1; // + 1 for
+																										// inclusiveness
+			var options = ReadStreamOptions.get().fromRevision(cause.getActualRevision() + 1);
+
+			var results = esdb.getClient().readStream(event.getEvent().getStreamId(), maxCount, options).get();
+			for (ResolvedEvent inner : results.getEvents()) {
+				processLagCatchUpEvent(inner);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error encountered while trying to catch-up a lagging model", e);
+		}
 	}
 
 	private void processEvent(ResolvedEvent event) throws StreamReadException, DatabindException, IOException {
@@ -45,7 +70,7 @@ class QuoteReadModelCatchUp {
 		try {
 			reducer.reduce(recordedEvt);
 		} catch (LaggingRevisionException e) {
-			catchUpLaggingModel(e);
+			catchUpLaggingModel(e, event);
 		} catch (UnrecognizedEventTypeException e) {
 			LOGGER.debug("Skipped unrecognized event type {}", e.getEventType());
 		}
@@ -60,7 +85,7 @@ class QuoteReadModelCatchUp {
 				} catch (Exception e) {
 					LOGGER.error("Unexpected exception encountered while processing catch-up event", e);
 				}
-				
+
 				try {
 					posSvc.setPosition(POSITION_ID, event.getEvent().getPosition());
 				} catch (Exception e) {
@@ -74,13 +99,14 @@ class QuoteReadModelCatchUp {
 		SubscriptionFilter filter = SubscriptionFilter.newBuilder().withStreamNamePrefix("quote/")
 				.withEventTypePrefix("QUOTE_").build();
 		var options = SubscribeToAllOptions.get().filter(filter);
-		
+
 		var position = posSvc.getPosition(POSITION_ID);
 		if (position != null) {
-			LOGGER.info("Starting catch-up from prepare {}, commit {}", position.getPrepareUnsigned(), position.getCommitUnsigned());
+			LOGGER.info("Starting catch-up from prepare {}, commit {}", position.getPrepareUnsigned(),
+					position.getCommitUnsigned());
 			options.fromPosition(null);
 		}
-		
+
 		return options;
 	}
 
