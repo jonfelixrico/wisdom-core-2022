@@ -3,6 +3,7 @@ package com.wisdom.quote.readmodel;
 import java.time.Instant;
 import java.util.List;
 
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.wisdom.quote.entity.QuoteEntity;
@@ -14,6 +15,7 @@ import com.wisdom.quote.entity.VotingSession;
 class QuoteDocument extends QuoteEntity {
 	private Long revision;
 
+	@PersistenceCreator
 	public QuoteDocument(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount, Long revision) {
