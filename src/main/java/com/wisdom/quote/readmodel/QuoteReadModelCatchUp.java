@@ -96,8 +96,7 @@ class QuoteReadModelCatchUp {
 	}
 
 	private SubscribeToAllOptions getOptions() {
-		SubscriptionFilter filter = SubscriptionFilter.newBuilder().withStreamNamePrefix("quote/")
-				.withEventTypePrefix("QUOTE_").build();
+		SubscriptionFilter filter = SubscriptionFilter.newBuilder().withEventTypePrefix("QUOTE_").build();
 		var options = SubscribeToAllOptions.get().filter(filter);
 
 		var position = posSvc.getPosition(POSITION_ID);
