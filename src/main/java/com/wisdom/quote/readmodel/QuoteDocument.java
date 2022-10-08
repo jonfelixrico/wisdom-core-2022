@@ -16,10 +16,10 @@ class QuoteDocument extends QuoteEntity {
 
 	public QuoteDocument(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount) {
+			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount, Long revision) {
 		super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
 				status, votingSession, requiredVoteCount);
-		// TODO Auto-generated constructor stub
+		this.revision = revision;
 	}
 
 	@Override
