@@ -1,6 +1,6 @@
 package com.wisdom.quote.readmodel;
 
-public abstract class AbnormalRevisionException extends Exception {
+abstract class AbnormalRevisionException extends Exception {
 	private static final long serialVersionUID = -5057058922999844070L;
 
 	private String quoteId;
