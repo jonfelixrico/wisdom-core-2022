@@ -17,17 +17,23 @@ import com.eventstore.dbclient.SubscriptionFilter;
 import com.eventstore.dbclient.SubscriptionListener;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
+import com.wisdom.common.readmodel.PositionService;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 
 @Service
 class QuoteReadModelCatchUp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadModelCatchUp.class);
+	
+	private static final String POSITION_ID = "quote-readmodel";
 
 	@Autowired
 	private QuoteReadModelReducer reducer;
 
 	@Autowired
 	private EventStoreDBProvider esdb;
+	
+	@Autowired
+	private PositionService posSvc;
 	
 	private void catchUpLaggingModel (LaggingRevisionException cause) {
 		// TODO implement this
@@ -52,7 +58,13 @@ class QuoteReadModelCatchUp {
 				try {
 					processEvent(event);
 				} catch (Exception e) {
-					LOGGER.error("Error encountered during catch-up", e);
+					LOGGER.error("Unexpected exception encountered while processing catch-up event", e);
+				}
+				
+				try {
+					posSvc.setPosition(POSITION_ID, event.getEvent().getPosition());
+				} catch (Exception e) {
+					LOGGER.error("Unexpected exception encountered while saving position data", e);
 				}
 			}
 		};
