@@ -5,7 +5,7 @@ public abstract class Position {
 	protected long prepare;
 	protected long commit;
 
-	public Position(String id, long prepare, long commit) {
+	protected Position(String id, long prepare, long commit) {
 		this.id = id;
 		this.prepare = prepare;
 		this.commit = commit;
