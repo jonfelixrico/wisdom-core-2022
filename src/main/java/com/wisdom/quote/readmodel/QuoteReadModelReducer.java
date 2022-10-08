@@ -43,8 +43,7 @@ class QuoteReadModelReducer {
 		dbObj.setRevision(event.getStreamRevision().getValueUnsigned());
 	}
 
-	public void reduce(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
-			QuoteCatchUpRevisionOutOfSyncException, UnrecognizedEventTypeException, LaggingRevisionException {
+	public void reduce(RecordedEvent event) throws StreamReadException, DatabindException, IOException, UnrecognizedEventTypeException, LaggingRevisionException {
 		try {
 			switch (event.getEventType()) {
 			case QuoteReceivedEvent.EVENT_TYPE:
