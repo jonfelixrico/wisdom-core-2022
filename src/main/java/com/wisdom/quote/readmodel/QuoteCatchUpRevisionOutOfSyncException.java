@@ -4,24 +4,28 @@ class QuoteCatchUpRevisionOutOfSyncException extends Exception {
 	private static final long serialVersionUID = -2915382339061980692L;
 
 	private String quoteId;
-	private long expectedRevision;
-	private long actualRevision;
+	private Long expectedRevision;
+	private Long actualRevision;
 
-	public QuoteCatchUpRevisionOutOfSyncException(String quoteId, long expectedRevision, long actualRevision) {
+	public QuoteCatchUpRevisionOutOfSyncException(String quoteId, Long expectedRevision, Long actualRevision) {
 		this.quoteId = quoteId;
 		this.expectedRevision = expectedRevision;
 		this.actualRevision = actualRevision;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	public String getQuoteId() {
 		return quoteId;
 	}
 
-	public long getExpectedRevision() {
+	public Long getExpectedRevision() {
 		return expectedRevision;
 	}
 
-	public long getActualRevision() {
+	public Long getActualRevision() {
 		return actualRevision;
 	}
 
