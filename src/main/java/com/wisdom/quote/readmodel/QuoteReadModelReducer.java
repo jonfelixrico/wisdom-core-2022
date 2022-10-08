@@ -45,38 +45,45 @@ class QuoteReadModelReducer {
 
 	public void reduce(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
 			QuoteCatchUpRevisionOutOfSyncException, UnrecognizedEventTypeException, LaggingRevisionException {
-		switch (event.getEventType()) {
-		case QuoteReceivedEvent.EVENT_TYPE:
-			reduceReceivedEvent(event);
-			break;
-		case QuoteStatusDeclaredEvent.EVENT_TYPE:
-			reduceStatusDeclaredEvent(event);
-			break;
-		case QuoteSubmittedEvent.EVENT_TYPE:
-			reduceSubmittedEvent(event);
-			break;
-		case QuoteVotesModifiedEvent.EVENT_TYPE:
-			reduceVotesModifiedEvent(event);
-			break;
-		default:
-			throw new UnrecognizedEventTypeException(event.getEventType());
+		try {
+			switch (event.getEventType()) {
+			case QuoteReceivedEvent.EVENT_TYPE:
+				reduceReceivedEvent(event);
+				break;
+			case QuoteStatusDeclaredEvent.EVENT_TYPE:
+				reduceStatusDeclaredEvent(event);
+				break;
+			case QuoteSubmittedEvent.EVENT_TYPE:
+				reduceSubmittedEvent(event);
+				break;
+			case QuoteVotesModifiedEvent.EVENT_TYPE:
+				reduceVotesModifiedEvent(event);
+				break;
+			default:
+				throw new UnrecognizedEventTypeException(event.getEventType());
+			}
+		} catch (AdvancedRevisionException e) {
+			LOGGER.debug("Reduce for quote {} skipped due to advanced db copy -- expected {} but found {}",
+					e.getQuoteId(), e.getExpectedRevision(), e.getActualRevision());
 		}
 	}
 
 	private static void checkIfRevisionIsLagging(QuoteDocument dbCopy, RecordedEvent eventToApplyToCopy)
-			throws LaggingRevisionException {
-		var eventRevision = eventToApplyToCopy.getStreamRevision().getValueUnsigned();
-		var expectedDbRevision = eventRevision - 1;
+			throws LaggingRevisionException, AdvancedRevisionException {
+		var expected = eventToApplyToCopy.getStreamRevision().getValueUnsigned() - 1;
+		var actual = dbCopy.getRevision();
 
-		if (dbCopy.getRevision() >= expectedDbRevision) {
-			return;
+		if (expected > actual) {
+			throw new LaggingRevisionException(dbCopy.getId(), expected, actual);
+		} else if (expected < actual) {
+			throw new AdvancedRevisionException(dbCopy.getId(), expected, actual);
 		}
 
-		throw new LaggingRevisionException(dbCopy.getId(), dbCopy.getRevision(), eventRevision);
+		// else, normal revision
 	}
 
-	private void reduceReceivedEvent(RecordedEvent event)
-			throws StreamReadException, DatabindException, IOException, LaggingRevisionException {
+	private void reduceReceivedEvent(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
+			LaggingRevisionException, AdvancedRevisionException {
 		var payload = mapper.readValue(event.getEventData(), QuoteReceivedEvent.class);
 		var doc = findById(payload.getQuoteId());
 
@@ -90,8 +97,8 @@ class QuoteReadModelReducer {
 		repo.save(doc);
 	}
 
-	private void reduceStatusDeclaredEvent(RecordedEvent event)
-			throws StreamReadException, DatabindException, IOException, LaggingRevisionException {
+	private void reduceStatusDeclaredEvent(RecordedEvent event) throws StreamReadException, DatabindException,
+			IOException, LaggingRevisionException, AdvancedRevisionException {
 		var data = mapper.readValue(event.getEventData(), QuoteStatusDeclaredEvent.class);
 		var doc = findById(data.getQuoteId());
 
@@ -105,15 +112,12 @@ class QuoteReadModelReducer {
 	}
 
 	private void reduceSubmittedEvent(RecordedEvent event)
-			throws StreamReadException, DatabindException, IOException, QuoteCatchUpRevisionOutOfSyncException {
+			throws StreamReadException, DatabindException, IOException, AdvancedRevisionException {
 		var payload = mapper.readValue(event.getEventData(), QuoteSubmittedEvent.class);
 
 		var foundInDb = findById(payload.getQuoteId());
 		if (foundInDb != null) {
-			LOGGER.warn(
-					"Detected catch-up desync for quote {}; expected no document to be found yet but found document with revision {} instead",
-					payload.getQuoteId(), foundInDb.getRevision());
-			throw new QuoteCatchUpRevisionOutOfSyncException(payload.getQuoteId(), null, foundInDb.getRevision());
+			throw new AdvancedRevisionException(payload.getQuoteId(), -1, foundInDb.getRevision());
 		}
 
 		var doc = new QuoteDocument(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
@@ -123,8 +127,8 @@ class QuoteReadModelReducer {
 		repo.save(doc);
 	}
 
-	private void reduceVotesModifiedEvent(RecordedEvent event)
-			throws StreamReadException, DatabindException, IOException, LaggingRevisionException {
+	private void reduceVotesModifiedEvent(RecordedEvent event) throws StreamReadException, DatabindException,
+			IOException, LaggingRevisionException, AdvancedRevisionException {
 		var data = mapper.readValue(event.getEventData(), QuoteVotesModifiedEvent.class);
 		var doc = findById(data.getQuoteId());
 
