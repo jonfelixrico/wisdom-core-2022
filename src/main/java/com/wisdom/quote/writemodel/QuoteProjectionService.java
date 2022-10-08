@@ -37,13 +37,15 @@ class QuoteProjectionService {
 			throws InterruptedException, ExecutionException, IOException {
 		var snapshot = snapshotRepo.get(quoteId);
 
+		QuoteProjection built;
 		if (snapshot != null) {
-			return buildState(quoteId, snapshot.getRevision(), snapshot);
+			built = buildState(quoteId, snapshot.getRevision(), snapshot);
+		} else {
+			built = buildState(quoteId, null, null);
 		}
 
-		var projection = buildState(quoteId, null, null);
-		snapshotRepo.save(projection, projection.getRevision());
-		return projection;
+		snapshotRepo.save(built, built.getRevision());
+		return built;
 	}
 
 	private QuoteProjection buildState(String quoteId, Long fromRevision,
