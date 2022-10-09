@@ -26,8 +26,8 @@ import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.event.QuoteVotesModifiedEvent;
 
 @Service
-class QuoteReadModelReducer {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadModelReducer.class);
+class QuoteReadReducer {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadReducer.class);
 
 	@Autowired
 	private ObjectMapper mapper;

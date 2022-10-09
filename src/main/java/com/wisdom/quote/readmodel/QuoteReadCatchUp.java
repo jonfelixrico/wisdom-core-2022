@@ -24,13 +24,13 @@ import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
 
 @Service
-class QuoteReadModelCatchUp {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadModelCatchUp.class);
+class QuoteReadCatchUp {
+	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadCatchUp.class);
 
 	private static final String POSITION_ID = "quote-readmodel";
 
 	@Autowired
-	private QuoteReadModelReducer reducer;
+	private QuoteReadReducer reducer;
 
 	@Autowired
 	private EventStoreDBProvider esdb;
