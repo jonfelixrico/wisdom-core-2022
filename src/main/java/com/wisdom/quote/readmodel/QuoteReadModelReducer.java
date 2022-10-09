@@ -48,7 +48,8 @@ class QuoteReadModelReducer {
 		dbObj.setRevision(event.getStreamRevision().getValueUnsigned());
 	}
 
-	public void reduce(RecordedEvent event) throws StreamReadException, DatabindException, IOException, UnrecognizedEventTypeException, LaggingRevisionException {
+	public void reduce(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
+			UnrecognizedEventTypeException, LaggingRevisionException {
 		try {
 			switch (event.getEventType()) {
 			case QuoteReceivedEvent.EVENT_TYPE:
@@ -67,31 +68,60 @@ class QuoteReadModelReducer {
 				throw new UnrecognizedEventTypeException(event.getEventType());
 			}
 		} catch (AdvancedRevisionException e) {
-			LOGGER.debug("Reduce for quote {} skipped due to advanced db copy -- expected {} but found {}",
+			LOGGER.debug("Reduce for quote {} was skipped due to advanced db copy -- expected {} but found {}",
 					e.getQuoteId(), e.getExpectedRevision(), e.getActualRevision());
 		}
 	}
 
-	private static void checkIfRevisionIsLagging(QuoteReadMDB dbCopy, RecordedEvent eventToApplyToCopy)
+	/**
+	 * This method will compare the revision in the DB copy and the event. If a
+	 * discrepancy is detected -- e.g. theEventRevision -1 != theDbCopyRevision,
+	 * then we will throw an exception to stop further saves.
+	 */
+	private static void verifyRevision(QuoteReadMDB dbCopy, RecordedEvent eventToApplyToCopy)
 			throws LaggingRevisionException, AdvancedRevisionException {
 		var expected = eventToApplyToCopy.getStreamRevision().getValueUnsigned() - 1;
 		var actual = dbCopy.getRevision();
 
 		if (expected > actual) {
+			/*
+			 * This kind of error being thrown means that we have to "catch up" the lagging
+			 * model.
+			 */
 			throw new LaggingRevisionException(dbCopy.getId(), expected, actual);
 		} else if (expected < actual) {
+			/*
+			 * This kind, on the other hand, is just thrown as an easy way to interrupt the
+			 * reducer for the sake of avoiding incorrectly mutating the state with an outdated
+			 * event.
+			 * 
+			 * This kind of error is harmless -- advanced db copies are weird but do not need any action
+			 * from us.
+			 */
 			throw new AdvancedRevisionException(dbCopy.getId(), expected, actual);
 		}
 
 		// else, normal revision
 	}
 
+	/*
+	 * Notes regarding several technical decisions: - We're not following the write
+	 * model's approach to the reducer methods where methods should contain business
+	 * logic only because the write model expects each "root reducer" call in
+	 * succession to contain events for the same quote.
+	 * 
+	 * Things are different for the read model since we don't have this kind of
+	 * assumption. The current main reducer call might belong to quote A but that's
+	 * not guaranteed to be the same in the next reducer call. This is the reason
+	 * why we do individual reads and saves per sub-reducer call.
+	 */
+
 	private void reduceReceivedEvent(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
 			LaggingRevisionException, AdvancedRevisionException {
 		var payload = mapper.readValue(event.getEventData(), QuoteReceivedEvent.class);
 		var doc = findById(payload.getQuoteId());
 
-		checkIfRevisionIsLagging(doc, event);
+		verifyRevision(doc, event);
 
 		var newReceive = new Receive(payload.getReceiveId(), payload.getTimestamp(), payload.getUserId(),
 				payload.getServerId(), payload.getChannelId(), payload.getMessageId());
@@ -106,7 +136,7 @@ class QuoteReadModelReducer {
 		var data = mapper.readValue(event.getEventData(), QuoteStatusDeclaredEvent.class);
 		var doc = findById(data.getQuoteId());
 
-		checkIfRevisionIsLagging(doc, event);
+		verifyRevision(doc, event);
 
 		var newStatus = new StatusDeclaration(data.getStatus(), data.getTimestamp());
 		doc.setStatusDeclaration(newStatus);
@@ -136,7 +166,7 @@ class QuoteReadModelReducer {
 		var data = mapper.readValue(event.getEventData(), QuoteVotesModifiedEvent.class);
 		var doc = findById(data.getQuoteId());
 
-		checkIfRevisionIsLagging(doc, event);
+		verifyRevision(doc, event);
 
 		var votingSession = new VotingSession(data.getTimestamp(), data.getVoterIds());
 		doc.setVotingSession(votingSession);
