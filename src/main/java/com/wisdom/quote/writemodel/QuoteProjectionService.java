@@ -62,8 +62,10 @@ class QuoteProjectionService {
 
 		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
 		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
+		LOGGER.debug("Found {} events for quote {} starting from revision {}", results.getEvents().size(), quoteId, fromRevision);
 		for (ResolvedEvent result : results.getEvents()) {
 			RecordedEvent event = result.getEvent();
+			LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
 
 			var eventClass = reducer.getEventClassFromType(event.getEventType());
 			if (eventClass == null) {
