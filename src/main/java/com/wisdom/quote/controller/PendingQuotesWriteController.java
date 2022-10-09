@@ -40,7 +40,7 @@ public class PendingQuotesWriteController {
 	private TimeService timeSvc;
 
 	@PostMapping
-	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {
+	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body, @PathVariable String serverId) throws Exception {
 		var quoteId = UUID.randomUUID().toString();
 		var createDt = timeSvc.getCurrentTime();
 		
@@ -48,7 +48,7 @@ public class PendingQuotesWriteController {
 		var expireDt = createDt.plus(3, ChronoUnit.DAYS);
 
 		var writeModel = writeSvc.create(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(),
-				createDt, expireDt, body.getServerId(), body.getChannelId(), body.getMessageId(), 3);
+				createDt, expireDt, serverId, body.getChannelId(), body.getMessageId(), 3);
 		writeModel.save();
 
 		return Map.of("quoteId", quoteId);
