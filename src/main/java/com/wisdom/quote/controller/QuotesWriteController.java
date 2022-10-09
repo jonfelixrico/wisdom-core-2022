@@ -39,7 +39,7 @@ public class QuotesWriteController {
 					body.getChannelId(), body.getMessageId());
 			writeModel.save();
 		} catch (IllegalStateException e) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
 		}
 	}
 }

@@ -66,7 +66,7 @@ public class PendingQuotesWriteController {
 			writeModel.updateVotingSession(voterIds, timeSvc.getCurrentTime());
 			writeModel.save();
 		} catch (IllegalStateException e) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
 		}
 	}
 
@@ -82,7 +82,7 @@ public class PendingQuotesWriteController {
 			writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
 			writeModel.save();
 		} catch (IllegalStateException e) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
 		}
 	}
 }
