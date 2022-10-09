@@ -17,8 +17,12 @@ services:
       - "9113:2113"
       - "9114:1113"
     volumes:
-      - ./esdb/data:/var/lib/eventstore
-      - ./esdb/logs:/var/log/eventstore
+      - type: volume
+        source: esdb-data
+        target: /var/lib/eventstore
+      - type: volume
+        source: esdb-logs
+        target: /var/log/eventstore
   mongo:
     image: mongo
     restart: always
@@ -29,4 +33,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: wisdom
     volumes:
-      - ./mongo/data:/data/db
+      - type: volume
+        source: mongo-data
+        target: /data/db
+volumes:
+  esdb-data:
+  esdb-logs:
+  mongo-data:
