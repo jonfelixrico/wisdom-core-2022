@@ -23,14 +23,6 @@ public class SubmitQuoteReqDto {
 	@NotNull
 	@NotBlank
 	private String messageId;
-	
-	@NotNull
-	@NotBlank
-	private String serverId;
-
-	public String getServerId() {
-		return serverId;
-	}
 
 	public String getContent() {
 		return content;
