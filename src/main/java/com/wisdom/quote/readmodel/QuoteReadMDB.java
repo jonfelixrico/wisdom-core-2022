@@ -1,4 +1,4 @@
-package com.wisdom.quote.readmodel.mongodb;
+package com.wisdom.quote.readmodel;
 
 import java.time.Instant;
 import java.util.List;
@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
-import com.wisdom.quote.readmodel.QuoteReadModel;
 
 /**
  * MongoDB object for the quote read model.
@@ -18,7 +17,7 @@ import com.wisdom.quote.readmodel.QuoteReadModel;
  *
  */
 @Document("quote-readmodel")
-public class QuoteReadMDB extends QuoteReadModel {
+class QuoteReadMDB extends QuoteReadModel {
 	@PersistenceCreator
 	@Override
 	public void setId(String id) {

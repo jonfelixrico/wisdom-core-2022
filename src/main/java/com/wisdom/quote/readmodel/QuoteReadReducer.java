@@ -18,8 +18,6 @@ import com.wisdom.quote.entity.VotingSession;
 import com.wisdom.quote.readmodel.exception.AdvancedRevisionException;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
-import com.wisdom.quote.readmodel.mongodb.QuoteReadMDB;
-import com.wisdom.quote.readmodel.mongodb.QuoteReadMDBRepository;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
