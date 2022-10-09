@@ -1,4 +1,4 @@
-package com.wisdom.quote.controller.dto;
+package com.wisdom.quote.controller.dto.req;
 
 import java.time.Instant;
 
