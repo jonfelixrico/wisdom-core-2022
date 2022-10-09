@@ -28,9 +28,9 @@ class QuoteReadModelReducer {
 	private ObjectMapper mapper;
 
 	@Autowired
-	private QuoteDocumentRepository repo;
+	private QuoteMDBRepository repo;
 
-	private QuoteDocument findById(String id) {
+	private QuoteMDB findById(String id) {
 		var result = repo.findById(id);
 		if (result.isEmpty()) {
 			return null;
@@ -39,7 +39,7 @@ class QuoteReadModelReducer {
 		return result.get();
 	}
 
-	private static void setRevision(RecordedEvent event, QuoteDocument dbObj) {
+	private static void setRevision(RecordedEvent event, QuoteMDB dbObj) {
 		dbObj.setRevision(event.getStreamRevision().getValueUnsigned());
 	}
 
@@ -67,7 +67,7 @@ class QuoteReadModelReducer {
 		}
 	}
 
-	private static void checkIfRevisionIsLagging(QuoteDocument dbCopy, RecordedEvent eventToApplyToCopy)
+	private static void checkIfRevisionIsLagging(QuoteMDB dbCopy, RecordedEvent eventToApplyToCopy)
 			throws LaggingRevisionException, AdvancedRevisionException {
 		var expected = eventToApplyToCopy.getStreamRevision().getValueUnsigned() - 1;
 		var actual = dbCopy.getRevision();
@@ -119,7 +119,7 @@ class QuoteReadModelReducer {
 			throw new AdvancedRevisionException(payload.getQuoteId(), -1, foundInDb.getRevision());
 		}
 
-		var doc = new QuoteDocument(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
+		var doc = new QuoteMDB(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
 				payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
 				payload.getChannelId(), payload.getMessageId(), List.of(), null, null, payload.getRequiredVoteCount(),
 				event.getStreamRevision().getValueUnsigned());

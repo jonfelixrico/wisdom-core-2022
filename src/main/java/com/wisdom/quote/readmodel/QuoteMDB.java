@@ -12,11 +12,11 @@ import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 
 @Document("quote-readmodel")
-class QuoteDocument extends QuoteEntity {
+class QuoteMDB extends QuoteEntity {
 	private Long revision;
 
 	@PersistenceCreator
-	public QuoteDocument(String id, String content, String authorId, String submitterId, Instant submitDt,
+	public QuoteMDB(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount,
 			Long revision) {
