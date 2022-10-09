@@ -43,6 +43,8 @@ public class PendingQuotesWriteController {
 	private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body) throws Exception {
 		var quoteId = UUID.randomUUID().toString();
 		var createDt = timeSvc.getCurrentTime();
+		
+		// TODO make a service for this -- this is a per-server configuration
 		var expireDt = createDt.plus(3, ChronoUnit.DAYS);
 
 		var writeModel = writeSvc.create(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(),
