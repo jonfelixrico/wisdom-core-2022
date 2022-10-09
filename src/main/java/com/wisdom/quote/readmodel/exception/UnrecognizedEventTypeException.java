@@ -1,6 +1,6 @@
-package com.wisdom.quote.readmodel;
+package com.wisdom.quote.readmodel.exception;
 
-class UnrecognizedEventTypeException extends Exception {
+public class UnrecognizedEventTypeException extends Exception {
 	private static final long serialVersionUID = 5958218581284224532L;
 
 	private String eventType;

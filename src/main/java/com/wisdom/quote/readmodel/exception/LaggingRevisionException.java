@@ -1,4 +1,4 @@
-package com.wisdom.quote.readmodel;
+package com.wisdom.quote.readmodel.exception;
 
 /**
  * This being thrown means that the revision of the DB copy of a Quote is behind
@@ -11,7 +11,7 @@ package com.wisdom.quote.readmodel;
  * @author Felix
  *
  */
-class LaggingRevisionException extends AbnormalRevisionException {
+public class LaggingRevisionException extends AbnormalRevisionException {
 	private static final long serialVersionUID = 9164361454984729153L;
 
 	public LaggingRevisionException(String quoteId, long expectedRevision, long actualRevision) {

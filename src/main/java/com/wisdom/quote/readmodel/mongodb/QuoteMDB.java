@@ -1,4 +1,4 @@
-package com.wisdom.quote.readmodel;
+package com.wisdom.quote.readmodel.mongodb;
 
 import java.time.Instant;
 import java.util.List;
@@ -12,7 +12,7 @@ import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 
 @Document("quote-readmodel")
-class QuoteMDB extends QuoteEntity {
+public class QuoteMDB extends QuoteEntity {
 	private Long revision;
 
 	@PersistenceCreator

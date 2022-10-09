@@ -20,6 +20,8 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.wisdom.common.readmodel.PositionService;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
+import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
+import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
 
 @Service
 class QuoteReadModelCatchUp {
