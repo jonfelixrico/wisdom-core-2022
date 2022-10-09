@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.req.QuoteDeclareStatusReqDto;
@@ -57,14 +57,14 @@ public class PendingQuotesWriteController {
 			@RequestBody List<String> voterIds) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
 		if (!writeModel.getServerId().equals(serverId)) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
 		try {
 			writeModel.updateVotingSession(voterIds, timeSvc.getCurrentTime());
 			writeModel.save();
 		} catch (IllegalStateException e) {
-			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 	}
 
@@ -73,14 +73,14 @@ public class PendingQuotesWriteController {
 			@RequestBody QuoteDeclareStatusReqDto body) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
 		if (!writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
 		try {
 			writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
 			writeModel.save();
 		} catch (IllegalStateException e) {
-			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 	}
 }
