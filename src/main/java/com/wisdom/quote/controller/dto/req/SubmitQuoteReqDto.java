@@ -20,8 +20,6 @@ public class SubmitQuoteReqDto {
 	@NotBlank
 	private String channelId;
 	
-	@NotNull
-	@NotBlank
 	private String messageId;
 
 	public String getContent() {
