@@ -75,7 +75,7 @@ class QuoteProjectionService {
 			}
 
 			var eventData = mapper.readValue(event.getEventData(), eventClass);
-			state = reducer.reduceEvent(baseModel, eventData);
+			state = reducer.reduceEvent(state, eventData);
 			revision = event.getStreamRevision().getValueUnsigned();
 		}
 
