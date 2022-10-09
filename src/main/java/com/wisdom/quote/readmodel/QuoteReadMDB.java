@@ -1,44 +1,37 @@
-package com.wisdom.quote.writemodel.events.reducer;
+package com.wisdom.quote.readmodel;
 
 import java.time.Instant;
 import java.util.List;
 
-import com.wisdom.quote.entity.QuoteEntity;
+import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 
 /**
- * Makes reductions more readable.
+ * MongoDB object for the quote read model.
  * 
- * We could just use the {@link QuoteEntity} constructor to achieve the same goal (of instantiating and "mutating"
- * an entity), but that has proven itself to be unreadable -- imagine having to call a very large constructor multiple times...
- * mistakes will be bound to happen. A structured way to do it like this class is the way to go -- less potential for mistakes
- * but at the same time more readability.
- *
  * @author Felix
+ *
  */
-class QuoteReducerModel extends QuoteEntity {
-
-	public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
-			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount) {
-		super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-				status, votingSession, requiredVoteCount);
-		// TODO Auto-generated constructor stub
-	}
-
-	public QuoteReducerModel(QuoteEntity entity) {
-		this(entity.getId(), entity.getContent(), entity.getAuthorId(), entity.getSubmitterId(), entity.getSubmitDt(),
-				entity.getExpirationDt(), entity.getServerId(), entity.getChannelId(), entity.getMessageId(),
-				entity.getReceives(), entity.getStatusDeclaration(), entity.getVotingSession(),
-				entity.getRequiredVoteCount());
-	}
-
+@Document("quote-readmodel")
+class QuoteReadMDB extends QuoteReadModel {
 	@Override
 	public void setId(String id) {
 		// TODO Auto-generated method stub
 		super.setId(id);
+	}
+
+	@PersistenceCreator
+	public QuoteReadMDB(String id, String content, String authorId, String submitterId, Instant submitDt,
+			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
+			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount,
+			Long revision) {
+		super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
+				statusDeclaration, votingSession, requiredVoteCount, revision);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -84,7 +77,7 @@ class QuoteReducerModel extends QuoteEntity {
 	}
 
 	@Override
-	protected void setMessageId(String messageId) {
+	public void setMessageId(String messageId) {
 		// TODO Auto-generated method stub
 		super.setMessageId(messageId);
 	}
@@ -111,6 +104,12 @@ class QuoteReducerModel extends QuoteEntity {
 	public void setStatusDeclaration(StatusDeclaration status) {
 		// TODO Auto-generated method stub
 		super.setStatusDeclaration(status);
+	}
+
+	@Override
+	public void setRevision(Long revision) {
+		// TODO Auto-generated method stub
+		super.setRevision(revision);
 	}
 
 }

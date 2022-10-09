@@ -6,8 +6,8 @@ public class StatusDeclaration {
 	private Status status;
 	private Instant timestamp;
 
-	public StatusDeclaration(Status type, Instant timestamp) {
-		this.status = type;
+	public StatusDeclaration(Status status, Instant timestamp) {
+		this.status = status;
 		this.timestamp = timestamp;
 	}
 

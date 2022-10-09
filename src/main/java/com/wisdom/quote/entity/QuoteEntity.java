@@ -25,7 +25,7 @@ public class QuoteEntity {
 
 	public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			StatusDeclaration status, VotingSession votingSession, Integer requiredVoteCount) {
+			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount) {
 		this.id = id;
 		this.content = content;
 		this.authorId = authorId;
@@ -36,7 +36,7 @@ public class QuoteEntity {
 		this.channelId = channelId;
 		this.messageId = messageId;
 		this.receives = receives;
-		this.statusDeclaration = status;
+		this.statusDeclaration = statusDeclaration;
 		this.votingSession = votingSession;
 		this.requiredVoteCount = requiredVoteCount;
 	}

@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel.projection;
+package com.wisdom.quote.writemodel.event.reducer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,14 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
-import com.wisdom.quote.writemodel.events.BaseQuoteEvent;
-import com.wisdom.quote.writemodel.events.QuoteReceivedEvent;
-import com.wisdom.quote.writemodel.events.QuoteStatusDeclaredEvent;
-import com.wisdom.quote.writemodel.events.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.events.QuoteVotesModifiedEvent;
+import com.wisdom.quote.writemodel.event.BaseQuoteEvent;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
+import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
+import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
+import com.wisdom.quote.writemodel.event.QuoteVotesModifiedEvent;
 
 @Service
-class QuoteEventsReducer {
+public class QuoteEventsReducer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
 
 	public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
@@ -85,9 +85,9 @@ class QuoteEventsReducer {
 	 * @return
 	 */
 	private QuoteEntity reduce(QuoteEntity model, QuoteSubmittedEvent event) {
-		return new QuoteEntity(event.getQuoteId(), event.getContent(), event.getAuthorId(), event.getSubmitterId(),
-				event.getTimestamp(), event.getExpirationDt(), event.getServerId(), event.getChannelId(),
-				event.getMessageId(), List.of(), null, null, event.getRequiredVoteCount());
+		return new QuoteReducerModel(event.getQuoteId(), event.getContent(), event.getAuthorId(),
+				event.getSubmitterId(), event.getTimestamp(), event.getExpirationDt(), event.getServerId(),
+				event.getChannelId(), event.getMessageId(), List.of(), null, null, event.getRequiredVoteCount());
 	}
 
 	/**
@@ -97,40 +97,33 @@ class QuoteEventsReducer {
 	 * @param event
 	 * @return
 	 */
-	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteReceivedEvent event) {
+	private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteReceivedEvent event) {
 		List<Receive> newReceives = new ArrayList<>();
-		newReceives.addAll(model.getReceives());
+		newReceives.addAll(entity.getReceives());
 		newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
 				event.getChannelId(), event.getMessageId()));
 
-		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), newReceives, model.getStatusDeclaration(), model.getVotingSession(),
-				model.getRequiredVoteCount());
+		var model = new QuoteReducerModel(entity);
+		model.setReceives(newReceives);
+		return model;
 	}
 
 	/**
 	 * Processes system-triggered expiration-flagging
 	 * 
-	 * @param model
+	 * @param entity
 	 * @param event
 	 * @return
 	 */
-	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteStatusDeclaredEvent event) {
-		StatusDeclaration declaration = new StatusDeclaration(Status.EXPIRED, event.getTimestamp());
-
-		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getReceives(), declaration, model.getVotingSession(),
-				model.getRequiredVoteCount());
+	private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteStatusDeclaredEvent event) {
+		var model = new QuoteReducerModel(entity);
+		model.setStatusDeclaration(new StatusDeclaration(Status.EXPIRED, event.getTimestamp()));
+		return model;
 	}
 
-	private QuoteEntity reduce(@NonNull QuoteEntity model, QuoteVotesModifiedEvent event) {
-		var session = new VotingSession(event.getTimestamp(), event.getVoterIds());
-
-		return new QuoteEntity(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-				model.getSubmitDt(), model.getExpirationDt(), model.getServerId(), model.getChannelId(),
-				model.getMessageId(), model.getReceives(), model.getStatusDeclaration(), session,
-				model.getRequiredVoteCount());
+	private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteVotesModifiedEvent event) {
+		var model = new QuoteReducerModel(entity);
+		model.setVotingSession(new VotingSession(event.getTimestamp(), event.getVoterIds()));
+		return model;
 	}
 }

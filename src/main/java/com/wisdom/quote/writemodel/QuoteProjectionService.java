@@ -15,7 +15,7 @@ import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventstoredb.EventStoreDBProvider;
 import com.wisdom.quote.entity.QuoteEntity;
-import com.wisdom.quote.writemodel.events.reducer.QuoteEventsReducer;
+import com.wisdom.quote.writemodel.event.reducer.QuoteEventsReducer;
 
 @Service
 class QuoteProjectionService {
@@ -37,13 +37,15 @@ class QuoteProjectionService {
 			throws InterruptedException, ExecutionException, IOException {
 		var snapshot = snapshotRepo.get(quoteId);
 
+		QuoteProjection built;
 		if (snapshot != null) {
-			return buildState(quoteId, snapshot.getRevision(), snapshot);
+			built = buildState(quoteId, snapshot.getRevision(), snapshot);
+		} else {
+			built = buildState(quoteId, null, null);
 		}
 
-		var projection = buildState(quoteId, null, null);
-		snapshotRepo.save(projection, projection.getRevision());
-		return projection;
+		snapshotRepo.save(built, built.getRevision());
+		return built;
 	}
 
 	private QuoteProjection buildState(String quoteId, Long fromRevision,
@@ -60,8 +62,10 @@ class QuoteProjectionService {
 
 		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
 		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
+		LOGGER.debug("Found {} events for quote {} starting from revision {}", results.getEvents().size(), quoteId, fromRevision);
 		for (ResolvedEvent result : results.getEvents()) {
 			RecordedEvent event = result.getEvent();
+			LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
 
 			var eventClass = reducer.getEventClassFromType(event.getEventType());
 			if (eventClass == null) {

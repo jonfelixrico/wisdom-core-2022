@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.wisdom.common.service.TimeService;
-import com.wisdom.quote.controller.dto.ReceiveQuoteReqDto;
+import com.wisdom.quote.controller.dto.req.ReceiveQuoteReqDto;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 @RestController
