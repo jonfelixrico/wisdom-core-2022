@@ -18,13 +18,13 @@ import com.wisdom.quote.entity.VotingSession;
  */
 @Document("quote-readmodel")
 class QuoteReadMDB extends QuoteReadModel {
-	@PersistenceCreator
 	@Override
 	public void setId(String id) {
 		// TODO Auto-generated method stub
 		super.setId(id);
 	}
 
+	@PersistenceCreator
 	public QuoteReadMDB(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount,
