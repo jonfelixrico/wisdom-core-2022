@@ -117,7 +117,7 @@ public class QuoteEventsReducer {
 	 */
 	private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteStatusDeclaredEvent event) {
 		var model = new QuoteReducerModel(entity);
-		model.setStatusDeclaration(new StatusDeclaration(Status.EXPIRED, event.getTimestamp()));
+		model.setStatusDeclaration(new StatusDeclaration(event.getStatus(), event.getTimestamp()));
 		return model;
 	}
 
