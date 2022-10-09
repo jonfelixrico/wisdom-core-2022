@@ -42,12 +42,7 @@ public class EventStoreDBProvider {
 	}
 
 	public EventStoreDBClient getClient() throws InterruptedException, ExecutionException {
-		if (clientCf == null) {
-			LOGGER.info("Client not found, attempting to create an instance.");
-			clientCf = createClientCf();
-		}
-		
-		return clientCf.get();
+		return createClientCf().get();
 	}
 	
 	/**
