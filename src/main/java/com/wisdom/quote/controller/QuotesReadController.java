@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wisdom.quote.controller.dto.resp.GetRandomQuoteResp;
+import com.wisdom.quote.readmodel.QuoteReadModel;
 import com.wisdom.quote.readmodel.QuoteReadModelRepository;
 
 @RestController
@@ -16,7 +16,7 @@ public class QuotesReadController {
 	private QuoteReadModelRepository repo;
 
 	@GetMapping("/random")
-	private GetRandomQuoteResp getRandomQuote(@PathVariable String serverId) {
-		return new GetRandomQuoteResp(repo.getRandomQuoteInServer(serverId));
+	private QuoteReadModel getRandomQuote(@PathVariable String serverId) {
+		return repo.getRandomQuoteInServer(serverId);
 	}
 }
