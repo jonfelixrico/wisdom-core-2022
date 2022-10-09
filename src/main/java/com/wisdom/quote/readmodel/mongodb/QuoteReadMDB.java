@@ -11,12 +11,17 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 
+/**
+ * MongoDB object for the quote read model.
+ * @author Felix
+ *
+ */
 @Document("quote-readmodel")
-public class QuoteMDB extends QuoteEntity {
+public class QuoteReadMDB extends QuoteEntity {
 	private Long revision;
 
 	@PersistenceCreator
-	public QuoteMDB(String id, String content, String authorId, String submitterId, Instant submitDt,
+	public QuoteReadMDB(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount,
 			Long revision) {

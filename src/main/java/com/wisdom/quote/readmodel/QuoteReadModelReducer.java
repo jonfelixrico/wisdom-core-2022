@@ -18,8 +18,8 @@ import com.wisdom.quote.entity.VotingSession;
 import com.wisdom.quote.readmodel.exception.AdvancedRevisionException;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
-import com.wisdom.quote.readmodel.mongodb.QuoteMDB;
-import com.wisdom.quote.readmodel.mongodb.QuoteMDBRepository;
+import com.wisdom.quote.readmodel.mongodb.QuoteReadMDB;
+import com.wisdom.quote.readmodel.mongodb.QuoteReadMDBRepository;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
@@ -33,9 +33,9 @@ class QuoteReadModelReducer {
 	private ObjectMapper mapper;
 
 	@Autowired
-	private QuoteMDBRepository repo;
+	private QuoteReadMDBRepository repo;
 
-	private QuoteMDB findById(String id) {
+	private QuoteReadMDB findById(String id) {
 		var result = repo.findById(id);
 		if (result.isEmpty()) {
 			return null;
@@ -44,7 +44,7 @@ class QuoteReadModelReducer {
 		return result.get();
 	}
 
-	private static void setRevision(RecordedEvent event, QuoteMDB dbObj) {
+	private static void setRevision(RecordedEvent event, QuoteReadMDB dbObj) {
 		dbObj.setRevision(event.getStreamRevision().getValueUnsigned());
 	}
 
@@ -72,7 +72,7 @@ class QuoteReadModelReducer {
 		}
 	}
 
-	private static void checkIfRevisionIsLagging(QuoteMDB dbCopy, RecordedEvent eventToApplyToCopy)
+	private static void checkIfRevisionIsLagging(QuoteReadMDB dbCopy, RecordedEvent eventToApplyToCopy)
 			throws LaggingRevisionException, AdvancedRevisionException {
 		var expected = eventToApplyToCopy.getStreamRevision().getValueUnsigned() - 1;
 		var actual = dbCopy.getRevision();
@@ -124,7 +124,7 @@ class QuoteReadModelReducer {
 			throw new AdvancedRevisionException(payload.getQuoteId(), -1, foundInDb.getRevision());
 		}
 
-		var doc = new QuoteMDB(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
+		var doc = new QuoteReadMDB(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
 				payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
 				payload.getChannelId(), payload.getMessageId(), List.of(), null, null, payload.getRequiredVoteCount(),
 				event.getStreamRevision().getValueUnsigned());
