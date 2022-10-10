@@ -72,7 +72,11 @@ class QuoteReadCatchUp {
 
   private void processEvent(ResolvedEvent event) throws StreamReadException, DatabindException, IOException {
     var recordedEvt = event.getEvent();
+    var position = recordedEvt.getPosition();
     try {
+      LOGGER.debug("[prepare: {}, commit: {}] Handling event {} for stream {} with revision {}",
+          position.getPrepareUnsigned(), position.getCommitUnsigned(), recordedEvt.getEventId(),
+          recordedEvt.getStreamId(), recordedEvt.getStreamRevision());
       reducer.reduce(recordedEvt);
     } catch (LaggingRevisionException e) {
       catchUpLaggingModel(e, event);
@@ -88,14 +92,20 @@ class QuoteReadCatchUp {
         try {
           processEvent(event);
         } catch (Exception e) {
-          LOGGER.error("Unexpected exception encountered while processing catch-up event", e);
+          LOGGER.error("Error encountered while processing catch-up event", e);
         }
 
         try {
           posSvc.setPosition(POSITION_ID, event.getEvent().getPosition());
         } catch (Exception e) {
-          LOGGER.error("Unexpected exception encountered while saving position data", e);
+          LOGGER.error("Error encountered while saving position data", e);
         }
+      }
+
+      @Override
+      public void onError(Subscription subscription, Throwable throwable) {
+        LOGGER.error("Error encountered in listener", throwable);
+
       }
     };
   }
@@ -108,7 +118,7 @@ class QuoteReadCatchUp {
     if (position != null) {
       LOGGER.info("Starting catch-up from prepare {}, commit {}", position.getPrepareUnsigned(),
           position.getCommitUnsigned());
-      options.fromPosition(null);
+      options.fromPosition(position);
     }
 
     return options;
