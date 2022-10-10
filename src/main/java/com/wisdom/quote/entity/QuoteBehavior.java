@@ -1,7 +1,6 @@
 package com.wisdom.quote.entity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public abstract class QuoteBehavior extends QuoteEntity {
 
