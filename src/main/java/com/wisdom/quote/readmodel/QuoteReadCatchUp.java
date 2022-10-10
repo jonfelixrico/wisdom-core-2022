@@ -117,6 +117,11 @@ class QuoteReadCatchUp {
   @EventListener
   private void startCatchUp(ApplicationStartedEvent ctx) throws InterruptedException, ExecutionException {
     LOGGER.info("Starting catch-up...");
-    esdb.getWrapped().get().subscribeToAll(getListener(), getOptions());
+    /*
+     * We're using getRaw because this connection will last until the end of the
+     * application lifecycle. No need to make a wrapped one since that's meant to be
+     * closable.
+     */
+    esdb.getRaw().subscribeToAll(getListener(), getOptions());
   }
 }
