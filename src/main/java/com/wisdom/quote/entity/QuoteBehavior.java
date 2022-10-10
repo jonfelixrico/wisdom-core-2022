@@ -26,6 +26,7 @@ public abstract class QuoteBehavior extends QuoteEntity {
 
 		var clone = new ArrayList<>(getReceives());
 		clone.add(receive);
+		setReceives(clone);
 	}
 
 	protected void declareStatus(StatusDeclaration declaration) {
