@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.wisdom.eventstoredb.utils.Event;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
-import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 import com.wisdom.quote.writemodel.event.BaseQuoteEvent;
