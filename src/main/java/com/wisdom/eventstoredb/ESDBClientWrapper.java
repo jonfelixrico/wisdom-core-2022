@@ -17,7 +17,7 @@ public class ESDBClientWrapper implements Closeable {
     this.client = client;
   }
 
-  public EventStoreDBClient getClient() {
+  public EventStoreDBClient get() {
     return client;
   }
 
