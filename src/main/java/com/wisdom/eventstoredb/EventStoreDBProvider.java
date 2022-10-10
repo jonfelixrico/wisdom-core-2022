@@ -14,6 +14,7 @@ import com.eventstore.dbclient.EventStoreDBClient;
 import com.eventstore.dbclient.EventStoreDBClientSettings;
 import com.eventstore.dbclient.EventStoreDBConnectionString;
 
+@Deprecated
 @Service
 public class EventStoreDBProvider {
 	private static Logger LOGGER = LoggerFactory.getLogger(EventStoreDBProvider.class);
