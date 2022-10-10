@@ -16,7 +16,7 @@ import com.eventstore.dbclient.ExpectedRevision;
 import com.eventstore.dbclient.WriteResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wisdom.eventstoredb.EventStoreDBProvider;
+import com.wisdom.eventstoredb.ESDBClientFactory;
 
 @Service
 public class EventAppendService {
@@ -24,9 +24,9 @@ public class EventAppendService {
 
 	@Autowired
 	private ObjectMapper mapper;
-
+	
 	@Autowired
-	private EventStoreDBProvider provider;
+	private ESDBClientFactory esdb;
 
 	/**
 	 * @param client
@@ -60,6 +60,10 @@ public class EventAppendService {
 
 		LOGGER.debug("Pushing to stream {} expecting revision {}", buffer.getStreamId(),
 				options.getExpectedRevision().toString());
-		return provider.getClient().appendToStream(buffer.getStreamId(), options, eventDataIterator).get();
+		
+		try (var wrapper = esdb.getInstance()) {
+		  var client = wrapper.get();
+		  return client.appendToStream(buffer.getStreamId(), options, eventDataIterator).get();
+		}
 	}
 }
