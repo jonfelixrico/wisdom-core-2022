@@ -13,7 +13,7 @@ import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wisdom.eventstoredb.ESDBClientFactory;
+import com.wisdom.eventstoredb.ESDBClientProvider;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.writemodel.event.reducer.QuoteEventsReducer;
 
@@ -22,7 +22,7 @@ class QuoteProjectionService {
   private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
 
   @Autowired
-  private ESDBClientFactory esdb;
+  private ESDBClientProvider esdb;
 
   @Autowired
   private QuoteEventsReducer reducer;
@@ -61,7 +61,7 @@ class QuoteProjectionService {
     var state = baseModel;
     var revision = fromRevision;
 
-    try (var wrapper = esdb.getInstance()) {
+    try (var wrapper = esdb.getWrapped()) {
       var client = wrapper.get();
 
       ReadResult results = client.readStream(String.format("quote/%s", quoteId), options).get();

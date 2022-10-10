@@ -19,7 +19,7 @@ import com.eventstore.dbclient.SubscriptionListener;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.wisdom.common.readmodel.PositionService;
-import com.wisdom.eventstoredb.ESDBClientFactory;
+import com.wisdom.eventstoredb.ESDBClientProvider;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
 
@@ -33,7 +33,7 @@ class QuoteReadCatchUp {
   private QuoteReadReducer reducer;
 
   @Autowired
-  private ESDBClientFactory esdb;
+  private ESDBClientProvider esdb;
 
   @Autowired
   private PositionService posSvc;
@@ -58,7 +58,7 @@ class QuoteReadCatchUp {
                                                                                                   // inclusiveness
       var options = ReadStreamOptions.get().fromRevision(cause.getActualRevision() + 1);
 
-      try (var wrapper = esdb.getInstance()) {
+      try (var wrapper = esdb.getWrapped()) {
         var client = wrapper.get();
         var results = client.readStream(event.getEvent().getStreamId(), maxCount, options).get();
         for (ResolvedEvent inner : results.getEvents()) {
@@ -117,6 +117,6 @@ class QuoteReadCatchUp {
   @EventListener
   private void startCatchUp(ApplicationStartedEvent ctx) throws InterruptedException, ExecutionException {
     LOGGER.info("Starting catch-up...");
-    esdb.getInstance().get().subscribeToAll(getListener(), getOptions());
+    esdb.getWrapped().get().subscribeToAll(getListener(), getOptions());
   }
 }

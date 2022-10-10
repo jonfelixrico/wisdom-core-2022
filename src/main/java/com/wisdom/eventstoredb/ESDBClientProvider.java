@@ -6,7 +6,7 @@ import com.eventstore.dbclient.EventStoreDBClient;
 import com.eventstore.dbclient.EventStoreDBClientSettings;
 import com.eventstore.dbclient.EventStoreDBConnectionString;
 
-public class ESDBClientFactory {
+public class ESDBClientProvider {
   @Value("${esdb.connectionString}")
   private String esdbUri;
 
@@ -20,8 +20,11 @@ public class ESDBClientFactory {
     return cachedSettings;
   }
 
-  public ESDBClientWrapper getInstance() {
-    var client = EventStoreDBClient.create(getSettings());
-    return new ESDBClientWrapper(client);
+  public ESDBClientWrapper getWrapped() {
+    return new ESDBClientWrapper(getRaw());
+  }
+
+  public EventStoreDBClient getRaw() {
+    return EventStoreDBClient.create(getSettings());
   }
 }
