@@ -1,11 +1,13 @@
 package com.wisdom.eventstoredb;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.eventstore.dbclient.EventStoreDBClient;
 import com.eventstore.dbclient.EventStoreDBClientSettings;
 import com.eventstore.dbclient.EventStoreDBConnectionString;
 
+@Service
 public class ESDBClientProvider {
   @Value("${esdb.connectionString}")
   private String esdbUri;
