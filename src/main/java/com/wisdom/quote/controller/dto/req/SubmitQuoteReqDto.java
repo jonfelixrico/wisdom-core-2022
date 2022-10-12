@@ -20,7 +20,8 @@ public class SubmitQuoteReqDto {
 	@NotBlank
 	private String channelId;
 	
-	// TODO do something about null message ids
+	@NotNull
+	@NotBlank
 	private String messageId;
 
 	public String getContent() {

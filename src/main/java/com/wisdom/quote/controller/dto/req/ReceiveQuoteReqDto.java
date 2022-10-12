@@ -8,7 +8,8 @@ public class ReceiveQuoteReqDto {
 	@NotBlank
 	private String channelId;
 	
-	// TODO do something about missing message ids
+	@NotNull
+	@NotBlank
 	private String messageId;
 	
 	@NotNull
