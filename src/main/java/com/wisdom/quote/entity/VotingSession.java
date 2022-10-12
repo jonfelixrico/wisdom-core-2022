@@ -3,6 +3,7 @@ package com.wisdom.quote.entity;
 import java.time.Instant;
 import java.util.List;
 
+@Deprecated
 public class VotingSession {
 	private Instant timestamp;
 	private List<String> voterIds;
