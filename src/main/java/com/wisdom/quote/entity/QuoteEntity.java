@@ -4,81 +4,100 @@ import java.time.Instant;
 import java.util.List;
 
 public class QuoteEntity {
-	private String id;
+  private String id;
 
-	private String content;
-	private String authorId;
-	private String submitterId;
+  private String content;
+  private String authorId;
+  private String submitterId;
 
-	private Instant submitDt;
-	private Instant expirationDt;
+  private Instant submitDt;
+  private Instant expirationDt;
 
-	private String serverId;
-	private String channelId;
-	private String messageId;
+  private String serverId;
+  private String channelId;
+  private String messageId;
 
-	private List<Receive> receives;
-	private StatusDeclaration statusDeclaration;
+  private List<Receive> receives;
+  private StatusDeclaration statusDeclaration;
 
-	private VotingSession votingSession;
-	private Integer requiredVoteCount;
+  private VotingSession votingSession;
+  private List<Vote> votes;
+  private Integer requiredVoteCount;
 
-	@Deprecated
-	public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
-			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount) {
-		this.id = id;
-		this.content = content;
-		this.authorId = authorId;
-		this.submitterId = submitterId;
-		this.submitDt = submitDt;
-		this.expirationDt = expirationDt;
-		this.serverId = serverId;
-		this.channelId = channelId;
-		this.messageId = messageId;
-		this.receives = receives;
-		this.statusDeclaration = statusDeclaration;
-		this.votingSession = votingSession;
-		this.requiredVoteCount = requiredVoteCount;
-	}
+  @Deprecated
+  public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
+      Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
+      StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount) {
+    this.id = id;
+    this.content = content;
+    this.authorId = authorId;
+    this.submitterId = submitterId;
+    this.submitDt = submitDt;
+    this.expirationDt = expirationDt;
+    this.serverId = serverId;
+    this.channelId = channelId;
+    this.messageId = messageId;
+    this.receives = receives;
+    this.statusDeclaration = statusDeclaration;
+    this.votingSession = votingSession;
+    this.requiredVoteCount = requiredVoteCount;
+  }
 
-	public String getId() {
-		return id;
-	}
+  public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
+      Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
+      StatusDeclaration statusDeclaration, List<Vote> votes, Integer requiredVoteCount) {
+    this.id = id;
+    this.content = content;
+    this.authorId = authorId;
+    this.submitterId = submitterId;
+    this.submitDt = submitDt;
+    this.expirationDt = expirationDt;
+    this.serverId = serverId;
+    this.channelId = channelId;
+    this.messageId = messageId;
+    this.receives = receives;
+    this.statusDeclaration = statusDeclaration;
+    this.votes = votes;
+    this.requiredVoteCount = requiredVoteCount;
+  }
 
-	public String getContent() {
-		return content;
-	}
+  public String getId() {
+    return id;
+  }
 
-	public String getAuthorId() {
-		return authorId;
-	}
+  public String getContent() {
+    return content;
+  }
 
-	public String getSubmitterId() {
-		return submitterId;
-	}
+  public String getAuthorId() {
+    return authorId;
+  }
 
-	public Instant getSubmitDt() {
-		return submitDt;
-	}
+  public String getSubmitterId() {
+    return submitterId;
+  }
 
-	public Instant getExpirationDt() {
-		return expirationDt;
-	}
+  public Instant getSubmitDt() {
+    return submitDt;
+  }
 
-	public String getServerId() {
-		return serverId;
-	}
+  public Instant getExpirationDt() {
+    return expirationDt;
+  }
 
-	public String getChannelId() {
-		return channelId;
-	}
+  public String getServerId() {
+    return serverId;
+  }
 
-	public String getMessageId() {
-		return messageId;
-	}
+  public String getChannelId() {
+    return channelId;
+  }
 
-	public List<Receive> getReceives() {
+  public String getMessageId() {
+    return messageId;
+  }
+
+  public List<Receive> getReceives() {
     return receives;
   }
 
@@ -87,47 +106,47 @@ public class QuoteEntity {
     return votingSession;
   }
 
-	public Integer getRequiredVoteCount() {
-		return requiredVoteCount;
-	}
+  public Integer getRequiredVoteCount() {
+    return requiredVoteCount;
+  }
 
-	protected void setId(String id) {
-		this.id = id;
-	}
+  protected void setId(String id) {
+    this.id = id;
+  }
 
-	protected void setContent(String content) {
-		this.content = content;
-	}
+  protected void setContent(String content) {
+    this.content = content;
+  }
 
-	protected void setAuthorId(String authorId) {
-		this.authorId = authorId;
-	}
+  protected void setAuthorId(String authorId) {
+    this.authorId = authorId;
+  }
 
-	protected void setSubmitterId(String submitterId) {
-		this.submitterId = submitterId;
-	}
+  protected void setSubmitterId(String submitterId) {
+    this.submitterId = submitterId;
+  }
 
-	protected void setSubmitDt(Instant submitDt) {
-		this.submitDt = submitDt;
-	}
+  protected void setSubmitDt(Instant submitDt) {
+    this.submitDt = submitDt;
+  }
 
-	protected void setExpirationDt(Instant expirationDt) {
-		this.expirationDt = expirationDt;
-	}
+  protected void setExpirationDt(Instant expirationDt) {
+    this.expirationDt = expirationDt;
+  }
 
-	protected void setServerId(String serverId) {
-		this.serverId = serverId;
-	}
+  protected void setServerId(String serverId) {
+    this.serverId = serverId;
+  }
 
-	protected void setChannelId(String channelId) {
-		this.channelId = channelId;
-	}
+  protected void setChannelId(String channelId) {
+    this.channelId = channelId;
+  }
 
-	protected void setMessageId(String messageId) {
-		this.messageId = messageId;
-	}
+  protected void setMessageId(String messageId) {
+    this.messageId = messageId;
+  }
 
-	protected void setReceives(List<Receive> receives) {
+  protected void setReceives(List<Receive> receives) {
     this.receives = receives;
   }
 
@@ -136,15 +155,24 @@ public class QuoteEntity {
     this.votingSession = votingSession;
   }
 
-	protected void setRequiredVoteCount(Integer requiredVoteCount) {
-		this.requiredVoteCount = requiredVoteCount;
-	}
+  protected void setRequiredVoteCount(Integer requiredVoteCount) {
+    this.requiredVoteCount = requiredVoteCount;
+  }
 
-	public StatusDeclaration getStatusDeclaration() {
-		return statusDeclaration;
-	}
+  public StatusDeclaration getStatusDeclaration() {
+    return statusDeclaration;
+  }
 
-	protected void setStatusDeclaration(StatusDeclaration status) {
-		this.statusDeclaration = status;
-	}
+  protected void setStatusDeclaration(StatusDeclaration status) {
+    this.statusDeclaration = status;
+  }
+
+  public List<Vote> getVotes() {
+    return votes;
+  }
+
+  void setVotes(List<Vote> votes) {
+    this.votes = votes;
+  }
+
 }
