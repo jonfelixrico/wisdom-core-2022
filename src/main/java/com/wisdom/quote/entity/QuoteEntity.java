@@ -23,6 +23,7 @@ public class QuoteEntity {
 	private VotingSession votingSession;
 	private Integer requiredVoteCount;
 
+	@Deprecated
 	public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
 			Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
 			StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount) {
