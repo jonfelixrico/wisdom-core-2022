@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.wisdom.eventstoredb.utils.Event;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
-import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.entity.VotingSession;
 import com.wisdom.quote.writemodel.event.BaseQuoteEvent;
@@ -117,7 +116,7 @@ public class QuoteEventsReducer {
 	 */
 	private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteStatusDeclaredEvent event) {
 		var model = new QuoteReducerModel(entity);
-		model.setStatusDeclaration(new StatusDeclaration(Status.EXPIRED, event.getTimestamp()));
+		model.setStatusDeclaration(new StatusDeclaration(event.getStatus(), event.getTimestamp()));
 		return model;
 	}
 

@@ -1,6 +1,6 @@
 package com.wisdom.quote.entity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public abstract class QuoteBehavior extends QuoteEntity {
 
@@ -24,8 +24,9 @@ public abstract class QuoteBehavior extends QuoteEntity {
 			throw new IllegalStateException("Quote does not accept receives.");
 		}
 
-		var clone = List.copyOf(getReceives());
+		var clone = new ArrayList<>(getReceives());
 		clone.add(receive);
+		setReceives(clone);
 	}
 
 	protected void declareStatus(StatusDeclaration declaration) {
