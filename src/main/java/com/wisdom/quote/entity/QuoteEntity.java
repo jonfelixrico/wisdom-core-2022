@@ -79,12 +79,13 @@ public class QuoteEntity {
 	}
 
 	public List<Receive> getReceives() {
-		return receives;
-	}
+    return receives;
+  }
 
-	public VotingSession getVotingSession() {
-		return votingSession;
-	}
+  @Deprecated
+  public VotingSession getVotingSession() {
+    return votingSession;
+  }
 
 	public Integer getRequiredVoteCount() {
 		return requiredVoteCount;
@@ -127,12 +128,13 @@ public class QuoteEntity {
 	}
 
 	protected void setReceives(List<Receive> receives) {
-		this.receives = receives;
-	}
+    this.receives = receives;
+  }
 
-	protected void setVotingSession(VotingSession votingSession) {
-		this.votingSession = votingSession;
-	}
+  @Deprecated
+  protected void setVotingSession(VotingSession votingSession) {
+    this.votingSession = votingSession;
+  }
 
 	protected void setRequiredVoteCount(Integer requiredVoteCount) {
 		this.requiredVoteCount = requiredVoteCount;
