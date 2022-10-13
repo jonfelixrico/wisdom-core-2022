@@ -2,6 +2,7 @@ package com.wisdom.quote.entity;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public class QuoteEntity {
   private String id;
@@ -21,7 +22,7 @@ public class QuoteEntity {
   private StatusDeclaration statusDeclaration;
 
   private VotingSession votingSession;
-  private List<Vote> votes;
+  private Map<String, Instant> votes;
   private Integer requiredVoteCount;
 
   @Deprecated
@@ -45,7 +46,7 @@ public class QuoteEntity {
 
   public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-      StatusDeclaration statusDeclaration, List<Vote> votes, Integer requiredVoteCount) {
+      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount) {
     this.id = id;
     this.content = content;
     this.authorId = authorId;
@@ -167,11 +168,11 @@ public class QuoteEntity {
     this.statusDeclaration = status;
   }
 
-  public List<Vote> getVotes() {
+  public Map<String, Instant> getVotes() {
     return votes;
   }
 
-  void setVotes(List<Vote> votes) {
+  protected void setVotes(Map<String, Instant> votes) {
     this.votes = votes;
   }
 
