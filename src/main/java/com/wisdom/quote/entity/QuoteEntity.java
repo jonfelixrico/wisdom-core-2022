@@ -21,28 +21,8 @@ public class QuoteEntity {
   private List<Receive> receives;
   private StatusDeclaration statusDeclaration;
 
-  private VotingSession votingSession;
   private Map<String, Instant> votes;
   private Integer requiredVoteCount;
-
-  @Deprecated
-  public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
-      Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-      StatusDeclaration statusDeclaration, VotingSession votingSession, Integer requiredVoteCount) {
-    this.id = id;
-    this.content = content;
-    this.authorId = authorId;
-    this.submitterId = submitterId;
-    this.submitDt = submitDt;
-    this.expirationDt = expirationDt;
-    this.serverId = serverId;
-    this.channelId = channelId;
-    this.messageId = messageId;
-    this.receives = receives;
-    this.statusDeclaration = statusDeclaration;
-    this.votingSession = votingSession;
-    this.requiredVoteCount = requiredVoteCount;
-  }
 
   public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
@@ -102,11 +82,6 @@ public class QuoteEntity {
     return receives;
   }
 
-  @Deprecated
-  public VotingSession getVotingSession() {
-    return votingSession;
-  }
-
   public Integer getRequiredVoteCount() {
     return requiredVoteCount;
   }
@@ -149,11 +124,6 @@ public class QuoteEntity {
 
   protected void setReceives(List<Receive> receives) {
     this.receives = receives;
-  }
-
-  @Deprecated
-  protected void setVotingSession(VotingSession votingSession) {
-    this.votingSession = votingSession;
   }
 
   protected void setRequiredVoteCount(Integer requiredVoteCount) {
