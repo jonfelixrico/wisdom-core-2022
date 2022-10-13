@@ -110,5 +110,4 @@ class QuoteReadMDB extends QuoteReadModel {
     // TODO Auto-generated method stub
     super.setVotes(votes);
   }
-
 }

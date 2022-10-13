@@ -7,7 +7,6 @@ import java.util.Map;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
-import com.wisdom.quote.entity.VotingSession;
 
 public abstract class QuoteReadModel extends QuoteEntity {
   protected Long revision;
