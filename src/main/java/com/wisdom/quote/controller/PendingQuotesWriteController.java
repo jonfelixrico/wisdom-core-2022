@@ -55,22 +55,6 @@ public class PendingQuotesWriteController {
     return Map.of("quoteId", quoteId);
   }
 
-  @PostMapping("/{quoteId}/status")
-  private void declareStatus(@PathVariable String serverId, @PathVariable String quoteId,
-      @RequestBody QuoteDeclareStatusReqDto body) throws Exception {
-    var writeModel = writeSvc.get(quoteId);
-    if (!writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
-
-    try {
-      writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
-      writeModel.save();
-    } catch (IllegalStateException e) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-    }
-  }
-
   @PostMapping("/{quoteId}/vote")
   private void addVote(@PathVariable String quoteId, @PathVariable String serverId,
       @Valid @RequestBody QuoteAddVoteReqDto body) throws Exception {
@@ -100,6 +84,22 @@ public class PendingQuotesWriteController {
       writeModel.save();
     } catch (IllegalStateException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote note found.");
+    }
+  }
+
+  @PostMapping("/{quoteId}/status")
+  private void declareStatus(@PathVariable String serverId, @PathVariable String quoteId,
+      @RequestBody QuoteDeclareStatusReqDto body) throws Exception {
+    var writeModel = writeSvc.get(quoteId);
+    if (!writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    try {
+      writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
+      writeModel.save();
+    } catch (IllegalStateException e) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
     }
   }
 }
