@@ -16,6 +16,13 @@ public abstract class QuoteBehavior extends QuoteEntity {
     // TODO Auto-generated constructor stub
   }
 
+  protected QuoteBehavior(QuoteEntity entity) {
+    this(entity.getId(), entity.getContent(), entity.getAuthorId(), entity.getSubmitterId(), entity.getSubmitDt(),
+        entity.getExpirationDt(),
+        entity.getServerId(), entity.getChannelId(), entity.getMessageId(), entity.getReceives(),
+        entity.getStatusDeclaration(), entity.getVotes(), entity.getRequiredVoteCount());
+  }
+
   protected void receive(Receive receive) {
     if (getStatusDeclaration() == null || getStatusDeclaration().getStatus() != Status.APPROVED) {
       throw new IllegalStateException("Quote does not accept receives.");
