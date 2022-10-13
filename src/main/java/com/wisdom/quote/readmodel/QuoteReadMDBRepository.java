@@ -17,4 +17,12 @@ interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
   @Aggregation(pipeline = {
       "{ $match: { serverId: ?0, 'statusDeclaration.status': 'APPROVED' } }", "{ $sample: { size: 1 }}" })
   public List<QuoteReadMDB> getRandomQuoteByServerId(String serverId);
+
+  /**
+   * 
+   * @return This list will be empty or will contain only one item.
+   */
+  @Aggregation(pipeline = {
+      "{ $match: { serverId: ?0, authorId: ?1, 'statusDeclaration.status': 'APPROVED' } }", "{ $sample: { size: 1 }}" })
+  public List<QuoteReadMDB> getRandomQuoteByServerIdAndAuthorId(String serverId, String authorId);
 }
