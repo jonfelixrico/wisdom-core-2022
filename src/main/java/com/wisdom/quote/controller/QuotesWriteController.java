@@ -30,7 +30,7 @@ public class QuotesWriteController {
 	private void receiveQuote(@PathVariable String serverId, @PathVariable String quoteId,
 			@Valid @RequestBody ReceiveQuoteReqDto body) throws Exception {
 		var writeModel = writeSvc.get(quoteId);
-		if (!writeModel.getServerId().equals(serverId)) {
+		if (writeModel == null || !writeModel.getServerId().equals(serverId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
