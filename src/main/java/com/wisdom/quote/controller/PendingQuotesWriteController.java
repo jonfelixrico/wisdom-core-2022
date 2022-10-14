@@ -59,7 +59,7 @@ public class PendingQuotesWriteController {
   private void addVote(@PathVariable String quoteId, @PathVariable String serverId,
       @Valid @RequestBody QuoteAddVoteReqDto body) throws Exception {
     var writeModel = writeSvc.get(quoteId);
-    if (!writeModel.getServerId().equals(serverId)) {
+    if (writeModel == null || !writeModel.getServerId().equals(serverId)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
@@ -75,7 +75,7 @@ public class PendingQuotesWriteController {
   private void removeVote(@PathVariable String quoteId, @PathVariable String serverId, @PathVariable String userId)
       throws Exception {
     var writeModel = writeSvc.get(quoteId);
-    if (!writeModel.getServerId().equals(serverId)) {
+    if (writeModel == null || !writeModel.getServerId().equals(serverId)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Quote not found.");
     }
 
@@ -91,7 +91,7 @@ public class PendingQuotesWriteController {
   private void declareStatus(@PathVariable String serverId, @PathVariable String quoteId,
       @RequestBody QuoteDeclareStatusReqDto body) throws Exception {
     var writeModel = writeSvc.get(quoteId);
-    if (!writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
+    if (writeModel == null || !writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
