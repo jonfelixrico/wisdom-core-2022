@@ -3,6 +3,7 @@ package com.wisdom.quote.readmodel;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,7 +161,7 @@ class QuoteReadReducer {
 
     var doc = new QuoteReadMDB(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
         payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
-        payload.getChannelId(), payload.getMessageId(), List.of(), null, null, payload.getRequiredVoteCount(),
+        payload.getChannelId(), payload.getMessageId(), List.of(), null, Map.of(), payload.getRequiredVoteCount(),
         event.getStreamRevision().getValueUnsigned());
     repo.save(doc);
   }
