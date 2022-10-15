@@ -29,7 +29,8 @@ public class QuoteEventsReducer {
   public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
       QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
       QuoteReceivedEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE, QuoteVotesModifiedEvent.class,
-      QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class);
+      QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class, QuoteVoteAddedEvent.EVENT_TYPE,
+      QuoteVoteAddedEvent.class, QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class);
 
   @SuppressWarnings("unchecked")
   public Class<BaseQuoteEvent> getEventClassFromType(String eventType) {
@@ -92,7 +93,7 @@ public class QuoteEventsReducer {
   private QuoteEntity reduce(QuoteEntity model, QuoteSubmittedEvent event) {
     return new QuoteReducerModel(event.getQuoteId(), event.getContent(), event.getAuthorId(),
         event.getSubmitterId(), event.getTimestamp(), event.getExpirationDt(), event.getServerId(),
-        event.getChannelId(), event.getMessageId(), List.of(), null, null, event.getRequiredVoteCount());
+        event.getChannelId(), event.getMessageId(), List.of(), null, Map.of(), event.getRequiredVoteCount());
   }
 
   /**
