@@ -42,22 +42,24 @@ public abstract class QuoteBehavior extends QuoteEntity {
   }
 
   protected void addVote(String userId, Instant timestamp) {
-    if (getVotes().containsKey(userId)) {
+    Map<String, Instant> nullSafeMap = getVotes() == null ? Map.of() : getVotes();
+    if (nullSafeMap.containsKey(userId)) {
       throw new IllegalStateException("User has already voted.");
     }
 
-    var clone = new HashMap<>(getVotes());
+    var clone = new HashMap<>(nullSafeMap);
     clone.put(userId, timestamp);
 
     setVotes(clone);
   }
 
   protected void removeVote(String userId) {
-    if (!getVotes().containsKey(userId)) {
+    Map<String, Instant> nullSafeMap = getVotes() == null ? Map.of() : getVotes();
+    if (!nullSafeMap.containsKey(userId)) {
       throw new IllegalStateException("User does not have any votes.");
     }
 
-    var clone = new HashMap<>(getVotes());
+    var clone = new HashMap<>(nullSafeMap);
     clone.remove(userId);
 
     setVotes(clone);
