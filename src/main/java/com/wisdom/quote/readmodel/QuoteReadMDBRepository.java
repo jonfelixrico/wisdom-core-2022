@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
   @Query("{ serverId: ?0, statusDeclaration: null }")
-  public List<QuoteReadMDB> getPendingQuotesByServerId(String serverId);
+  public List<QuoteReadMDB> getPendingQuotes(String serverId);
 
   /**
    * 
