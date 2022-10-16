@@ -26,7 +26,12 @@ public class QuoteReadModelRepository {
 	}
 	
 	public QuoteReadModel getRandomQuoteInServerFilteredByAuthor(String serverId, String authorId) {
-      var fromDb = repo.getRandomQuoteByServerIdAndAuthorId(serverId, authorId);
-      return fromDb.isEmpty() ? null : fromDb.get(0);
+    var fromDb = repo.getRandomQuoteByServerIdAndAuthorId(serverId, authorId);
+    return fromDb.isEmpty() ? null : fromDb.get(0);
+  }
+  
+  public List<QuoteReadModel> getReadModel (String serverId, Instant referenceDt) {
+    return new ArrayList<QuoteReadModel>(repo.getExpiringPendingQuotes(serverId, referenceDt));
   }
 }
+
