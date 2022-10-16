@@ -23,7 +23,7 @@ public class PendingQuotesReadController {
 		return repo.findPendingQuotesInServer(serverId);
 	}
 	
-	@GetMapping("/quotes/pending/{quoteId}")
+	@GetMapping("/quote/pending/{quoteId}")
     private QuoteReadModel getPendingQuote(@PathVariable String quoteId) {
         var data = repo.findById(quoteId);
         if (data == null || data.getStatusDeclaration() != null) {
