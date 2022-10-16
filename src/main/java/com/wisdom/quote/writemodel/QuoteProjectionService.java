@@ -12,73 +12,104 @@ import com.eventstore.dbclient.ReadResult;
 import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
+import com.eventstore.dbclient.StreamNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wisdom.eventstoredb.EventStoreDBProvider;
+import com.wisdom.eventstoredb.ESDBClientProvider;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.writemodel.event.reducer.QuoteEventsReducer;
 
 @Service
 class QuoteProjectionService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(QuoteProjectionService.class);
 
-	@Autowired
-	private EventStoreDBProvider esdbProvider;
+  @Autowired
+  private ESDBClientProvider esdb;
 
-	@Autowired
-	private QuoteEventsReducer reducer;
+  @Autowired
+  private QuoteEventsReducer reducer;
 
-	@Autowired
-	private QuoteSnapshotService snapshotRepo;
+  @Autowired
+  private QuoteSnapshotService snapshotRepo;
 
-	@Autowired
-	private ObjectMapper mapper;
+  @Autowired
+  private ObjectMapper mapper;
 
-	public QuoteProjection getProjection(String quoteId)
-			throws InterruptedException, ExecutionException, IOException {
-		var snapshot = snapshotRepo.get(quoteId);
+  public QuoteProjection getProjection(String quoteId)
+      throws InterruptedException, ExecutionException, IOException {
+    var snapshot = snapshotRepo.get(quoteId);
 
-		QuoteProjection built;
-		if (snapshot != null) {
-			built = buildState(quoteId, snapshot.getRevision(), snapshot);
-		} else {
-			built = buildState(quoteId, null, null);
-		}
+    try {
+      QuoteProjection built;
 
-		snapshotRepo.save(built, built.getRevision());
-		return built;
-	}
+      if (snapshot != null) {
+        built = buildState(quoteId, snapshot.getRevision(), snapshot);
+      } else {
+        built = buildState(quoteId, null, null);
+      }
 
-	private QuoteProjection buildState(String quoteId, Long fromRevision,
-			QuoteEntity baseModel) throws InterruptedException, ExecutionException, IOException {
-		ReadStreamOptions options = ReadStreamOptions.get();
-		if (fromRevision == null) {
-			options.fromStart();
-		} else {
-			options.fromRevision(fromRevision);
-		}
+      snapshotRepo.save(built, built.getRevision());
+      return built;
+    } catch (StreamNotFoundException e) {
+      LOGGER.debug("Stream not found for quote {}", quoteId);
+      return null;
+    }
+  }
 
-		var state = baseModel;
-		var revision = fromRevision;
+  private ReadResult getEvents(String quoteId, Long fromRevision)
+      throws InterruptedException, ExecutionException, StreamNotFoundException {
+    ReadStreamOptions options = ReadStreamOptions.get();
+    if (fromRevision != null) {
+      options.fromRevision(fromRevision);
+    }
 
-		LOGGER.debug("Reading quote {} starting from revision {}", quoteId, fromRevision);
-		ReadResult results = esdbProvider.getClient().readStream(String.format("quote/%s", quoteId), options).get();
-		LOGGER.debug("Found {} events for quote {} starting from revision {}", results.getEvents().size(), quoteId, fromRevision);
-		for (ResolvedEvent result : results.getEvents()) {
-			RecordedEvent event = result.getEvent();
-			LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
+    try (var wrapper = esdb.getWrapped()) {
+      var client = wrapper.get();
 
-			var eventClass = reducer.getEventClassFromType(event.getEventType());
-			if (eventClass == null) {
-				// TODO throw exception
-				LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
-				continue;
-			}
+      var streamId = String.format("quote/%s", quoteId);
+      return client.readStream(streamId, options).get();
+    } catch (ExecutionException e) {
+      var cause = e.getCause();
+      if (cause instanceof StreamNotFoundException) {
+        throw (StreamNotFoundException) cause;
+      }
 
-			var eventData = mapper.readValue(event.getEventData(), eventClass);
-			state = reducer.reduceEvent(baseModel, eventData);
-			revision = event.getStreamRevision().getValueUnsigned();
-		}
+      throw e;
+    }
+  }
 
-		return new QuoteProjection(state, revision);
-	}
+  @SuppressWarnings("null")
+  private QuoteProjection buildState(String quoteId, Long fromRevision,
+      QuoteEntity baseModel) throws InterruptedException, ExecutionException, IOException, StreamNotFoundException {
+    ReadStreamOptions options = ReadStreamOptions.get();
+    if (fromRevision == null) {
+      options.fromStart();
+    } else {
+      options.fromRevision(fromRevision);
+    }
+
+    var state = baseModel;
+    var revision = fromRevision;
+
+    ReadResult results = getEvents(quoteId, fromRevision);
+    LOGGER.debug("Found {} events for quote {} starting from revision {}", results.getEvents().size(), quoteId,
+        fromRevision);
+
+    for (ResolvedEvent result : results.getEvents()) {
+      RecordedEvent event = result.getEvent();
+      LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
+
+      var eventClass = reducer.getEventClassFromType(event.getEventType());
+      if (eventClass == null) {
+        // TODO throw exception
+        LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
+        continue;
+      }
+
+      var eventData = mapper.readValue(event.getEventData(), eventClass);
+      state = reducer.reduceEvent(state, eventData);
+      revision = event.getStreamRevision().getValueUnsigned();
+    }
+
+    return new QuoteProjection(state, revision);
+  }
 }

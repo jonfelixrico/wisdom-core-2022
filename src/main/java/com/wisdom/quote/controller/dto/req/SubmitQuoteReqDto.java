@@ -1,7 +1,5 @@
 package com.wisdom.quote.controller.dto.req;
 
-import java.time.Instant;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -17,9 +15,6 @@ public class SubmitQuoteReqDto {
 	@NotNull
 	@NotBlank
 	private String submitterId;
-	
-	@NotNull
-	private Instant expirationDt;
 
 	@NotNull
 	@NotBlank
@@ -28,14 +23,6 @@ public class SubmitQuoteReqDto {
 	@NotNull
 	@NotBlank
 	private String messageId;
-	
-	@NotNull
-	@NotBlank
-	private String serverId;
-
-	public String getServerId() {
-		return serverId;
-	}
 
 	public String getContent() {
 		return content;
@@ -47,10 +34,6 @@ public class SubmitQuoteReqDto {
 
 	public String getSubmitterId() {
 		return submitterId;
-	}
-
-	public Instant getExpirationDt() {
-		return expirationDt;
 	}
 
 	public String getChannelId() {

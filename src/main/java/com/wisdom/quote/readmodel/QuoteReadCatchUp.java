@@ -19,101 +19,119 @@ import com.eventstore.dbclient.SubscriptionListener;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.wisdom.common.readmodel.PositionService;
-import com.wisdom.eventstoredb.EventStoreDBProvider;
+import com.wisdom.eventstoredb.ESDBClientProvider;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
 
 @Service
 class QuoteReadCatchUp {
-	private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadCatchUp.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadCatchUp.class);
 
-	private static final String POSITION_ID = "quote-readmodel";
+  private static final String POSITION_ID = "quote-readmodel";
 
-	@Autowired
-	private QuoteReadReducer reducer;
+  @Autowired
+  private QuoteReadReducer reducer;
 
-	@Autowired
-	private EventStoreDBProvider esdb;
+  @Autowired
+  private ESDBClientProvider esdb;
 
-	@Autowired
-	private PositionService posSvc;
+  @Autowired
+  private PositionService posSvc;
 
-	private void processLagCatchUpEvent(ResolvedEvent event)
-			throws StreamReadException, DatabindException, IOException {
-		var recordedEvt = event.getEvent();
-		try {
-			reducer.reduce(recordedEvt);
-		} catch (LaggingRevisionException e) {
-			// impossible to have lagging models at this point since we're especially
-			// catching-up
-		} catch (UnrecognizedEventTypeException e) {
-			// suppressed, we don't care about this in this context
-		}
-	}
+  private void processLagCatchUpEvent(ResolvedEvent event)
+      throws StreamReadException, DatabindException, IOException {
+    var recordedEvt = event.getEvent();
+    try {
+      reducer.reduce(recordedEvt);
+    } catch (LaggingRevisionException e) {
+      // impossible to have lagging models at this point since we're especially
+      // catching-up
+    } catch (UnrecognizedEventTypeException e) {
+      // suppressed, we don't care about this in this context
+    }
+  }
 
-	private void catchUpLaggingModel(LaggingRevisionException cause, ResolvedEvent event) {
-		try {
-			var startRevision = cause.getActualRevision() + 1;
-			var maxCount = event.getEvent().getStreamRevision().getValueUnsigned() - startRevision + 1; // + 1 for
-																										// inclusiveness
-			var options = ReadStreamOptions.get().fromRevision(cause.getActualRevision() + 1);
+  private void catchUpLaggingModel(LaggingRevisionException cause, ResolvedEvent event) {
+    try {
+      var startRevision = cause.getActualRevision() + 1;
+      var maxCount = event.getEvent().getStreamRevision().getValueUnsigned() - startRevision + 1; // + 1 for
+                                                                                                  // inclusiveness
+      var options = ReadStreamOptions.get().fromRevision(cause.getActualRevision() + 1);
 
-			var results = esdb.getClient().readStream(event.getEvent().getStreamId(), maxCount, options).get();
-			for (ResolvedEvent inner : results.getEvents()) {
-				processLagCatchUpEvent(inner);
-			}
-		} catch (Exception e) {
-			LOGGER.error("Error encountered while trying to catch-up a lagging model", e);
-		}
-	}
+      try (var wrapper = esdb.getWrapped()) {
+        var client = wrapper.get();
+        var results = client.readStream(event.getEvent().getStreamId(), maxCount, options).get();
+        for (ResolvedEvent inner : results.getEvents()) {
+          processLagCatchUpEvent(inner);
+        }
+      }
+    } catch (Exception e) {
+      LOGGER.error("Error encountered while trying to catch-up a lagging model", e);
+    }
+  }
 
-	private void processEvent(ResolvedEvent event) throws StreamReadException, DatabindException, IOException {
-		var recordedEvt = event.getEvent();
-		try {
-			reducer.reduce(recordedEvt);
-		} catch (LaggingRevisionException e) {
-			catchUpLaggingModel(e, event);
-		} catch (UnrecognizedEventTypeException e) {
-			LOGGER.debug("Skipped unrecognized event type {}", e.getEventType());
-		}
-	}
+  private void processEvent(ResolvedEvent event) throws StreamReadException, DatabindException, IOException {
+    var recordedEvt = event.getEvent();
+    var position = recordedEvt.getPosition();
+    try {
+      LOGGER.debug("[prepare: {}, commit: {}] Handling event {} for stream {} with revision {}",
+          position.getPrepareUnsigned(), position.getCommitUnsigned(), recordedEvt.getEventId(),
+          recordedEvt.getStreamId(), recordedEvt.getStreamRevision());
+      reducer.reduce(recordedEvt);
+    } catch (LaggingRevisionException e) {
+      catchUpLaggingModel(e, event);
+    } catch (UnrecognizedEventTypeException e) {
+      LOGGER.debug("Skipped unrecognized event type {}", e.getEventType());
+    }
+  }
 
-	private SubscriptionListener getListener() {
-		return new SubscriptionListener() {
-			@Override
-			public void onEvent(Subscription subscription, ResolvedEvent event) {
-				try {
-					processEvent(event);
-				} catch (Exception e) {
-					LOGGER.error("Unexpected exception encountered while processing catch-up event", e);
-				}
+  private SubscriptionListener getListener() {
+    return new SubscriptionListener() {
+      @Override
+      public void onEvent(Subscription subscription, ResolvedEvent event) {
+        try {
+          processEvent(event);
+        } catch (Exception e) {
+          LOGGER.error("Error encountered while processing catch-up event", e);
+        }
 
-				try {
-					posSvc.setPosition(POSITION_ID, event.getEvent().getPosition());
-				} catch (Exception e) {
-					LOGGER.error("Unexpected exception encountered while saving position data", e);
-				}
-			}
-		};
-	}
+        try {
+          posSvc.setPosition(POSITION_ID, event.getEvent().getPosition());
+        } catch (Exception e) {
+          LOGGER.error("Error encountered while saving position data", e);
+        }
+      }
 
-	private SubscribeToAllOptions getOptions() {
-		SubscriptionFilter filter = SubscriptionFilter.newBuilder().withEventTypePrefix("QUOTE_").build();
-		var options = SubscribeToAllOptions.get().filter(filter);
+      @Override
+      public void onError(Subscription subscription, Throwable throwable) {
+        LOGGER.error("Error encountered in listener", throwable);
 
-		var position = posSvc.getPosition(POSITION_ID);
-		if (position != null) {
-			LOGGER.info("Starting catch-up from prepare {}, commit {}", position.getPrepareUnsigned(),
-					position.getCommitUnsigned());
-			options.fromPosition(null);
-		}
+      }
+    };
+  }
 
-		return options;
-	}
+  private SubscribeToAllOptions getOptions() {
+    SubscriptionFilter filter = SubscriptionFilter.newBuilder().withEventTypePrefix("QUOTE_").build();
+    var options = SubscribeToAllOptions.get().filter(filter);
 
-	@EventListener
-	private void startCatchUp(ApplicationStartedEvent ctx) throws InterruptedException, ExecutionException {
-		LOGGER.info("Starting catch-up...");
-		esdb.getClient().subscribeToAll(getListener(), getOptions());
-	}
+    var position = posSvc.getPosition(POSITION_ID);
+    if (position != null) {
+      LOGGER.info("Starting catch-up from prepare {}, commit {}", position.getPrepareUnsigned(),
+          position.getCommitUnsigned());
+      options.fromPosition(position);
+    }
+
+    return options;
+  }
+
+  @EventListener
+  private void startCatchUp(ApplicationStartedEvent ctx) throws InterruptedException, ExecutionException {
+    LOGGER.info("Starting catch-up...");
+    /*
+     * We're using getRaw because this connection will last until the end of the
+     * application lifecycle. No need to make a wrapped one since that's meant to be
+     * closable.
+     */
+    esdb.getRaw().subscribeToAll(getListener(), getOptions());
+  }
 }

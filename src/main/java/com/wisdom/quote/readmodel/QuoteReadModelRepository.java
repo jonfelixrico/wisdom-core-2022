@@ -24,4 +24,9 @@ public class QuoteReadModelRepository {
 		var fromDb = repo.getRandomQuoteByServerId(serverId);
 		return fromDb.isEmpty() ? null : fromDb.get(0);
 	}
+	
+	public QuoteReadModel getRandomQuoteInServerFilteredByAuthor(String serverId, String authorId) {
+      var fromDb = repo.getRandomQuoteByServerIdAndAuthorId(serverId, authorId);
+      return fromDb.isEmpty() ? null : fromDb.get(0);
+  }
 }
