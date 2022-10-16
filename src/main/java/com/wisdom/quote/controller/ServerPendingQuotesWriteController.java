@@ -31,7 +31,7 @@ import com.wisdom.quote.writemodel.QuoteWriteService;
  */
 @RestController
 @RequestMapping("/server/{serverId}/quote/pending")
-public class PendingQuotesWriteController {
+public class ServerPendingQuotesWriteController {
 
   @Autowired
   private QuoteWriteService writeSvc;
