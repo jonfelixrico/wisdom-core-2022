@@ -21,7 +21,7 @@ public class PendingQuotesReadController {
 	private QuoteReadModelRepository repo;
 	
 	
-	@GetMapping("/server/{serverId}/quote/pending")
+	@GetMapping("/server/{serverId}/pending-quote")
 	private List<QuoteReadModel> getServerPendingQuotes(@PathVariable String serverId, @RequestParam Optional<Instant> expiringBefore) {
 	  if (expiringBefore.isPresent()) {
 	    return repo.getExpiringPendingeQuotes(serverId, expiringBefore.get());
