@@ -1,5 +1,6 @@
 package com.wisdom.quote.readmodel;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -7,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
-  @Query("{ serverId: ?0, 'statusDeclaration': null }")
+  @Query("{ serverId: ?0, statusDeclaration: null }")
   public List<QuoteReadMDB> getPendingQuotesByServerId(String serverId);
 
   /**
@@ -25,4 +26,7 @@ interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
   @Aggregation(pipeline = {
       "{ $match: { serverId: ?0, authorId: ?1, 'statusDeclaration.status': 'APPROVED' } }", "{ $sample: { size: 1 }}" })
   public List<QuoteReadMDB> getRandomQuoteByServerIdAndAuthorId(String serverId, String authorId);
+  
+  @Query("{ serverId: ?0, statusDeclaration: null, expireDt: { $lt: referenceDt } }")
+  public List<QuoteReadMDB> getExpiringPendingQuotes (String serverId, Instant referenceDt);
 }
