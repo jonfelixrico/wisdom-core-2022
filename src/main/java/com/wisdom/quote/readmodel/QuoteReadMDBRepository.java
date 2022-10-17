@@ -27,6 +27,6 @@ interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
       "{ $match: { serverId: ?0, authorId: ?1, 'statusDeclaration.status': 'APPROVED' } }", "{ $sample: { size: 1 }}" })
   public List<QuoteReadMDB> getRandomQuoteByServerIdAndAuthorId(String serverId, String authorId);
   
-  @Query("{ serverId: ?0, statusDeclaration: null, expireDt: { $lt: ?1 } }")
+  @Query("{ serverId: ?0, statusDeclaration: null, expirationDt: { $lt: ?1 } }")
   public List<QuoteReadMDB> getExpiringPendingQuotes (String serverId, Instant referenceDt);
 }
