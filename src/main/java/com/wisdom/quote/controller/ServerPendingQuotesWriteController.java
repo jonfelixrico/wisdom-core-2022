@@ -3,6 +3,10 @@
  */
 package com.wisdom.quote.controller;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.req.QuoteAddVoteReqDto;
 import com.wisdom.quote.controller.dto.req.QuoteDeclareStatusReqDto;
+import com.wisdom.quote.controller.dto.req.SubmitQuoteReqDto;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 /**
@@ -25,8 +30,8 @@ import com.wisdom.quote.writemodel.QuoteWriteService;
  *
  */
 @RestController
-@RequestMapping("/pending-quotes")
-public class PendingQuotesWriteController {
+@RequestMapping("/server/{serverId}/quote/pending")
+public class ServerPendingQuotesWriteController {
 
   @Autowired
   private QuoteWriteService writeSvc;
@@ -34,12 +39,28 @@ public class PendingQuotesWriteController {
   @Autowired
   private TimeService timeSvc;
 
+  @PostMapping
+  private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body, @PathVariable String serverId)
+      throws Exception {
+    var quoteId = UUID.randomUUID().toString();
+    var createDt = timeSvc.getCurrentTime();
+
+    // TODO make a service for this -- this is a per-server configuration
+    var expireDt = createDt.plus(3, ChronoUnit.DAYS);
+
+    var writeModel = writeSvc.create(quoteId, body.getContent(), body.getAuthorId(), body.getSubmitterId(),
+        createDt, expireDt, serverId, body.getChannelId(), body.getMessageId(), 3);
+    writeModel.save();
+
+    return Map.of("quoteId", quoteId);
+  }
+
   @PostMapping("/{quoteId}/vote")
-  private void addVote(@PathVariable String quoteId,
+  private void addVote(@PathVariable String quoteId, @PathVariable String serverId,
       @Valid @RequestBody QuoteAddVoteReqDto body) throws Exception {
     var writeModel = writeSvc.get(quoteId);
-    if (writeModel == null || writeModel.getStatusDeclaration() != null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pending quote not found.");
+    if (writeModel == null || !writeModel.getServerId().equals(serverId)) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     try {
@@ -51,11 +72,11 @@ public class PendingQuotesWriteController {
   }
 
   @DeleteMapping("/{quoteId}/vote/{userId}")
-  private void removeVote(@PathVariable String quoteId, @PathVariable String userId)
+  private void removeVote(@PathVariable String quoteId, @PathVariable String serverId, @PathVariable String userId)
       throws Exception {
     var writeModel = writeSvc.get(quoteId);
-    if (writeModel == null || writeModel.getStatusDeclaration() != null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pending quote not found.");
+    if (writeModel == null || !writeModel.getServerId().equals(serverId)) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Quote not found.");
     }
 
     try {
@@ -67,10 +88,10 @@ public class PendingQuotesWriteController {
   }
 
   @PostMapping("/{quoteId}/status")
-  private void declareStatus(@PathVariable String quoteId,
+  private void declareStatus(@PathVariable String serverId, @PathVariable String quoteId,
       @RequestBody QuoteDeclareStatusReqDto body) throws Exception {
     var writeModel = writeSvc.get(quoteId);
-    if (writeModel == null || writeModel.getStatusDeclaration() != null) {
+    if (writeModel == null || !writeModel.getServerId().equals(serverId) || writeModel.getStatusDeclaration() != null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 

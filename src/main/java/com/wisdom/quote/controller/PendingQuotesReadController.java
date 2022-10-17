@@ -1,11 +1,14 @@
 package com.wisdom.quote.controller;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,9 +21,13 @@ public class PendingQuotesReadController {
 	private QuoteReadModelRepository repo;
 	
 	
-	@GetMapping("/server/{serverId}/quote/pending")
-	private List<QuoteReadModel> getPendingQuotesByServer(@PathVariable String serverId) {
-		return repo.findPendingQuotesInServer(serverId);
+	@GetMapping("/server/{serverId}/pending-quote")
+	private List<QuoteReadModel> getServerPendingQuotes(@PathVariable String serverId, @RequestParam Optional<Instant> expiringBefore) {
+	  if (expiringBefore.isPresent()) {
+	    return repo.getExpiringPendingeQuotes(serverId, expiringBefore.get());
+	  }
+	  
+	  return repo.findPendingQuotesInServer(serverId);
 	}
 	
 	@GetMapping("/quote/pending/{quoteId}")
