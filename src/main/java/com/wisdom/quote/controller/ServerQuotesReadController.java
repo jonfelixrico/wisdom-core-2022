@@ -12,7 +12,7 @@ import com.wisdom.quote.readmodel.QuoteReadModelRepository;
 
 @RestController
 @RequestMapping("/server/{serverId}/quote")
-public class QuotesReadController {
+public class ServerQuotesReadController {
   @Autowired
   private QuoteReadModelRepository repo;
 
