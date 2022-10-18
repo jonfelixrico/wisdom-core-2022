@@ -18,28 +18,29 @@ import com.wisdom.quote.controller.dto.req.ReceiveQuoteReqDto;
 import com.wisdom.quote.writemodel.QuoteWriteService;
 
 @RestController
-@RequestMapping("/server/{serverId}/quote")
+@RequestMapping("/quote/{quoteId}")
 public class QuotesWriteController {
-	@Autowired
-	private QuoteWriteService writeSvc;
+  @Autowired
+  private QuoteWriteService writeSvc;
 
-	@Autowired
-	private TimeService timeSvc;
+  @Autowired
+  private TimeService timeSvc;
 
-	@PostMapping("/{quoteId}/receive")
-	private void receiveQuote(@PathVariable String serverId, @PathVariable String quoteId,
-			@Valid @RequestBody ReceiveQuoteReqDto body) throws Exception {
-		var writeModel = writeSvc.get(quoteId);
-		if (writeModel == null || !writeModel.getServerId().equals(serverId)) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
+  @PostMapping("/receive")
+  private void receiveQuote(@PathVariable String quoteId,
+      @Valid @RequestBody ReceiveQuoteReqDto body) throws Exception {
+    var writeModel = writeSvc.get(quoteId);
+    if (writeModel == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
 
-		try {
-			writeModel.receive(UUID.randomUUID().toString(), body.getReceiverId(), timeSvc.getCurrentTime(), serverId,
-					body.getChannelId(), body.getMessageId());
-			writeModel.save();
-		} catch (IllegalStateException e) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-		}
-	}
+    try {
+      writeModel.receive(UUID.randomUUID().toString(), body.getReceiverId(), timeSvc.getCurrentTime(),
+          writeModel.getServerId(),
+          body.getChannelId(), body.getMessageId());
+      writeModel.save();
+    } catch (IllegalStateException e) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
+    }
+  }
 }

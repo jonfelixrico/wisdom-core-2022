@@ -25,7 +25,7 @@ import com.wisdom.quote.writemodel.QuoteWriteService;
  *
  */
 @RestController
-@RequestMapping("/pending-quotes")
+@RequestMapping("/pending-quote/{quoteId}")
 public class PendingQuotesWriteController {
 
   @Autowired
@@ -34,7 +34,7 @@ public class PendingQuotesWriteController {
   @Autowired
   private TimeService timeSvc;
 
-  @PostMapping("/{quoteId}/vote")
+  @PostMapping("/vote")
   private void addVote(@PathVariable String quoteId,
       @Valid @RequestBody QuoteAddVoteReqDto body) throws Exception {
     var writeModel = writeSvc.get(quoteId);
@@ -50,7 +50,7 @@ public class PendingQuotesWriteController {
     }
   }
 
-  @DeleteMapping("/{quoteId}/vote/{userId}")
+  @DeleteMapping("/vote/{userId}")
   private void removeVote(@PathVariable String quoteId, @PathVariable String userId)
       throws Exception {
     var writeModel = writeSvc.get(quoteId);
@@ -66,7 +66,7 @@ public class PendingQuotesWriteController {
     }
   }
 
-  @PostMapping("/{quoteId}/status")
+  @PostMapping("/status")
   private void declareStatus(@PathVariable String quoteId,
       @RequestBody QuoteDeclareStatusReqDto body) throws Exception {
     var writeModel = writeSvc.get(quoteId);
