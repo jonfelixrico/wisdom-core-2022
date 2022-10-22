@@ -21,6 +21,9 @@ interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
   
   @Query("{ serverId: ?0, 'statusDeclaration.status': 'APPROVED' }")
   public List<QuoteReadMDB> getQuotesByServerId(String serverId);
+  
+  @Query("{ serverId: ?0, authorId: ?1, 'statusDeclaration.status': 'APPROVED' }")
+  public List<QuoteReadMDB> getQuotesByServerIdAndAuthorId(String serverId, String authorId);
 
   /**
    * 
