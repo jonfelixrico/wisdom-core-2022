@@ -34,5 +34,15 @@ public class QuoteReadModelRepository {
   public List<QuoteReadModel> getExpiringPendingeQuotes (String serverId, Instant referenceDt) {
     return new ArrayList<QuoteReadModel>(repo.getExpiringPendingQuotes(serverId, referenceDt));
   }
+  
+  public List<QuoteReadModel> getServerQuotes(String serverId) {
+    var fromDb = repo.getRandomQuoteByServerId(serverId);
+    return new ArrayList<QuoteReadModel>(fromDb);
+  }
+  
+  public List<QuoteReadModel> getServerQuotes(String serverId, String authorId) {
+    var fromDb = repo.getRandomQuoteByServerIdAndAuthorId(serverId, authorId);
+    return new ArrayList<QuoteReadModel>(fromDb);
+  }
 }
 

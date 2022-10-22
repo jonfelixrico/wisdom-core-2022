@@ -1,5 +1,7 @@
 package com.wisdom.quote.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,5 +25,14 @@ public class ServerQuotesReadController {
     }
     
     return repo.getRandomQuoteInServerFilteredByAuthor(serverId, authorId);
+  }
+  
+  @GetMapping
+  private List<QuoteReadModel> getServerQuotes(@PathVariable String serverId, @RequestParam(required = false) String authorId) {
+    if (authorId == null) {
+      return repo.getServerQuotes(serverId);
+    }
+    
+    return repo.getServerQuotes(serverId, authorId);
   }
 }
