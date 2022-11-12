@@ -2,35 +2,15 @@ package com.wisdom.quote.writemodel.event;
 
 import java.time.Instant;
 
-public class QuoteVoteAddedEventV1 extends BaseQuoteEvent {
-  public static final String EVENT_TYPE = "QUOTE_VOTE_ADDED.V1";
-
-  private String quoteId;
-  private String userId;
-  private Instant timestamp;
-
+public class QuoteVoteAddedEventV1 extends BaseQuoteVoteAddedEvent {
   public QuoteVoteAddedEventV1(String quoteId, String userId, Instant timestamp) {
-    this.quoteId = quoteId;
-    this.userId = userId;
-    this.timestamp = timestamp;
+    super(quoteId, userId, timestamp);
   }
 
-  public String getUserId() {
-    return userId;
-  }
-
-  public Instant getTimestamp() {
-    return timestamp;
-  }
+  public static final String EVENT_TYPE = "QUOTE_VOTE_ADDED.V1";
 
   @Override
   public String getEventType() {
     return EVENT_TYPE;
   }
-
-  @Override
-  public String getQuoteId() {
-    return quoteId;
-  }
-
 }
