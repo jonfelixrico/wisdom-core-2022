@@ -21,7 +21,7 @@ import com.wisdom.quote.entity.StatusDeclaration;
  *
  * @author Felix
  */
-class QuoteReducerModel extends QuoteEntity {
+QuoteReducerModel extends QuoteEntity {
 
   public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
