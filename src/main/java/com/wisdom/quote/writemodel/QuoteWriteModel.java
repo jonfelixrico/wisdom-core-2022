@@ -13,7 +13,7 @@ import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEvent;
+import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
 
 public class QuoteWriteModel extends QuoteBehavior {
   private EventAppendBuffer buffer;
@@ -44,7 +44,7 @@ public class QuoteWriteModel extends QuoteBehavior {
 
   public void removeVote(String userId, Instant timestamp) {
     super.removeVote(userId);
-    buffer.pushEvent(new QuoteVoteRemovedEvent(getId(), userId, timestamp));
+    buffer.pushEvent(new QuoteVoteRemovedEventV1(getId(), userId, timestamp));
   }
 
   public void save() throws Exception {

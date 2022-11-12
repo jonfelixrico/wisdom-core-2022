@@ -19,7 +19,7 @@ import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEvent;
+import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
 
 @Service
 public class QuoteEventsReducer {
@@ -29,7 +29,7 @@ public class QuoteEventsReducer {
       QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
       QuoteReceivedEvent.class,
       QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class, QuoteVoteAddedEventV1.EVENT_TYPE,
-      QuoteVoteAddedEventV1.class, QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class);
+      QuoteVoteAddedEventV1.class, QuoteVoteRemovedEventV1.EVENT_TYPE, QuoteVoteRemovedEventV1.class);
 
   @SuppressWarnings("unchecked")
   public Class<BaseQuoteEvent> getEventClassFromType(String eventType) {
@@ -74,8 +74,8 @@ public class QuoteEventsReducer {
       return reduce(baseModel, (QuoteVoteAddedEventV1) event);
     }
 
-    if (event instanceof QuoteVoteRemovedEvent) {
-      return reduce(baseModel, (QuoteVoteRemovedEvent) event);
+    if (event instanceof QuoteVoteRemovedEventV1) {
+      return reduce(baseModel, (QuoteVoteRemovedEventV1) event);
     }
 
     LOGGER.warn("Unregistered Quote class {} detected.", event.getClass());
@@ -136,7 +136,7 @@ public class QuoteEventsReducer {
     return model;
   }
 
-  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteVoteRemovedEvent event) {
+  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteVoteRemovedEventV1 event) {
     var model = new QuoteReducerModel(entity);
 
     var clone = new HashMap<>(entity.getVotes());
