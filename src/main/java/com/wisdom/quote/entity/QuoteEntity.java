@@ -24,9 +24,18 @@ public class QuoteEntity {
   private Map<String, Instant> votes;
   private Integer requiredVoteCount;
 
+  private Boolean isLegacy;
+
   public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount) {
+    this(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
+        statusDeclaration, votes, requiredVoteCount, false);
+  }
+
+  public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
+      Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
+      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy) {
     this.id = id;
     this.content = content;
     this.authorId = authorId;
@@ -40,6 +49,7 @@ public class QuoteEntity {
     this.statusDeclaration = statusDeclaration;
     this.votes = votes;
     this.requiredVoteCount = requiredVoteCount;
+    this.isLegacy = isLegacy;
   }
 
   public String getId() {
@@ -144,6 +154,14 @@ public class QuoteEntity {
 
   protected void setVotes(Map<String, Instant> votes) {
     this.votes = votes;
+  }
+
+  public Boolean getIsLegacy() {
+    return isLegacy;
+  }
+
+  protected void setIsLegacy(Boolean isLegacy) {
+    this.isLegacy = isLegacy;
   }
 
 }
