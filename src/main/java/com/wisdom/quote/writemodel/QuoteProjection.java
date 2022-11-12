@@ -13,17 +13,18 @@ class QuoteProjection extends QuoteEntity {
 
   protected QuoteProjection(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Long revision) {
+      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
+      Long revision) {
     super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-        statusDeclaration, votes, requiredVoteCount);
+        statusDeclaration, votes, requiredVoteCount, isLegacy);
     this.revision = revision;
   }
 
   protected QuoteProjection(QuoteEntity base, long revision) {
     this(base.getId(), base.getContent(), base.getAuthorId(), base.getSubmitterId(), base.getSubmitDt(),
         base.getExpirationDt(), base.getServerId(), base.getChannelId(), base.getMessageId(),
-        base.getReceives(), base.getStatusDeclaration(), base.getVotes(), base.getRequiredVoteCount(),
-        revision);
+        base.getReceives(), base.getStatusDeclaration(), base.getVotes(),
+        base.getRequiredVoteCount(), base.getIsLegacy(), revision);
   }
 
   public Long getRevision() {

@@ -4,14 +4,14 @@ import java.time.Instant;
 
 import com.wisdom.quote.entity.Status;
 
-public class QuoteStatusDeclaredEvent extends BaseQuoteEvent {
-	public static final String EVENT_TYPE = "QUOTE_STATUS_DECLARED";
+public class QuoteStatusDeclaredEventV1 extends BaseQuoteEvent {
+	public static final String EVENT_TYPE = "QUOTE_STATUS_DECLARED.V1";
 
 	private String quoteId;
 	private Instant timestamp;
 	private Status status;
 
-	public QuoteStatusDeclaredEvent(String quoteId, Status status, Instant timestamp) {
+	public QuoteStatusDeclaredEventV1(String quoteId, Status status, Instant timestamp) {
 		this.quoteId = quoteId;
 		this.timestamp = timestamp;
 		this.status = status;

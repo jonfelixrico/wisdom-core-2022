@@ -13,10 +13,9 @@ import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.eventstore.dbclient.StreamNotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventstoredb.ESDBClientProvider;
 import com.wisdom.quote.entity.QuoteEntity;
-import com.wisdom.quote.writemodel.event.reducer.QuoteEventsReducer;
+import com.wisdom.quote.writemodel.event.reducer.QuoteWriteReducer;
 
 @Service
 class QuoteProjectionService {
@@ -26,13 +25,10 @@ class QuoteProjectionService {
   private ESDBClientProvider esdb;
 
   @Autowired
-  private QuoteEventsReducer reducer;
+  private QuoteWriteReducer reducer;
 
   @Autowired
   private QuoteSnapshotService snapshotRepo;
-
-  @Autowired
-  private ObjectMapper mapper;
 
   public QuoteProjection getProjection(String quoteId)
       throws InterruptedException, ExecutionException, IOException {
@@ -98,15 +94,7 @@ class QuoteProjectionService {
       RecordedEvent event = result.getEvent();
       LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
 
-      var eventClass = reducer.getEventClassFromType(event.getEventType());
-      if (eventClass == null) {
-        // TODO throw exception
-        LOGGER.warn("No event class mapped to event type {}!", event.getEventType());
-        continue;
-      }
-
-      var eventData = mapper.readValue(event.getEventData(), eventClass);
-      state = reducer.reduceEvent(state, eventData);
+      state = reducer.reduceEvent(state, event);
       revision = event.getStreamRevision().getValueUnsigned();
     }
 

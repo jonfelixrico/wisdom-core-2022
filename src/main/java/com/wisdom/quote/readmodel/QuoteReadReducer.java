@@ -19,11 +19,14 @@ import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.readmodel.exception.AdvancedRevisionException;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
-import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
-import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
-import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.event.QuoteVoteAddedEvent;
-import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEvent;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEventV0;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
+import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
+import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV0;
+import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
+import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV0;
+import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
+import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
 
 @Service
 class QuoteReadReducer {
@@ -52,21 +55,30 @@ class QuoteReadReducer {
       UnrecognizedEventTypeException, LaggingRevisionException {
     try {
       switch (event.getEventType()) {
-        case QuoteReceivedEvent.EVENT_TYPE:
-          reduceReceivedEvent(event);
-          break;
-        case QuoteStatusDeclaredEvent.EVENT_TYPE:
-          reduceStatusDeclaredEvent(event);
-          break;
-        case QuoteSubmittedEvent.EVENT_TYPE:
-          reduceSubmittedEvent(event);
-          break;
-        case QuoteVoteRemovedEvent.EVENT_TYPE:
-          reduceVoteRemovedEvent(event);
-          break;
-        case QuoteVoteAddedEvent.EVENT_TYPE:
-          reduceVoteAddedEvent(event);
-          break;
+        case QuoteReceivedEventV0.EVENT_TYPE:
+          reduceReceivedEventV0(event);
+          return;
+        case QuoteReceivedEventV1.EVENT_TYPE:
+          reduceReceivedEventV1(event);
+          return;
+        case QuoteStatusDeclaredEventV1.EVENT_TYPE:
+          reduceStatusDeclaredEventV1(event);
+          return;
+        case QuoteSubmittedEventV0.EVENT_TYPE:
+          reduceSubmittedEventV0(event);
+          return;
+        case QuoteSubmittedEventV1.EVENT_TYPE:
+          reduceSubmittedEventV1(event);
+          return;
+        case QuoteVoteRemovedEventV1.EVENT_TYPE:
+          reduceVoteRemovedEventV1(event);
+          return;
+        case QuoteVoteAddedEventV1.EVENT_TYPE:
+          reduceVoteAddedEventV1(event);
+          return;
+        case QuoteVoteAddedEventV0.EVENT_TYPE:
+          reduceVoteAddedEventV0(event);
+          return;
         default:
           throw new UnrecognizedEventTypeException(event.getEventType());
       }
@@ -121,24 +133,39 @@ class QuoteReadReducer {
    * why we do individual reads and saves per sub-reducer call.
    */
 
-  private void reduceReceivedEvent(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
+  private void reduceReceivedEventV0(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
       LaggingRevisionException, AdvancedRevisionException {
-    var payload = mapper.readValue(event.getEventData(), QuoteReceivedEvent.class);
+    var payload = mapper.readValue(event.getEventData(), QuoteReceivedEventV0.class);
     var doc = findById(payload.getQuoteId());
 
     verifyRevision(doc, event);
 
     var newReceive = new Receive(payload.getReceiveId(), payload.getTimestamp(), payload.getUserId(),
-        payload.getServerId(), payload.getChannelId(), payload.getMessageId());
+        payload.getServerId(), null, null, true);
     doc.getReceives().add(newReceive);
 
     setRevision(event, doc);
     repo.save(doc);
   }
 
-  private void reduceStatusDeclaredEvent(RecordedEvent event) throws StreamReadException, DatabindException,
+  private void reduceReceivedEventV1(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
+      LaggingRevisionException, AdvancedRevisionException {
+    var payload = mapper.readValue(event.getEventData(), QuoteReceivedEventV1.class);
+    var doc = findById(payload.getQuoteId());
+
+    verifyRevision(doc, event);
+
+    var newReceive = new Receive(payload.getReceiveId(), payload.getTimestamp(), payload.getUserId(),
+        payload.getServerId(), payload.getChannelId(), payload.getMessageId(), false);
+    doc.getReceives().add(newReceive);
+
+    setRevision(event, doc);
+    repo.save(doc);
+  }
+
+  private void reduceStatusDeclaredEventV1(RecordedEvent event) throws StreamReadException, DatabindException,
       IOException, LaggingRevisionException, AdvancedRevisionException {
-    var data = mapper.readValue(event.getEventData(), QuoteStatusDeclaredEvent.class);
+    var data = mapper.readValue(event.getEventData(), QuoteStatusDeclaredEventV1.class);
     var doc = findById(data.getQuoteId());
 
     verifyRevision(doc, event);
@@ -150,9 +177,25 @@ class QuoteReadReducer {
     repo.save(doc);
   }
 
-  private void reduceSubmittedEvent(RecordedEvent event)
+  private void reduceSubmittedEventV0(RecordedEvent event)
       throws StreamReadException, DatabindException, IOException, AdvancedRevisionException {
-    var payload = mapper.readValue(event.getEventData(), QuoteSubmittedEvent.class);
+    var payload = mapper.readValue(event.getEventData(), QuoteSubmittedEventV0.class);
+
+    var foundInDb = findById(payload.getQuoteId());
+    if (foundInDb != null) {
+      throw new AdvancedRevisionException(payload.getQuoteId(), -1, foundInDb.getRevision());
+    }
+
+    var doc = new QuoteReadMDB(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
+        payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
+        null, null, List.of(), null, Map.of(), payload.getRequiredVoteCount(), true,
+        event.getStreamRevision().getValueUnsigned());
+    repo.save(doc);
+  }
+
+  private void reduceSubmittedEventV1(RecordedEvent event)
+      throws StreamReadException, DatabindException, IOException, AdvancedRevisionException {
+    var payload = mapper.readValue(event.getEventData(), QuoteSubmittedEventV1.class);
 
     var foundInDb = findById(payload.getQuoteId());
     if (foundInDb != null) {
@@ -166,9 +209,21 @@ class QuoteReadReducer {
     repo.save(doc);
   }
 
-  private void reduceVoteAddedEvent(RecordedEvent event)
+  private void reduceVoteAddedEventV0(RecordedEvent event)
       throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
-    var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEvent.class);
+    var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV0.class);
+
+    if (data.getValue() < 1) {
+      /*
+       * The legacy version used to have downvotes, but that feature is deprecated
+       * now.
+       * We'll only accept upvotes from the legacy version from now on.
+       */
+      LOGGER.debug("{}: Ignored vote of user {} for quote {}; reason: legacy downvote event",
+          QuoteVoteAddedEventV0.EVENT_TYPE, data.getUserId(), data.getQuoteId());
+      return;
+    }
+
     var doc = findById(data.getQuoteId());
 
     verifyRevision(doc, event);
@@ -181,9 +236,24 @@ class QuoteReadReducer {
     repo.save(doc);
   }
 
-  private void reduceVoteRemovedEvent(RecordedEvent event)
+  private void reduceVoteAddedEventV1(RecordedEvent event)
       throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
-    var data = mapper.readValue(event.getEventData(), QuoteVoteRemovedEvent.class);
+    var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV1.class);
+    var doc = findById(data.getQuoteId());
+
+    verifyRevision(doc, event);
+
+    var clone = new HashMap<>(doc.getVotes());
+    clone.put(data.getUserId(), data.getTimestamp());
+    doc.setVotes(clone);
+
+    setRevision(event, doc);
+    repo.save(doc);
+  }
+
+  private void reduceVoteRemovedEventV1(RecordedEvent event)
+      throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
+    var data = mapper.readValue(event.getEventData(), QuoteVoteRemovedEventV1.class);
     var doc = findById(data.getQuoteId());
 
     verifyRevision(doc, event);
