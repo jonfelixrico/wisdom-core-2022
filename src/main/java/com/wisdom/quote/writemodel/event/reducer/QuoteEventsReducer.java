@@ -17,7 +17,7 @@ import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.writemodel.event.BaseQuoteEvent;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
-import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
+import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
 
@@ -26,7 +26,7 @@ public class QuoteEventsReducer {
   private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
 
   public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
-      QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
+      QuoteSubmittedEventV1.EVENT_TYPE, QuoteSubmittedEventV1.class, QuoteReceivedEvent.EVENT_TYPE,
       QuoteReceivedEvent.class,
       QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class, QuoteVoteAddedEventV1.EVENT_TYPE,
       QuoteVoteAddedEventV1.class, QuoteVoteRemovedEventV1.EVENT_TYPE, QuoteVoteRemovedEventV1.class);
@@ -58,8 +58,8 @@ public class QuoteEventsReducer {
       return null;
     }
 
-    if (event instanceof QuoteSubmittedEvent) {
-      return reduce(baseModel, (QuoteSubmittedEvent) event);
+    if (event instanceof QuoteSubmittedEventV1) {
+      return reduce(baseModel, (QuoteSubmittedEventV1) event);
     }
 
     if (event instanceof QuoteReceivedEvent) {
@@ -89,7 +89,7 @@ public class QuoteEventsReducer {
    * @param event
    * @return
    */
-  private QuoteEntity reduce(QuoteEntity model, QuoteSubmittedEvent event) {
+  private QuoteEntity reduce(QuoteEntity model, QuoteSubmittedEventV1 event) {
     return new QuoteReducerModel(event.getQuoteId(), event.getContent(), event.getAuthorId(),
         event.getSubmitterId(), event.getTimestamp(), event.getExpirationDt(), event.getServerId(),
         event.getChannelId(), event.getMessageId(), List.of(), null, Map.of(), event.getRequiredVoteCount());

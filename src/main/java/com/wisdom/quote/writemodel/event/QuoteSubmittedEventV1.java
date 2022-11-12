@@ -2,8 +2,8 @@ package com.wisdom.quote.writemodel.event;
 
 import java.time.Instant;
 
-public class QuoteSubmittedEvent extends BaseQuoteEvent {
-	public static final String EVENT_TYPE = "QUOTE_SUBMITTED";
+public class QuoteSubmittedEventV1 extends BaseQuoteEvent {
+	public static final String EVENT_TYPE = "QUOTE_SUBMITTED.V1";
 
 	private String quoteId;
 
@@ -20,7 +20,7 @@ public class QuoteSubmittedEvent extends BaseQuoteEvent {
 
 	private Integer requiredVoteCount;
 
-	public QuoteSubmittedEvent(String quoteId, String content, String authorId, String submitterId, Instant timestamp,
+	public QuoteSubmittedEventV1(String quoteId, String content, String authorId, String submitterId, Instant timestamp,
 			Instant expirationDt, String serverId, String channelId, String messageId, Integer requiredVoteCount) {
 		this.quoteId = quoteId;
 		this.content = content;
