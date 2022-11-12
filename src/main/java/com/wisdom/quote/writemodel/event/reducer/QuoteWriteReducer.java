@@ -21,6 +21,7 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
+import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
@@ -45,6 +46,10 @@ public class QuoteWriteReducer {
       throws StreamReadException, DatabindException, IOException {
 
     switch (event.getEventType()) {
+      case QuoteSubmittedEventV0.EVENT_TYPE: {
+        return reduceQuoteSubmittedEventV0(baseModel, event);
+      }
+      
       case QuoteSubmittedEventV1.EVENT_TYPE: {
         return reduceQuoteSubmittedEventV1(baseModel, event);
       }
@@ -68,6 +73,14 @@ public class QuoteWriteReducer {
 
     LOGGER.warn("Unregistered Quote class {} detected.", event.getClass());
     return null;
+  }
+
+  private QuoteEntity reduceQuoteSubmittedEventV0(QuoteEntity model, RecordedEvent event)
+      throws StreamReadException, DatabindException, IOException {
+    var parsed = mapper.readValue(event.getEventData(), QuoteSubmittedEventV0.class);
+    return new QuoteReducerModel(parsed.getQuoteId(), parsed.getContent(), parsed.getAuthorId(),
+        parsed.getSubmitterId(), parsed.getTimestamp(), parsed.getExpirationDt(), parsed.getServerId(),
+        null, null, List.of(), null, Map.of(), parsed.getRequiredVoteCount(), true);
   }
 
   private QuoteEntity reduceQuoteSubmittedEventV1(QuoteEntity model, RecordedEvent event)
