@@ -59,23 +59,23 @@ public class QuoteEventsReducer {
     }
 
     if (event instanceof QuoteSubmittedEventV1) {
-      return reduce(baseModel, (QuoteSubmittedEventV1) event);
+      return reduceQuoteSubmittedEventV1(baseModel, (QuoteSubmittedEventV1) event);
     }
 
     if (event instanceof QuoteReceivedEventV1) {
-      return reduce(baseModel, (QuoteReceivedEventV1) event);
+      return reduceQuoteReceivedEventV1(baseModel, (QuoteReceivedEventV1) event);
     }
 
     if (event instanceof QuoteStatusDeclaredEventV1) {
-      return reduce(baseModel, (QuoteStatusDeclaredEventV1) event);
+      return reduceQuoteStatusDeclaredEventV1(baseModel, (QuoteStatusDeclaredEventV1) event);
     }
 
     if (event instanceof QuoteVoteAddedEventV1) {
-      return reduce(baseModel, (QuoteVoteAddedEventV1) event);
+      return reduceQuoteVoteAddedEventV1(baseModel, (QuoteVoteAddedEventV1) event);
     }
 
     if (event instanceof QuoteVoteRemovedEventV1) {
-      return reduce(baseModel, (QuoteVoteRemovedEventV1) event);
+      return reduceQuoteVoteRemovedEventV1(baseModel, (QuoteVoteRemovedEventV1) event);
     }
 
     LOGGER.warn("Unregistered Quote class {} detected.", event.getClass());
@@ -89,7 +89,7 @@ public class QuoteEventsReducer {
    * @param event
    * @return
    */
-  private QuoteEntity reduce(QuoteEntity model, QuoteSubmittedEventV1 event) {
+  private QuoteEntity reduceQuoteSubmittedEventV1(QuoteEntity model, QuoteSubmittedEventV1 event) {
     return new QuoteReducerModel(event.getQuoteId(), event.getContent(), event.getAuthorId(),
         event.getSubmitterId(), event.getTimestamp(), event.getExpirationDt(), event.getServerId(),
         event.getChannelId(), event.getMessageId(), List.of(), null, Map.of(), event.getRequiredVoteCount(), false);
@@ -102,7 +102,7 @@ public class QuoteEventsReducer {
    * @param event
    * @return
    */
-  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteReceivedEventV1 event) {
+  private QuoteEntity reduceQuoteReceivedEventV1(@NonNull QuoteEntity entity, QuoteReceivedEventV1 event) {
     List<Receive> newReceives = new ArrayList<>();
     newReceives.addAll(entity.getReceives());
     newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
@@ -120,13 +120,13 @@ public class QuoteEventsReducer {
    * @param event
    * @return
    */
-  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteStatusDeclaredEventV1 event) {
+  private QuoteEntity reduceQuoteStatusDeclaredEventV1(@NonNull QuoteEntity entity, QuoteStatusDeclaredEventV1 event) {
     var model = new QuoteReducerModel(entity);
     model.setStatusDeclaration(new StatusDeclaration(event.getStatus(), event.getTimestamp()));
     return model;
   }
 
-  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteVoteAddedEventV1 event) {
+  private QuoteEntity reduceQuoteVoteAddedEventV1(@NonNull QuoteEntity entity, QuoteVoteAddedEventV1 event) {
     var model = new QuoteReducerModel(entity);
 
     var clone = new HashMap<>(entity.getVotes());
@@ -136,7 +136,7 @@ public class QuoteEventsReducer {
     return model;
   }
 
-  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteVoteRemovedEventV1 event) {
+  private QuoteEntity reduceQuoteVoteRemovedEventV1(@NonNull QuoteEntity entity, QuoteVoteRemovedEventV1 event) {
     var model = new QuoteReducerModel(entity);
 
     var clone = new HashMap<>(entity.getVotes());
