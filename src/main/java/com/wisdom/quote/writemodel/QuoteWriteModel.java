@@ -10,7 +10,7 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
-import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
@@ -29,7 +29,7 @@ public class QuoteWriteModel extends QuoteBehavior {
       String messageId) {
     super.receive(new Receive(receiveId, receiveDt, receiverId, serverId, channelId, messageId));
     buffer.pushEvent(
-        new QuoteReceivedEvent(getId(), receiveId, receiverId, receiveDt, serverId, channelId, messageId));
+        new QuoteReceivedEventV1(getId(), receiveId, receiverId, receiveDt, serverId, channelId, messageId));
   }
 
   public void declareStatus(Status status, Instant timestamp) {

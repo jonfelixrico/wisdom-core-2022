@@ -2,8 +2,8 @@ package com.wisdom.quote.writemodel.event;
 
 import java.time.Instant;
 
-public class QuoteReceivedEvent extends BaseQuoteEvent {
-	public static final String EVENT_TYPE = "QUOTE_RECEIVED";
+public class QuoteReceivedEventV1 extends BaseQuoteEvent {
+	public static final String EVENT_TYPE = "QUOTE_RECEIVED.V1";
 
 	private String quoteId;
 	private String receiveId;
@@ -15,7 +15,7 @@ public class QuoteReceivedEvent extends BaseQuoteEvent {
 	private String channelId;
 	private String messageId;
 
-	public QuoteReceivedEvent(String quoteId, String receiveId, String userId, Instant timestamp, String serverId,
+	public QuoteReceivedEventV1(String quoteId, String receiveId, String userId, Instant timestamp, String serverId,
 			String channelId, String messageId) {
 		this.quoteId = quoteId;
 		this.receiveId = receiveId;

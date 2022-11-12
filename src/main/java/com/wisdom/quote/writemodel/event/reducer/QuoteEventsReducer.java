@@ -15,7 +15,7 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.writemodel.event.BaseQuoteEvent;
-import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
@@ -26,8 +26,8 @@ public class QuoteEventsReducer {
   private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
 
   public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
-      QuoteSubmittedEventV1.EVENT_TYPE, QuoteSubmittedEventV1.class, QuoteReceivedEvent.EVENT_TYPE,
-      QuoteReceivedEvent.class,
+      QuoteSubmittedEventV1.EVENT_TYPE, QuoteSubmittedEventV1.class, QuoteReceivedEventV1.EVENT_TYPE,
+      QuoteReceivedEventV1.class,
       QuoteStatusDeclaredEventV1.EVENT_TYPE, QuoteStatusDeclaredEventV1.class, QuoteVoteAddedEventV1.EVENT_TYPE,
       QuoteVoteAddedEventV1.class, QuoteVoteRemovedEventV1.EVENT_TYPE, QuoteVoteRemovedEventV1.class);
 
@@ -62,8 +62,8 @@ public class QuoteEventsReducer {
       return reduce(baseModel, (QuoteSubmittedEventV1) event);
     }
 
-    if (event instanceof QuoteReceivedEvent) {
-      return reduce(baseModel, (QuoteReceivedEvent) event);
+    if (event instanceof QuoteReceivedEventV1) {
+      return reduce(baseModel, (QuoteReceivedEventV1) event);
     }
 
     if (event instanceof QuoteStatusDeclaredEventV1) {
@@ -102,7 +102,7 @@ public class QuoteEventsReducer {
    * @param event
    * @return
    */
-  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteReceivedEvent event) {
+  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteReceivedEventV1 event) {
     List<Receive> newReceives = new ArrayList<>();
     newReceives.addAll(entity.getReceives());
     newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),

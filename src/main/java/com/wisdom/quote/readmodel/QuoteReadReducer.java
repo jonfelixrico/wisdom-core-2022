@@ -19,7 +19,7 @@ import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.readmodel.exception.AdvancedRevisionException;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
-import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
@@ -52,7 +52,7 @@ class QuoteReadReducer {
       UnrecognizedEventTypeException, LaggingRevisionException {
     try {
       switch (event.getEventType()) {
-        case QuoteReceivedEvent.EVENT_TYPE:
+        case QuoteReceivedEventV1.EVENT_TYPE:
           reduceReceivedEvent(event);
           break;
         case QuoteStatusDeclaredEventV1.EVENT_TYPE:
@@ -123,7 +123,7 @@ class QuoteReadReducer {
 
   private void reduceReceivedEvent(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
       LaggingRevisionException, AdvancedRevisionException {
-    var payload = mapper.readValue(event.getEventData(), QuoteReceivedEvent.class);
+    var payload = mapper.readValue(event.getEventData(), QuoteReceivedEventV1.class);
     var doc = findById(payload.getQuoteId());
 
     verifyRevision(doc, event);
