@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV0;
@@ -49,9 +50,13 @@ public class QuoteWriteReducer {
       case QuoteSubmittedEventV0.EVENT_TYPE: {
         return reduceQuoteSubmittedEventV0(baseModel, event);
       }
-      
+
       case QuoteSubmittedEventV1.EVENT_TYPE: {
         return reduceQuoteSubmittedEventV1(baseModel, event);
+      }
+
+      case QuoteReceivedEventV0.EVENT_TYPE: {
+        return reduceQuoteReceivedEventV0(baseModel, event);
       }
 
       case QuoteReceivedEventV1.EVENT_TYPE: {
@@ -89,6 +94,19 @@ public class QuoteWriteReducer {
     return new QuoteReducerModel(parsed.getQuoteId(), parsed.getContent(), parsed.getAuthorId(),
         parsed.getSubmitterId(), parsed.getTimestamp(), parsed.getExpirationDt(), parsed.getServerId(),
         parsed.getChannelId(), parsed.getMessageId(), List.of(), null, Map.of(), parsed.getRequiredVoteCount(), false);
+  }
+
+  private QuoteEntity reduceQuoteReceivedEventV0(@NonNull QuoteEntity entity, RecordedEvent event)
+      throws StreamReadException, DatabindException, IOException {
+    var parsed = mapper.readValue(event.getEventData(), QuoteReceivedEventV0.class);
+    List<Receive> newReceives = new ArrayList<>();
+    newReceives.addAll(entity.getReceives());
+    newReceives.add(new Receive(parsed.getReceiveId(), parsed.getTimestamp(), parsed.getUserId(), parsed.getServerId(),
+        null, null, true));
+
+    var model = new QuoteReducerModel(entity);
+    model.setReceives(newReceives);
+    return model;
   }
 
   private QuoteEntity reduceQuoteReceivedEventV1(@NonNull QuoteEntity entity, RecordedEvent event)
