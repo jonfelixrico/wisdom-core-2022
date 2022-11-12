@@ -24,6 +24,7 @@ import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
+import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
 
@@ -74,6 +75,9 @@ class QuoteReadReducer {
           return;
         case QuoteVoteAddedEventV1.EVENT_TYPE:
           reduceVoteAddedEventV1(event);
+          return;
+        case QuoteVoteAddedEventV0.EVENT_TYPE:
+          reduceVoteAddedEventV0(event);
           return;
         default:
           throw new UnrecognizedEventTypeException(event.getEventType());
@@ -202,6 +206,31 @@ class QuoteReadReducer {
         payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
         payload.getChannelId(), payload.getMessageId(), List.of(), null, Map.of(), payload.getRequiredVoteCount(),
         event.getStreamRevision().getValueUnsigned());
+    repo.save(doc);
+  }
+
+  private void reduceVoteAddedEventV0(RecordedEvent event)
+      throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
+    var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV0.class);
+
+    if (data.getValue() < 0) {
+      /*
+       * The legacy version used to have downvotes, but that feature is deprecated
+       * now.
+       * We'll only accept upvotes from the legacy version from now on.
+       */
+      return;
+    }
+
+    var doc = findById(data.getQuoteId());
+
+    verifyRevision(doc, event);
+
+    var clone = new HashMap<>(doc.getVotes());
+    clone.put(data.getUserId(), data.getTimestamp());
+    doc.setVotes(clone);
+
+    setRevision(event, doc);
     repo.save(doc);
   }
 
