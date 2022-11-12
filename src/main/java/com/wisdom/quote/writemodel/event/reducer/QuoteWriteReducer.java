@@ -24,6 +24,7 @@ import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
+import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
 
@@ -65,6 +66,10 @@ public class QuoteWriteReducer {
 
       case QuoteStatusDeclaredEventV1.EVENT_TYPE: {
         return reduceQuoteStatusDeclaredEventV1(baseModel, event);
+      }
+      
+      case QuoteVoteAddedEventV0.EVENT_TYPE: {
+        return reduceQuoteVoteAddedEventV0(baseModel, event);
       }
 
       case QuoteVoteAddedEventV1.EVENT_TYPE: {
@@ -127,6 +132,28 @@ public class QuoteWriteReducer {
     var parsed = mapper.readValue(event.getEventData(), QuoteStatusDeclaredEventV1.class);
     var model = new QuoteReducerModel(entity);
     model.setStatusDeclaration(new StatusDeclaration(parsed.getStatus(), parsed.getTimestamp()));
+    return model;
+  }
+
+  private QuoteEntity reduceQuoteVoteAddedEventV0(@NonNull QuoteEntity entity, RecordedEvent event)
+      throws StreamReadException, DatabindException, IOException {
+    var parsed = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV0.class);
+
+    if (parsed.getValue() < 1) {
+      /*
+       * We won't be doing anything to legacy downvotes.
+       */
+      LOGGER.debug("{}: Ignored downvote of user {} for quote {}", QuoteVoteAddedEventV0.class, parsed.getUserId(),
+          parsed.getQuoteId());
+      return entity;
+    }
+
+    var model = new QuoteReducerModel(entity);
+
+    var clone = new HashMap<>(entity.getVotes());
+    clone.put(parsed.getUserId(), parsed.getTimestamp());
+
+    model.setVotes(clone);
     return model;
   }
 
