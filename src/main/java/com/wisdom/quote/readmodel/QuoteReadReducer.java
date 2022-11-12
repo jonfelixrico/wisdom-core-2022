@@ -213,7 +213,7 @@ class QuoteReadReducer {
       throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
     var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV0.class);
 
-    if (data.getValue() < 0) {
+    if (data.getValue() < 1) {
       /*
        * The legacy version used to have downvotes, but that feature is deprecated
        * now.
