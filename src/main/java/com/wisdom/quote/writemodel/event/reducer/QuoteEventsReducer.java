@@ -20,7 +20,6 @@ import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEvent;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEvent;
-import com.wisdom.quote.writemodel.event.QuoteVotesModifiedEvent;
 
 @Service
 public class QuoteEventsReducer {
@@ -28,7 +27,7 @@ public class QuoteEventsReducer {
 
   public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
       QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
-      QuoteReceivedEvent.class, QuoteVotesModifiedEvent.EVENT_TYPE, QuoteVotesModifiedEvent.class,
+      QuoteReceivedEvent.class,
       QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class, QuoteVoteAddedEvent.EVENT_TYPE,
       QuoteVoteAddedEvent.class, QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class);
 
