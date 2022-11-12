@@ -5,6 +5,7 @@ import java.time.Instant;
 public class QuoteVoteAddedEventV0 extends BaseQuoteVoteAddedEvent {
   /**
    * Negative value for a downvote, positive value for an upvote.
+   * This only existed for the legacy version of the app (app v2).
    */
   private Integer value;
 
