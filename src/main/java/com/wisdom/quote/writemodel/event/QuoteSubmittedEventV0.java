@@ -19,7 +19,7 @@ public class QuoteSubmittedEventV0 extends BaseQuoteEvent {
 	private Integer requiredVoteCount;
 
 	public QuoteSubmittedEventV0(String quoteId, String content, String authorId, String submitterId, Instant timestamp,
-			Instant expirationDt, String serverId, String channelId, String messageId, Integer requiredVoteCount) {
+			Instant expirationDt, String serverId, Integer requiredVoteCount) {
 		this.quoteId = quoteId;
 		this.content = content;
 		this.authorId = authorId;
