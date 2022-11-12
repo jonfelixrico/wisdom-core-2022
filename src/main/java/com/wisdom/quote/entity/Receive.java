@@ -41,16 +41,6 @@ public class Receive {
     return isLegacy;
   }
 
-  public Receive(String id, Instant timestamp, String userId, String serverId, String channelId, String messageId) {
-    this.id = id;
-    this.timestamp = timestamp;
-    this.userId = userId;
-    this.serverId = serverId;
-    this.channelId = channelId;
-    this.messageId = messageId;
-    this.isLegacy = false;
-  }
-
   public Receive(String id, Instant timestamp, String userId, String serverId, String channelId, String messageId,
       Boolean isLegacy) {
     this.id = id;

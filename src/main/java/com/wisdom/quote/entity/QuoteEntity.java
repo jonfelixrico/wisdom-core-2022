@@ -26,14 +26,6 @@ public class QuoteEntity {
 
   private Boolean isLegacy;
 
-  @Deprecated
-  public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
-      Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount) {
-    this(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-        statusDeclaration, votes, requiredVoteCount, false);
-  }
-
   public QuoteEntity(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy) {
