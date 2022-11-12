@@ -16,7 +16,7 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.writemodel.event.BaseQuoteEvent;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
-import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
+import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
@@ -28,7 +28,7 @@ public class QuoteEventsReducer {
   public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
       QuoteSubmittedEventV1.EVENT_TYPE, QuoteSubmittedEventV1.class, QuoteReceivedEvent.EVENT_TYPE,
       QuoteReceivedEvent.class,
-      QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class, QuoteVoteAddedEventV1.EVENT_TYPE,
+      QuoteStatusDeclaredEventV1.EVENT_TYPE, QuoteStatusDeclaredEventV1.class, QuoteVoteAddedEventV1.EVENT_TYPE,
       QuoteVoteAddedEventV1.class, QuoteVoteRemovedEventV1.EVENT_TYPE, QuoteVoteRemovedEventV1.class);
 
   @SuppressWarnings("unchecked")
@@ -66,8 +66,8 @@ public class QuoteEventsReducer {
       return reduce(baseModel, (QuoteReceivedEvent) event);
     }
 
-    if (event instanceof QuoteStatusDeclaredEvent) {
-      return reduce(baseModel, (QuoteStatusDeclaredEvent) event);
+    if (event instanceof QuoteStatusDeclaredEventV1) {
+      return reduce(baseModel, (QuoteStatusDeclaredEventV1) event);
     }
 
     if (event instanceof QuoteVoteAddedEventV1) {
@@ -120,7 +120,7 @@ public class QuoteEventsReducer {
    * @param event
    * @return
    */
-  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteStatusDeclaredEvent event) {
+  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteStatusDeclaredEventV1 event) {
     var model = new QuoteReducerModel(entity);
     model.setStatusDeclaration(new StatusDeclaration(event.getStatus(), event.getTimestamp()));
     return model;
