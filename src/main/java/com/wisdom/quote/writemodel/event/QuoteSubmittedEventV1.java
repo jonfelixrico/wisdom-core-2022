@@ -2,83 +2,30 @@ package com.wisdom.quote.writemodel.event;
 
 import java.time.Instant;
 
-public class QuoteSubmittedEventV1 extends BaseQuoteEvent {
-	public static final String EVENT_TYPE = "QUOTE_SUBMITTED.V1";
+public class QuoteSubmittedEventV1 extends QuoteSubmittedEventV0 {
+  public static final String EVENT_TYPE = "QUOTE_SUBMITTED.V1";
 
-	private String quoteId;
+  private String channelId;
+  private String messageId;
 
-	private String content;
-	private String authorId;
-	private String submitterId;
+  public QuoteSubmittedEventV1(String quoteId, String content, String authorId, String submitterId, Instant timestamp,
+      Instant expirationDt, String serverId, String channelId, String messageId, Integer requiredVoteCount) {
+    super(quoteId, content, authorId, submitterId, timestamp, expirationDt, messageId, requiredVoteCount);
+    this.channelId = channelId;
+    this.messageId = messageId;
+  }
 
-	private Instant timestamp;
-	private Instant expirationDt;
+  @Override
+  public String getEventType() {
+    // TODO Auto-generated method stub
+    return EVENT_TYPE;
+  }
 
-	private String serverId;
-	private String channelId;
-	private String messageId;
+  public String getChannelId() {
+    return channelId;
+  }
 
-	private Integer requiredVoteCount;
-
-	public QuoteSubmittedEventV1(String quoteId, String content, String authorId, String submitterId, Instant timestamp,
-			Instant expirationDt, String serverId, String channelId, String messageId, Integer requiredVoteCount) {
-		this.quoteId = quoteId;
-		this.content = content;
-		this.authorId = authorId;
-		this.submitterId = submitterId;
-		this.timestamp = timestamp;
-		this.expirationDt = expirationDt;
-		this.serverId = serverId;
-		this.channelId = channelId;
-		this.messageId = messageId;
-		this.requiredVoteCount = requiredVoteCount;
-	}
-
-	@Override
-	public String getEventType() {
-		// TODO Auto-generated method stub
-		return EVENT_TYPE;
-	}
-
-	@Override
-	public String getQuoteId() {
-		return quoteId;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public String getAuthorId() {
-		return authorId;
-	}
-
-	public String getSubmitterId() {
-		return submitterId;
-	}
-
-	public Instant getTimestamp() {
-		return timestamp;
-	}
-
-	public Instant getExpirationDt() {
-		return expirationDt;
-	}
-
-	public String getServerId() {
-		return serverId;
-	}
-
-	public String getChannelId() {
-		return channelId;
-	}
-
-	public String getMessageId() {
-		return messageId;
-	}
-
-	public Integer getRequiredVoteCount() {
-		return requiredVoteCount;
-	}
-
+  public String getMessageId() {
+    return messageId;
+  }
 }
