@@ -219,6 +219,8 @@ class QuoteReadReducer {
        * now.
        * We'll only accept upvotes from the legacy version from now on.
        */
+      LOGGER.debug("{}: Ignored vote of user {} for quote {}; reason: legacy downvote event",
+          QuoteVoteAddedEventV0.EVENT_TYPE, data.getUserId(), data.getQuoteId());
       return;
     }
 
