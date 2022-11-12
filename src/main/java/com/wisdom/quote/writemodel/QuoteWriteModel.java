@@ -12,7 +12,7 @@ import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
-import com.wisdom.quote.writemodel.event.QuoteVoteAddedEvent;
+import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEvent;
 
 public class QuoteWriteModel extends QuoteBehavior {
@@ -39,7 +39,7 @@ public class QuoteWriteModel extends QuoteBehavior {
 
   public void addVote(String userId, Instant timestamp) {
     super.addVote(userId, timestamp);
-    buffer.pushEvent(new QuoteVoteAddedEvent(getId(), userId, timestamp));
+    buffer.pushEvent(new QuoteVoteAddedEventV1(getId(), userId, timestamp));
   }
 
   public void removeVote(String userId, Instant timestamp) {

@@ -18,7 +18,7 @@ import com.wisdom.quote.writemodel.event.BaseQuoteEvent;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.event.QuoteVoteAddedEvent;
+import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEvent;
 
 @Service
@@ -28,8 +28,8 @@ public class QuoteEventsReducer {
   public static final Map<String, Class<? extends BaseQuoteEvent>> EVENT_TYPE_TO_EVENT_CLASS = Map.of(
       QuoteSubmittedEvent.EVENT_TYPE, QuoteSubmittedEvent.class, QuoteReceivedEvent.EVENT_TYPE,
       QuoteReceivedEvent.class,
-      QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class, QuoteVoteAddedEvent.EVENT_TYPE,
-      QuoteVoteAddedEvent.class, QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class);
+      QuoteStatusDeclaredEvent.EVENT_TYPE, QuoteStatusDeclaredEvent.class, QuoteVoteAddedEventV1.EVENT_TYPE,
+      QuoteVoteAddedEventV1.class, QuoteVoteRemovedEvent.EVENT_TYPE, QuoteVoteRemovedEvent.class);
 
   @SuppressWarnings("unchecked")
   public Class<BaseQuoteEvent> getEventClassFromType(String eventType) {
@@ -70,8 +70,8 @@ public class QuoteEventsReducer {
       return reduce(baseModel, (QuoteStatusDeclaredEvent) event);
     }
 
-    if (event instanceof QuoteVoteAddedEvent) {
-      return reduce(baseModel, (QuoteVoteAddedEvent) event);
+    if (event instanceof QuoteVoteAddedEventV1) {
+      return reduce(baseModel, (QuoteVoteAddedEventV1) event);
     }
 
     if (event instanceof QuoteVoteRemovedEvent) {
@@ -126,7 +126,7 @@ public class QuoteEventsReducer {
     return model;
   }
 
-  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteVoteAddedEvent event) {
+  private QuoteEntity reduce(@NonNull QuoteEntity entity, QuoteVoteAddedEventV1 event) {
     var model = new QuoteReducerModel(entity);
 
     var clone = new HashMap<>(entity.getVotes());

@@ -22,7 +22,7 @@ import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEvent;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEvent;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEvent;
-import com.wisdom.quote.writemodel.event.QuoteVoteAddedEvent;
+import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEvent;
 
 @Service
@@ -64,7 +64,7 @@ class QuoteReadReducer {
         case QuoteVoteRemovedEvent.EVENT_TYPE:
           reduceVoteRemovedEvent(event);
           break;
-        case QuoteVoteAddedEvent.EVENT_TYPE:
+        case QuoteVoteAddedEventV1.EVENT_TYPE:
           reduceVoteAddedEvent(event);
           break;
         default:
@@ -168,7 +168,7 @@ class QuoteReadReducer {
 
   private void reduceVoteAddedEvent(RecordedEvent event)
       throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
-    var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEvent.class);
+    var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV1.class);
     var doc = findById(data.getQuoteId());
 
     verifyRevision(doc, event);
