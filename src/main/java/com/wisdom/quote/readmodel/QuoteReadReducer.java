@@ -54,19 +54,19 @@ class QuoteReadReducer {
       switch (event.getEventType()) {
         case QuoteReceivedEventV1.EVENT_TYPE:
           reduceReceivedEvent(event);
-          break;
+          return;
         case QuoteStatusDeclaredEventV1.EVENT_TYPE:
           reduceStatusDeclaredEvent(event);
-          break;
+          return;
         case QuoteSubmittedEventV1.EVENT_TYPE:
           reduceSubmittedEvent(event);
-          break;
+          return;
         case QuoteVoteRemovedEventV1.EVENT_TYPE:
           reduceVoteRemovedEvent(event);
-          break;
+          return;
         case QuoteVoteAddedEventV1.EVENT_TYPE:
           reduceVoteAddedEvent(event);
-          break;
+          return;
         default:
           throw new UnrecognizedEventTypeException(event.getEventType());
       }
