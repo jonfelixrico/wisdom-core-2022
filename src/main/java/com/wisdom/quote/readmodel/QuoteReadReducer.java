@@ -19,6 +19,7 @@ import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.readmodel.exception.AdvancedRevisionException;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
+import com.wisdom.quote.writemodel.event.QuoteReceivedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
@@ -52,6 +53,9 @@ class QuoteReadReducer {
       UnrecognizedEventTypeException, LaggingRevisionException {
     try {
       switch (event.getEventType()) {
+        case QuoteReceivedEventV0.EVENT_TYPE:
+          reduceReceivedEventV0(event);
+          return;
         case QuoteReceivedEventV1.EVENT_TYPE:
           reduceReceivedEventV1(event);
           return;
@@ -120,6 +124,21 @@ class QuoteReadReducer {
    * not guaranteed to be the same in the next reducer call. This is the reason
    * why we do individual reads and saves per sub-reducer call.
    */
+
+  private void reduceReceivedEventV0(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
+      LaggingRevisionException, AdvancedRevisionException {
+    var payload = mapper.readValue(event.getEventData(), QuoteReceivedEventV0.class);
+    var doc = findById(payload.getQuoteId());
+
+    verifyRevision(doc, event);
+
+    var newReceive = new Receive(payload.getReceiveId(), payload.getTimestamp(), payload.getUserId(),
+        payload.getServerId(), null, null);
+    doc.getReceives().add(newReceive);
+
+    setRevision(event, doc);
+    repo.save(doc);
+  }
 
   private void reduceReceivedEventV1(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
       LaggingRevisionException, AdvancedRevisionException {
