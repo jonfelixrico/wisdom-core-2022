@@ -6,7 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class QuoteBehavior extends QuoteEntity {
+  private static Logger LOGGER = LoggerFactory.getLogger(QuoteBehavior.class);
 
   protected QuoteBehavior(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
@@ -54,7 +58,8 @@ public abstract class QuoteBehavior extends QuoteEntity {
 
   protected void removeVote(String userId) {
     if (!getVotes().containsKey(userId)) {
-      throw new IllegalStateException("User does not have any votes.");
+      LOGGER.warn("Tried to remove nonexistent vote for user {} for quote {}", userId, getId());
+      return;
     }
 
     var clone = new HashMap<>(getVotes());
