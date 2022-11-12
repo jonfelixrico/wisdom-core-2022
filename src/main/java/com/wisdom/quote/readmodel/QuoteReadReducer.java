@@ -141,7 +141,7 @@ class QuoteReadReducer {
     verifyRevision(doc, event);
 
     var newReceive = new Receive(payload.getReceiveId(), payload.getTimestamp(), payload.getUserId(),
-        payload.getServerId(), null, null);
+        payload.getServerId(), null, null, true);
     doc.getReceives().add(newReceive);
 
     setRevision(event, doc);
@@ -156,7 +156,7 @@ class QuoteReadReducer {
     verifyRevision(doc, event);
 
     var newReceive = new Receive(payload.getReceiveId(), payload.getTimestamp(), payload.getUserId(),
-        payload.getServerId(), payload.getChannelId(), payload.getMessageId());
+        payload.getServerId(), payload.getChannelId(), payload.getMessageId(), false);
     doc.getReceives().add(newReceive);
 
     setRevision(event, doc);
@@ -188,7 +188,7 @@ class QuoteReadReducer {
 
     var doc = new QuoteReadMDB(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
         payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
-        null, null, List.of(), null, Map.of(), payload.getRequiredVoteCount(),
+        null, null, List.of(), null, Map.of(), payload.getRequiredVoteCount(), true,
         event.getStreamRevision().getValueUnsigned());
     repo.save(doc);
   }
