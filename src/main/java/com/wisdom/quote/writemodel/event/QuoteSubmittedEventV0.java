@@ -2,6 +2,13 @@ package com.wisdom.quote.writemodel.event;
 
 import java.time.Instant;
 
+/**
+ * Legacy version of the quote submitted event. The only difference is that the
+ * message and channel ids are not recorded.
+ * 
+ * @author Felix
+ *
+ */
 public class QuoteSubmittedEventV0 extends BaseQuoteEvent {
   public static final String EVENT_TYPE = "QUOTE_SUBMITTED.V0";
 
