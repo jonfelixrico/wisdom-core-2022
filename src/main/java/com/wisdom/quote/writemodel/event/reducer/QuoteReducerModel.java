@@ -25,9 +25,9 @@ class QuoteReducerModel extends QuoteEntity {
 
   public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount) {
+      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy) {
     super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-        statusDeclaration, votes, requiredVoteCount);
+        statusDeclaration, votes, requiredVoteCount, isLegacy);
     // TODO Auto-generated constructor stub
   }
 
@@ -35,7 +35,7 @@ class QuoteReducerModel extends QuoteEntity {
     this(entity.getId(), entity.getContent(), entity.getAuthorId(), entity.getSubmitterId(), entity.getSubmitDt(),
         entity.getExpirationDt(), entity.getServerId(), entity.getChannelId(), entity.getMessageId(),
         entity.getReceives(), entity.getStatusDeclaration(), entity.getVotes(),
-        entity.getRequiredVoteCount());
+        entity.getRequiredVoteCount(), entity.getIsLegacy());
   }
 
   @Override

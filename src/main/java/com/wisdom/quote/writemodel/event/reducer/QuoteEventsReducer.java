@@ -92,7 +92,7 @@ public class QuoteEventsReducer {
   private QuoteEntity reduce(QuoteEntity model, QuoteSubmittedEventV1 event) {
     return new QuoteReducerModel(event.getQuoteId(), event.getContent(), event.getAuthorId(),
         event.getSubmitterId(), event.getTimestamp(), event.getExpirationDt(), event.getServerId(),
-        event.getChannelId(), event.getMessageId(), List.of(), null, Map.of(), event.getRequiredVoteCount());
+        event.getChannelId(), event.getMessageId(), List.of(), null, Map.of(), event.getRequiredVoteCount(), false);
   }
 
   /**
@@ -106,7 +106,7 @@ public class QuoteEventsReducer {
     List<Receive> newReceives = new ArrayList<>();
     newReceives.addAll(entity.getReceives());
     newReceives.add(new Receive(event.getReceiveId(), event.getTimestamp(), event.getUserId(), event.getServerId(),
-        event.getChannelId(), event.getMessageId()));
+        event.getChannelId(), event.getMessageId(), false));
 
     var model = new QuoteReducerModel(entity);
     model.setReceives(newReceives);

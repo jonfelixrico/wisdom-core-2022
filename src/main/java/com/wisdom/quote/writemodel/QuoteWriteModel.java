@@ -27,7 +27,7 @@ public class QuoteWriteModel extends QuoteBehavior {
 
   public void receive(String receiveId, String receiverId, Instant receiveDt, String serverId, String channelId,
       String messageId) {
-    super.receive(new Receive(receiveId, receiveDt, receiverId, serverId, channelId, messageId));
+    super.receive(new Receive(receiveId, receiveDt, receiverId, serverId, channelId, messageId, false));
     buffer.pushEvent(
         new QuoteReceivedEventV1(getId(), receiveId, receiverId, receiveDt, serverId, channelId, messageId));
   }

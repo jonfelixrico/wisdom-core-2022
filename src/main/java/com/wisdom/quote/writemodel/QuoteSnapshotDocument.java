@@ -16,9 +16,10 @@ class QuoteSnapshotDocument extends QuoteProjection {
   @PersistenceCreator
   public QuoteSnapshotDocument(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Long revision) {
+      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
+      Long revision) {
     super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-        statusDeclaration, votes, requiredVoteCount, revision);
+        statusDeclaration, votes, requiredVoteCount, isLegacy, revision);
     // TODO Auto-generated constructor stub
   }
 
