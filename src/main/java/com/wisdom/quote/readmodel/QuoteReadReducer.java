@@ -53,19 +53,19 @@ class QuoteReadReducer {
     try {
       switch (event.getEventType()) {
         case QuoteReceivedEventV1.EVENT_TYPE:
-          reduceReceivedEvent(event);
+          reduceReceivedEventV1(event);
           return;
         case QuoteStatusDeclaredEventV1.EVENT_TYPE:
-          reduceStatusDeclaredEvent(event);
+          reduceStatusDeclaredEventV1(event);
           return;
         case QuoteSubmittedEventV1.EVENT_TYPE:
-          reduceSubmittedEvent(event);
+          reduceSubmittedEventV1(event);
           return;
         case QuoteVoteRemovedEventV1.EVENT_TYPE:
-          reduceVoteRemovedEvent(event);
+          reduceVoteRemovedEventV1(event);
           return;
         case QuoteVoteAddedEventV1.EVENT_TYPE:
-          reduceVoteAddedEvent(event);
+          reduceVoteAddedEventV1(event);
           return;
         default:
           throw new UnrecognizedEventTypeException(event.getEventType());
@@ -121,7 +121,7 @@ class QuoteReadReducer {
    * why we do individual reads and saves per sub-reducer call.
    */
 
-  private void reduceReceivedEvent(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
+  private void reduceReceivedEventV1(RecordedEvent event) throws StreamReadException, DatabindException, IOException,
       LaggingRevisionException, AdvancedRevisionException {
     var payload = mapper.readValue(event.getEventData(), QuoteReceivedEventV1.class);
     var doc = findById(payload.getQuoteId());
@@ -136,7 +136,7 @@ class QuoteReadReducer {
     repo.save(doc);
   }
 
-  private void reduceStatusDeclaredEvent(RecordedEvent event) throws StreamReadException, DatabindException,
+  private void reduceStatusDeclaredEventV1(RecordedEvent event) throws StreamReadException, DatabindException,
       IOException, LaggingRevisionException, AdvancedRevisionException {
     var data = mapper.readValue(event.getEventData(), QuoteStatusDeclaredEventV1.class);
     var doc = findById(data.getQuoteId());
@@ -150,7 +150,7 @@ class QuoteReadReducer {
     repo.save(doc);
   }
 
-  private void reduceSubmittedEvent(RecordedEvent event)
+  private void reduceSubmittedEventV1(RecordedEvent event)
       throws StreamReadException, DatabindException, IOException, AdvancedRevisionException {
     var payload = mapper.readValue(event.getEventData(), QuoteSubmittedEventV1.class);
 
@@ -166,7 +166,7 @@ class QuoteReadReducer {
     repo.save(doc);
   }
 
-  private void reduceVoteAddedEvent(RecordedEvent event)
+  private void reduceVoteAddedEventV1(RecordedEvent event)
       throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
     var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV1.class);
     var doc = findById(data.getQuoteId());
@@ -181,7 +181,7 @@ class QuoteReadReducer {
     repo.save(doc);
   }
 
-  private void reduceVoteRemovedEvent(RecordedEvent event)
+  private void reduceVoteRemovedEventV1(RecordedEvent event)
       throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
     var data = mapper.readValue(event.getEventData(), QuoteVoteRemovedEventV1.class);
     var doc = findById(data.getQuoteId());
