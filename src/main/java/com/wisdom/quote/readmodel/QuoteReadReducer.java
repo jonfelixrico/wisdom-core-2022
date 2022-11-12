@@ -22,6 +22,7 @@ import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
+import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
@@ -61,6 +62,9 @@ class QuoteReadReducer {
           return;
         case QuoteStatusDeclaredEventV1.EVENT_TYPE:
           reduceStatusDeclaredEventV1(event);
+          return;
+        case QuoteSubmittedEventV0.EVENT_TYPE:
+          reduceSubmittedEventV0(event);
           return;
         case QuoteSubmittedEventV1.EVENT_TYPE:
           reduceSubmittedEventV1(event);
@@ -166,6 +170,22 @@ class QuoteReadReducer {
     doc.setStatusDeclaration(newStatus);
 
     setRevision(event, doc);
+    repo.save(doc);
+  }
+
+  private void reduceSubmittedEventV0(RecordedEvent event)
+      throws StreamReadException, DatabindException, IOException, AdvancedRevisionException {
+    var payload = mapper.readValue(event.getEventData(), QuoteSubmittedEventV0.class);
+
+    var foundInDb = findById(payload.getQuoteId());
+    if (foundInDb != null) {
+      throw new AdvancedRevisionException(payload.getQuoteId(), -1, foundInDb.getRevision());
+    }
+
+    var doc = new QuoteReadMDB(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
+        payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
+        null, null, List.of(), null, Map.of(), payload.getRequiredVoteCount(),
+        event.getStreamRevision().getValueUnsigned());
     repo.save(doc);
   }
 
