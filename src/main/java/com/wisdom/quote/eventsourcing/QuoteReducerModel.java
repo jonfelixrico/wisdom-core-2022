@@ -1,6 +1,8 @@
 package com.wisdom.quote.eventsourcing;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,21 +24,29 @@ class QuoteReducerModel extends QuoteEntity {
     this.events = events;
   }
 
+  public static QuoteReducerModel clone(QuoteReducerModel source) {
+    return new QuoteReducerModel(source.getId(), source.getContent(), source.getAuthorId(), source.getSubmitterId(),
+        source.getSubmitDt(), source.getExpirationDt(), source.getServerId(), source.getChannelId(),
+        source.getMessageId(),
+        new ArrayList<>(source.getReceives()), source.getStatusDeclaration(), new HashMap<>(source.getVotes()),
+        source.getRequiredVoteCount(), source.getIsLegacy(), new ArrayList<>(source.getEvents()));
+  }
+
   public List<RecordedEvent> getEvents() {
     return events;
   }
-  
+
   public void pushEvent(RecordedEvent event) {
     events.add(event);
   }
-  
+
   public long getRevision() {
     var size = events.size();
-    
+
     if (size == 0) {
       return -1L;
     }
-    
+
     return events.get(size - 1).getStreamRevision().getValueUnsigned();
   }
 
