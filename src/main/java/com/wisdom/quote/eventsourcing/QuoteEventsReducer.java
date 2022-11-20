@@ -22,13 +22,13 @@ import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV0;
 import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
 import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
 
-class QuoteEventsReducer {
+public class QuoteEventsReducer {
   private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
 
   private ObjectMapper mapper;
-  private CanRetrieveQuoteData retriever;
+  private RetrieveQuote retriever;
 
-  public QuoteEventsReducer(ObjectMapper mapper, CanRetrieveQuoteData retriever) {
+  public QuoteEventsReducer(ObjectMapper mapper, RetrieveQuote retriever) {
     this.mapper = mapper;
     this.retriever = retriever;
   }
@@ -84,7 +84,7 @@ class QuoteEventsReducer {
   }
 
   private QuoteReducerModel retrieve(String quoteId) throws Exception {
-    return QuoteReducerModel.clone(retriever.retrieveById(quoteId));
+    return QuoteReducerModel.clone(retriever.apply(quoteId));
   }
 
   /*
