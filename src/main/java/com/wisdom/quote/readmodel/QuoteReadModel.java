@@ -24,7 +24,7 @@ public class QuoteReadModel extends QuoteEntity {
     return revision;
   }
 
-  protected static QuoteReadModel dbToDto(QuoteReadMDB db) {
+  protected static QuoteReadModel dbToDto(QuoteReadDBModel db) {
     return new QuoteReadModel(
         db.getId(), db.getContent(), db.getAuthorId(), db.getSubmitterId(), db.getSubmitDt(), db.getExpirationDt(),
         db.getServerId(), db.getChannelId(), db.getMessageId(), db.getReceives(), db.getStatusDeclaration(),

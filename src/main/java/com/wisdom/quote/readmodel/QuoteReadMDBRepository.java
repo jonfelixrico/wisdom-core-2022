@@ -7,9 +7,9 @@ import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
+interface QuoteReadMDBRepository extends MongoRepository<QuoteReadDBModel, String> {
   @Query("{ serverId: ?0, statusDeclaration: null }")
-  public List<QuoteReadMDB> getPendingQuotes(String serverId);
+  public List<QuoteReadDBModel> getPendingQuotes(String serverId);
 
   /**
    * 
@@ -17,13 +17,13 @@ interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
    */
   @Aggregation(pipeline = {
       "{ $match: { serverId: ?0, 'statusDeclaration.status': 'APPROVED' } }", "{ $sample: { size: 1 }}" })
-  public List<QuoteReadMDB> getRandomQuoteByServerId(String serverId);
+  public List<QuoteReadDBModel> getRandomQuoteByServerId(String serverId);
   
   @Query("{ serverId: ?0, 'statusDeclaration.status': 'APPROVED' }")
-  public List<QuoteReadMDB> getQuotesByServerId(String serverId);
+  public List<QuoteReadDBModel> getQuotesByServerId(String serverId);
   
   @Query("{ serverId: ?0, authorId: ?1, 'statusDeclaration.status': 'APPROVED' }")
-  public List<QuoteReadMDB> getQuotesByServerIdAndAuthorId(String serverId, String authorId);
+  public List<QuoteReadDBModel> getQuotesByServerIdAndAuthorId(String serverId, String authorId);
 
   /**
    * 
@@ -31,8 +31,8 @@ interface QuoteReadMDBRepository extends MongoRepository<QuoteReadMDB, String> {
    */
   @Aggregation(pipeline = {
       "{ $match: { serverId: ?0, authorId: ?1, 'statusDeclaration.status': 'APPROVED' } }", "{ $sample: { size: 1 }}" })
-  public List<QuoteReadMDB> getRandomQuoteByServerIdAndAuthorId(String serverId, String authorId);
+  public List<QuoteReadDBModel> getRandomQuoteByServerIdAndAuthorId(String serverId, String authorId);
   
   @Query("{ serverId: ?0, statusDeclaration: null, expirationDt: { $lt: ?1 } }")
-  public List<QuoteReadMDB> getExpiringPendingQuotes (String serverId, Instant referenceDt);
+  public List<QuoteReadDBModel> getExpiringPendingQuotes (String serverId, Instant referenceDt);
 }
