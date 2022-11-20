@@ -212,6 +212,8 @@ class QuoteReadReducer {
   private void reduceVoteAddedEventV0(RecordedEvent event)
       throws StreamReadException, DatabindException, IOException, LaggingRevisionException, AdvancedRevisionException {
     var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV0.class);
+    var doc = findById(data.getQuoteId());
+    verifyRevision(doc, event);
 
     if (data.getValue() < 1) {
       /*
@@ -221,16 +223,11 @@ class QuoteReadReducer {
        */
       LOGGER.debug("{}: Ignored vote of user {} for quote {}; reason: legacy downvote event",
           QuoteVoteAddedEventV0.EVENT_TYPE, data.getUserId(), data.getQuoteId());
-      return;
+    } else {
+      var clone = new HashMap<>(doc.getVotes());
+      clone.put(data.getUserId(), data.getTimestamp());
+      doc.setVotes(clone);
     }
-
-    var doc = findById(data.getQuoteId());
-
-    verifyRevision(doc, event);
-
-    var clone = new HashMap<>(doc.getVotes());
-    clone.put(data.getUserId(), data.getTimestamp());
-    doc.setVotes(clone);
 
     setRevision(event, doc);
     repo.save(doc);
