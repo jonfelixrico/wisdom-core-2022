@@ -11,7 +11,7 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 
-class QuoteReducerModel extends QuoteEntity {
+public class QuoteReducerModel extends QuoteEntity {
 
   private List<RecordedEvent> events;
 
