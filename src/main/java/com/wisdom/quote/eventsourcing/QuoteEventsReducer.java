@@ -32,41 +32,34 @@ class QuoteEventsReducer {
     this.mapper = mapper;
     this.retriever = retriever;
   }
-
-  public void reduce(RecordedEvent event) throws Exception {
-    try {
-      switch (event.getEventType()) {
-        case QuoteReceivedEventV0.EVENT_TYPE:
-          reduceReceivedEventV0(event);
-          return;
-        case QuoteReceivedEventV1.EVENT_TYPE:
-          reduceReceivedEventV1(event);
-          return;
-        case QuoteStatusDeclaredEventV1.EVENT_TYPE:
-          reduceStatusDeclaredEventV1(event);
-          return;
-        case QuoteSubmittedEventV0.EVENT_TYPE:
-          reduceSubmittedEventV0(event);
-          return;
-        case QuoteSubmittedEventV1.EVENT_TYPE:
-          reduceSubmittedEventV1(event);
-          return;
-        case QuoteVoteRemovedEventV1.EVENT_TYPE:
-          reduceVoteRemovedEventV1(event);
-          return;
-        case QuoteVoteAddedEventV1.EVENT_TYPE:
-          reduceVoteAddedEventV1(event);
-          return;
-        case QuoteVoteAddedEventV0.EVENT_TYPE:
-          reduceVoteAddedEventV0(event);
-          return;
-        default:
-          throw new UnrecognizedEventTypeException(event.getEventType());
-      }
-    } catch (AdvancedRevisionException e) {
-      LOGGER.debug("Reduce for quote {} was skipped due to advanced db copy -- expected {} but found {}",
-          e.getQuoteId(), e.getExpectedRevision(), e.getActualRevision());
+  
+  private QuoteReducerModel dispatchAndReduce(RecordedEvent event) throws Exception {
+    switch (event.getEventType()) {
+      case QuoteReceivedEventV0.EVENT_TYPE:
+        return reduceReceivedEventV0(event);
+      case QuoteReceivedEventV1.EVENT_TYPE:
+        return reduceReceivedEventV1(event);
+      case QuoteStatusDeclaredEventV1.EVENT_TYPE:
+        return reduceStatusDeclaredEventV1(event);
+      case QuoteSubmittedEventV0.EVENT_TYPE:
+        return reduceSubmittedEventV0(event);
+      case QuoteSubmittedEventV1.EVENT_TYPE:
+        return reduceSubmittedEventV1(event);
+      case QuoteVoteRemovedEventV1.EVENT_TYPE:
+        return reduceVoteRemovedEventV1(event);
+      case QuoteVoteAddedEventV1.EVENT_TYPE:
+        return reduceVoteAddedEventV1(event);
+      case QuoteVoteAddedEventV0.EVENT_TYPE:
+        return reduceVoteAddedEventV0(event);
+      default:
+        throw new UnrecognizedEventTypeException(event.getEventType());
     }
+  }
+
+  public QuoteReducerModel reduce(RecordedEvent event) throws Exception {
+    var model = dispatchAndReduce(event);
+    model.pushEvent(event);
+    return model;
   }
 
   /**
