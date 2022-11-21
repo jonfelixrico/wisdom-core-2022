@@ -27,7 +27,7 @@ class QuoteReadReducerService {
   
   public void reduce(RecordedEvent event) throws Exception {
     var model = reducer.reduce(event);
-    var asDbModel = QuoteReadDBModel.fromModel(model);
+    var asDbModel = QuoteReadDBModel.clone(model);
     repo.save(asDbModel);
   }
 }
