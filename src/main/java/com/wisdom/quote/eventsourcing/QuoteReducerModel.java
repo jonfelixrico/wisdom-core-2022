@@ -6,19 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.eventstore.dbclient.RecordedEvent;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 
 public class QuoteReducerModel extends QuoteEntity {
 
-  private List<RecordedEvent> events;
+  private List<RecordedQuoteEvent> events;
 
   public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
-      List<RecordedEvent> events) {
+      List<RecordedQuoteEvent> events) {
     super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
         statusDeclaration, votes, requiredVoteCount, isLegacy);
     this.events = events;
@@ -32,11 +31,11 @@ public class QuoteReducerModel extends QuoteEntity {
         source.getRequiredVoteCount(), source.getIsLegacy(), new ArrayList<>(source.getEvents()));
   }
 
-  public List<RecordedEvent> getEvents() {
+  public List<RecordedQuoteEvent> getEvents() {
     return events;
   }
 
-  public void pushEvent(RecordedEvent event) {
+  public void pushEvent(RecordedQuoteEvent event) {
     events.add(event);
   }
 
@@ -47,7 +46,7 @@ public class QuoteReducerModel extends QuoteEntity {
       return -1L;
     }
 
-    return events.get(size - 1).getStreamRevision().getValueUnsigned();
+    return events.get(size - 1).getRevision();
   }
 
   @Override

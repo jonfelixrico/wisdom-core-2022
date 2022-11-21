@@ -1,5 +1,6 @@
 package com.wisdom.quote.eventsourcing;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eventstore.dbclient.RecordedEvent;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
@@ -32,7 +36,16 @@ public class QuoteEventsReducer {
     this.mapper = mapper;
     this.retriever = retriever;
   }
-  
+
+  private RecordedQuoteEvent formatRecordedEvent(RecordedEvent event)
+      throws StreamReadException, DatabindException, IOException {
+    return new RecordedQuoteEvent(
+        event.getStreamRevision().getValueUnsigned(),
+        mapper.readValue(event.getEventData(), new TypeReference<HashMap<String, Object>>() {
+        }),
+        event.getEventType());
+  }
+
   private QuoteReducerModel dispatchAndReduce(RecordedEvent event) throws Exception {
     switch (event.getEventType()) {
       case QuoteReceivedEventV0.EVENT_TYPE:
@@ -58,7 +71,7 @@ public class QuoteEventsReducer {
 
   public QuoteReducerModel reduce(RecordedEvent event) throws Exception {
     var model = dispatchAndReduce(event);
-    model.pushEvent(event);
+    model.pushEvent(formatRecordedEvent(event));
     return model;
   }
 
@@ -163,7 +176,8 @@ public class QuoteEventsReducer {
 
     return new QuoteReducerModel(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
         payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
-        payload.getChannelId(), payload.getMessageId(), new ArrayList<>(), null, new HashMap<>(), payload.getRequiredVoteCount(),
+        payload.getChannelId(), payload.getMessageId(), new ArrayList<>(), null, new HashMap<>(),
+        payload.getRequiredVoteCount(),
         false, new ArrayList<>());
   }
 

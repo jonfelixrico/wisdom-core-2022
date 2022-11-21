@@ -7,10 +7,10 @@ import java.util.Map;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.eventstore.dbclient.RecordedEvent;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.eventsourcing.QuoteReducerModel;
+import com.wisdom.quote.eventsourcing.RecordedQuoteEvent;
 
 /**
  * MongoDB object for the quote read model.
@@ -24,7 +24,7 @@ class QuoteReadDBModel extends QuoteReducerModel {
   public QuoteReadDBModel(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
-      List<RecordedEvent> events) {
+      List<RecordedQuoteEvent> events) {
     super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
         statusDeclaration, votes, requiredVoteCount, isLegacy, events);
     // TODO Auto-generated constructor stub
