@@ -1,7 +1,7 @@
 package com.wisdom.quote.eventsourcing;
 
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,8 @@ public class QuoteEventsReducer {
   }
 
   private QuoteReducerModel retrieve(String quoteId) throws Exception {
-    return QuoteReducerModel.clone(retriever.apply(quoteId));
+    var model = retriever.apply(quoteId);
+    return model == null ? null : QuoteReducerModel.clone(model);
   }
 
   /*
@@ -148,7 +149,7 @@ public class QuoteEventsReducer {
 
     return new QuoteReducerModel(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
         payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
-        null, null, List.of(), null, Map.of(), payload.getRequiredVoteCount(), true, List.of());
+        null, null, new ArrayList<>(), null, new HashMap<>(), payload.getRequiredVoteCount(), true, new ArrayList<>());
   }
 
   private QuoteReducerModel reduceSubmittedEventV1(RecordedEvent event)
@@ -162,8 +163,8 @@ public class QuoteEventsReducer {
 
     return new QuoteReducerModel(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
         payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
-        payload.getChannelId(), payload.getMessageId(), List.of(), null, Map.of(), payload.getRequiredVoteCount(),
-        false, List.of());
+        payload.getChannelId(), payload.getMessageId(), new ArrayList<>(), null, new HashMap<>(), payload.getRequiredVoteCount(),
+        false, new ArrayList<>());
   }
 
   private QuoteReducerModel reduceVoteAddedEventV0(RecordedEvent event)
