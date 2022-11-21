@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel.event.reducer;
+package com.wisdom.quote.writemodel;
 
 import java.time.Instant;
 import java.util.List;

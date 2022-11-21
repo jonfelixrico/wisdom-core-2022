@@ -18,9 +18,9 @@ import com.wisdom.quote.eventsourcing.QuoteReducerModel;
  *
  */
 @Document("quote-readmodel")
-class QuoteReadDBModel extends QuoteReducerModel {
+class QuoteSnapshotPersistence extends QuoteSnapshot {
   @PersistenceCreator
-  public QuoteReadDBModel(String id, String content, String authorId, String submitterId, Instant submitDt,
+  public QuoteSnapshotPersistence(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
       Long revision) {
@@ -29,8 +29,8 @@ class QuoteReadDBModel extends QuoteReducerModel {
     // TODO Auto-generated constructor stub
   }
 
-  public static QuoteReadDBModel clone(QuoteReducerModel model) {
-    return new QuoteReadDBModel(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
+  public static QuoteSnapshotPersistence clone(QuoteReducerModel model) {
+    return new QuoteSnapshotPersistence(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
         model.getSubmitDt(), model.getExpirationDt(), model.getServerId(),
         model.getChannelId(), model.getMessageId(), model.getReceives(), model.getStatusDeclaration(), model.getVotes(),
         model.getRequiredVoteCount(), model.getIsLegacy(), model.getRevision());

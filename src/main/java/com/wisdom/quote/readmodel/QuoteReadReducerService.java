@@ -12,9 +12,9 @@ class QuoteReadReducerService {
   QuoteEventsReducer reducer;
   
   @Autowired
-  QuoteReadMDBRepository repo;
+  QuoteSnapshotPersistenceRepository repo;
   
-  private QuoteReadReducerService (QuoteReadMDBRepository repo, ObjectMapper mapper)  {
+  private QuoteReadReducerService (QuoteSnapshotPersistenceRepository repo, ObjectMapper mapper)  {
     this.reducer = new QuoteEventsReducer(mapper, (String quoteId) -> {
       var result = repo.findById(quoteId);
       if (result.isEmpty()) {
@@ -27,7 +27,7 @@ class QuoteReadReducerService {
   
   public void reduce(RecordedEvent event) throws Exception {
     var model = reducer.reduce(event);
-    var asDbModel = QuoteReadDBModel.clone(model);
+    var asDbModel = QuoteSnapshotPersistence.clone(model);
     repo.save(asDbModel);
   }
 }

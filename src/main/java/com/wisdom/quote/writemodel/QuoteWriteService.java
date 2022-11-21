@@ -1,8 +1,6 @@
 package com.wisdom.quote.writemodel;
 
-import java.io.IOException;
 import java.time.Instant;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class QuoteWriteService {
 
   }
 
-  public QuoteWriteModel get(String quoteId) throws InterruptedException, ExecutionException, IOException {
+  public QuoteWriteModel get(String quoteId) throws Exception {
     var result = projSvc.getProjection(quoteId);
     if (result == null) {
       return null;

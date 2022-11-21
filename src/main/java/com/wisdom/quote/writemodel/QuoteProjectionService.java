@@ -1,6 +1,5 @@
 package com.wisdom.quote.writemodel;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
@@ -15,7 +14,6 @@ import com.eventstore.dbclient.ResolvedEvent;
 import com.eventstore.dbclient.StreamNotFoundException;
 import com.wisdom.eventstoredb.ESDBClientProvider;
 import com.wisdom.quote.entity.QuoteEntity;
-import com.wisdom.quote.writemodel.event.reducer.QuoteWriteReducer;
 
 @Service
 class QuoteProjectionService {
@@ -31,7 +29,7 @@ class QuoteProjectionService {
   private QuoteSnapshotService snapshotRepo;
 
   public QuoteProjection getProjection(String quoteId)
-      throws InterruptedException, ExecutionException, IOException {
+      throws Exception {
     var snapshot = snapshotRepo.get(quoteId);
 
     try {
@@ -75,7 +73,7 @@ class QuoteProjectionService {
 
   @SuppressWarnings("null")
   private QuoteProjection buildState(String quoteId, Long fromRevision,
-      QuoteEntity baseModel) throws InterruptedException, ExecutionException, IOException, StreamNotFoundException {
+      QuoteEntity baseModel) throws StreamNotFoundException, Exception {
     ReadStreamOptions options = ReadStreamOptions.get();
     if (fromRevision == null) {
       options.fromStart();
