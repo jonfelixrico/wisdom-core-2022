@@ -1,6 +1,5 @@
 package com.wisdom.quote.eventsourcing;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,9 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eventstore.dbclient.RecordedEvent;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
@@ -37,16 +33,7 @@ public class QuoteEventsReducer {
     this.retriever = retriever;
   }
 
-  private RecordedQuoteEvent formatRecordedEvent(RecordedEvent event)
-      throws StreamReadException, DatabindException, IOException {
-    return new RecordedQuoteEvent(
-        event.getStreamRevision().getValueUnsigned(),
-        mapper.readValue(event.getEventData(), new TypeReference<HashMap<String, Object>>() {
-        }),
-        event.getEventType());
-  }
-
-  private QuoteReducerModel dispatchAndReduce(RecordedEvent event) throws Exception {
+  private MutableQuoteReducerModel dispatchAndReduce(RecordedEvent event) throws Exception {
     switch (event.getEventType()) {
       case QuoteReceivedEventV0.EVENT_TYPE:
         return reduceReceivedEventV0(event);
@@ -69,9 +56,9 @@ public class QuoteEventsReducer {
     }
   }
 
-  public QuoteReducerModel reduce(RecordedEvent event) throws Exception {
+  public MutableQuoteReducerModel reduce(RecordedEvent event) throws Exception {
     var model = dispatchAndReduce(event);
-    model.pushEvent(formatRecordedEvent(event));
+    model.setRevision(event.getStreamRevision().getValueUnsigned());
     return model;
   }
 
@@ -81,7 +68,7 @@ public class QuoteEventsReducer {
    * discrepancy is detected -- e.g. theEventRevision -1 != theDbCopyRevision,
    * then we will throw an exception to stop further saves.
    */
-  private static void verifyRevision(QuoteReducerModel model, RecordedEvent eventToApply)
+  private static void verifyRevision(MutableQuoteReducerModel model, RecordedEvent eventToApply)
       throws LaggingRevisionException, AdvancedRevisionException {
     var expected = eventToApply.getStreamRevision().getValueUnsigned() - 1;
     var actual = model.getRevision();
@@ -96,9 +83,9 @@ public class QuoteEventsReducer {
     // else, normal revision; no errors thrown
   }
 
-  private QuoteReducerModel retrieve(String quoteId) throws Exception {
+  private MutableQuoteReducerModel retrieve(String quoteId) throws Exception {
     var model = retriever.apply(quoteId);
-    return model == null ? null : QuoteReducerModel.clone(model);
+    return model == null ? null : MutableQuoteReducerModel.clone(model);
   }
 
   /*
@@ -113,7 +100,7 @@ public class QuoteEventsReducer {
    * why we do individual reads and saves per sub-reducer call.
    */
 
-  private QuoteReducerModel reduceReceivedEventV0(RecordedEvent event) throws Exception {
+  private MutableQuoteReducerModel reduceReceivedEventV0(RecordedEvent event) throws Exception {
     var payload = mapper.readValue(event.getEventData(), QuoteReceivedEventV0.class);
 
     var model = retrieve(payload.getQuoteId());
@@ -126,7 +113,7 @@ public class QuoteEventsReducer {
     return model;
   }
 
-  private QuoteReducerModel reduceReceivedEventV1(RecordedEvent event) throws Exception {
+  private MutableQuoteReducerModel reduceReceivedEventV1(RecordedEvent event) throws Exception {
     var payload = mapper.readValue(event.getEventData(), QuoteReceivedEventV1.class);
     var model = retrieve(payload.getQuoteId());
 
@@ -139,7 +126,7 @@ public class QuoteEventsReducer {
     return model;
   }
 
-  private QuoteReducerModel reduceStatusDeclaredEventV1(RecordedEvent event) throws Exception {
+  private MutableQuoteReducerModel reduceStatusDeclaredEventV1(RecordedEvent event) throws Exception {
     var data = mapper.readValue(event.getEventData(), QuoteStatusDeclaredEventV1.class);
     var model = retrieve(data.getQuoteId());
 
@@ -151,7 +138,7 @@ public class QuoteEventsReducer {
     return model;
   }
 
-  private QuoteReducerModel reduceSubmittedEventV0(RecordedEvent event)
+  private MutableQuoteReducerModel reduceSubmittedEventV0(RecordedEvent event)
       throws Exception {
     var payload = mapper.readValue(event.getEventData(), QuoteSubmittedEventV0.class);
 
@@ -160,12 +147,12 @@ public class QuoteEventsReducer {
       throw new AdvancedRevisionException(payload.getQuoteId(), -1, model.getRevision());
     }
 
-    return new QuoteReducerModel(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
+    return new MutableQuoteReducerModel(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
         payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
-        null, null, new ArrayList<>(), null, new HashMap<>(), payload.getRequiredVoteCount(), true, new ArrayList<>());
+        null, null, new ArrayList<>(), null, new HashMap<>(), payload.getRequiredVoteCount(), true, null);
   }
 
-  private QuoteReducerModel reduceSubmittedEventV1(RecordedEvent event)
+  private MutableQuoteReducerModel reduceSubmittedEventV1(RecordedEvent event)
       throws Exception {
     var payload = mapper.readValue(event.getEventData(), QuoteSubmittedEventV1.class);
 
@@ -174,14 +161,14 @@ public class QuoteEventsReducer {
       throw new AdvancedRevisionException(payload.getQuoteId(), -1, model.getRevision());
     }
 
-    return new QuoteReducerModel(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
+    return new MutableQuoteReducerModel(payload.getQuoteId(), payload.getContent(), payload.getAuthorId(),
         payload.getSubmitterId(), payload.getTimestamp(), payload.getExpirationDt(), payload.getServerId(),
         payload.getChannelId(), payload.getMessageId(), new ArrayList<>(), null, new HashMap<>(),
         payload.getRequiredVoteCount(),
-        false, new ArrayList<>());
+        false, null);
   }
 
-  private QuoteReducerModel reduceVoteAddedEventV0(RecordedEvent event)
+  private MutableQuoteReducerModel reduceVoteAddedEventV0(RecordedEvent event)
       throws Exception {
     var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV0.class);
     var model = retrieve(data.getQuoteId());
@@ -203,7 +190,7 @@ public class QuoteEventsReducer {
     return model;
   }
 
-  private QuoteReducerModel reduceVoteAddedEventV1(RecordedEvent event)
+  private MutableQuoteReducerModel reduceVoteAddedEventV1(RecordedEvent event)
       throws Exception {
     var data = mapper.readValue(event.getEventData(), QuoteVoteAddedEventV1.class);
     var model = retrieve(data.getQuoteId());
@@ -215,7 +202,7 @@ public class QuoteEventsReducer {
     return model;
   }
 
-  private QuoteReducerModel reduceVoteRemovedEventV1(RecordedEvent event)
+  private MutableQuoteReducerModel reduceVoteRemovedEventV1(RecordedEvent event)
       throws Exception {
     var data = mapper.readValue(event.getEventData(), QuoteVoteRemovedEventV1.class);
     var model = retrieve(data.getQuoteId());
