@@ -16,8 +16,8 @@ class QuoteReadReducerService {
   
   private QuoteReadReducerService (QuoteReadMDBRepository repo, ObjectMapper mapper)  {
     this.reducer = new QuoteEventsReducer(mapper, (String quoteId) -> {
-      var result = repo.findById(null);
-      if (result.isPresent()) {
+      var result = repo.findById(quoteId);
+      if (result.isEmpty()) {
         return null;
       }
       
