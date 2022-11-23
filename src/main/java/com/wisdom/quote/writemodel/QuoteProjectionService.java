@@ -96,6 +96,6 @@ class QuoteProjectionService {
       revision = event.getStreamRevision().getValueUnsigned();
     }
 
-    return new QuoteProjection(state, revision);
+    return state;
   }
 }

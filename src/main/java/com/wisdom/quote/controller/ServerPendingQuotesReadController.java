@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wisdom.quote.readmodel.QuoteSnapshot;
-import com.wisdom.quote.readmodel.QuoteSnapshotRepo;
+import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
 @RestController
 public class ServerPendingQuotesReadController {
   @Autowired
-  private QuoteSnapshotRepo repo;
+  private QuoteSnapshotRepository repo;
 
   @GetMapping("/server/{serverId}/pending-quote")
   private List<QuoteSnapshot> getServerPendingQuotes(@PathVariable String serverId,

@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wisdom.quote.readmodel.QuoteSnapshot;
-import com.wisdom.quote.readmodel.QuoteSnapshotRepo;
+import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
 @RestController
 @RequestMapping("/server/{serverId}/quote")
 public class ServerQuotesReadController {
   @Autowired
-  private QuoteSnapshotRepo repo;
+  private QuoteSnapshotRepository repo;
 
   @GetMapping("/random")
   private QuoteSnapshot getRandomQuote(@PathVariable String serverId, @RequestParam(required = false) String authorId) {
