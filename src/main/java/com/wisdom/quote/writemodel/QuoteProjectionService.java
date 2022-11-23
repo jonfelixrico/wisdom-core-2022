@@ -88,7 +88,8 @@ class QuoteProjectionService {
     var results = getEvents(quoteId, null);
     for (ResolvedEvent result : results.getEvents()) {
       RecordedEvent event = result.getEvent();
-      LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
+      LOGGER.debug("Reading event type {} for quote {} with revision", event.getEventType(), quoteId,
+          event.getStreamRevision().getValueUnsigned());
 
       state = new QuoteProjection(reduceEvent(state, event));
     }
@@ -102,7 +103,8 @@ class QuoteProjectionService {
     var results = getEvents(snapshot.getId(), snapshot.getRevision());
     for (ResolvedEvent result : results.getEvents()) {
       RecordedEvent event = result.getEvent();
-      LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), snapshot.getId());
+      LOGGER.debug("Reading event type {} for quote {} with revision", event.getEventType(), snapshot.getId(),
+          event.getStreamRevision().getValueUnsigned());
 
       state = new QuoteProjection(reduceEvent(state, event));
     }
