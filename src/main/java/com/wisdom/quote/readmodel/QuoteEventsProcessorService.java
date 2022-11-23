@@ -8,14 +8,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.quote.eventsourcing.QuoteEventsReducer;
 
 @Service
-class QuoteSnapshotEventsProcessorService {
+class QuoteEventsProcessorService {
 
   QuoteEventsReducer reducer;
 
   @Autowired
   QuoteSnapshotPersistenceRepository repo;
 
-  private QuoteSnapshotEventsProcessorService(QuoteSnapshotPersistenceRepository repo, ObjectMapper mapper) {
+  private QuoteEventsProcessorService(QuoteSnapshotPersistenceRepository repo, ObjectMapper mapper) {
     this.reducer = new QuoteEventsReducer(mapper, (String quoteId) -> {
       var result = repo.findById(quoteId);
       if (result.isEmpty()) {
