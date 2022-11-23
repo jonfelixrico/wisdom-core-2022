@@ -12,14 +12,6 @@ import org.slf4j.LoggerFactory;
 public abstract class QuoteBehavior extends QuoteEntity {
   private static Logger LOGGER = LoggerFactory.getLogger(QuoteBehavior.class);
 
-  public QuoteBehavior(String id, String content, String authorId, String submitterId, Instant submitDt,
-      Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy) {
-    super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-        statusDeclaration, votes, requiredVoteCount, isLegacy);
-    // TODO Auto-generated constructor stub
-  }
-
   public QuoteBehavior(QuoteEntity entity) {
     super(entity);
   }
