@@ -10,10 +10,7 @@ public abstract class QuoteBehavior extends QuoteEntity {
   private static Logger LOGGER = LoggerFactory.getLogger(QuoteBehavior.class);
 
   protected QuoteBehavior(QuoteEntity entity) {
-    super(entity.getId(), entity.getContent(), entity.getAuthorId(), entity.getSubmitterId(), entity.getSubmitDt(),
-        entity.getExpirationDt(),
-        entity.getServerId(), entity.getChannelId(), entity.getMessageId(), entity.getReceives(),
-        entity.getStatusDeclaration(), entity.getVotes(), entity.getRequiredVoteCount(), entity.getIsLegacy());
+    super(entity);
   }
 
   protected void receive(Receive receive) {
