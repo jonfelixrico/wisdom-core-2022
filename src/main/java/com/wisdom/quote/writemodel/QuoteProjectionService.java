@@ -12,8 +12,11 @@ import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.eventstore.dbclient.StreamNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventstoredb.ESDBClientProvider;
-import com.wisdom.quote.entity.QuoteEntity;
+import com.wisdom.quote.eventsourcing.QuoteEventsReducer;
+import com.wisdom.quote.eventsourcing.QuoteReducerModel;
+import com.wisdom.quote.readmodel.QuoteSnapshot;
 import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
 @Service
@@ -24,10 +27,15 @@ class QuoteProjectionService {
   private ESDBClientProvider esdb;
 
   @Autowired
-  private QuoteWriteModelReducerService reducer;
+  private QuoteSnapshotRepository snapshotRepo;
 
   @Autowired
-  private QuoteSnapshotRepository snapshotRepo;
+  private ObjectMapper mapper;
+
+  private QuoteReducerModel reduceEvent(QuoteReducerModel model, RecordedEvent event) throws Exception {
+    var reducer = new QuoteEventsReducer(mapper, quoteId -> model);
+    return reducer.reduce(event);
+  }
 
   public QuoteProjection getProjection(String quoteId)
       throws Exception {
@@ -37,9 +45,9 @@ class QuoteProjectionService {
       QuoteProjection built;
 
       if (snapshot != null) {
-        built = buildState(quoteId, snapshot.getRevision(), snapshot);
+        built = buildStateFromSnapshot(snapshot);
       } else {
-        built = buildState(quoteId, null, null);
+        built = buildStateFromStart(quoteId);
       }
 
       return built;
@@ -71,31 +79,34 @@ class QuoteProjectionService {
     }
   }
 
-  @SuppressWarnings("null")
-  private QuoteProjection buildState(String quoteId, Long fromRevision,
-      QuoteEntity baseModel) throws StreamNotFoundException, Exception {
-    ReadStreamOptions options = ReadStreamOptions.get();
-    if (fromRevision == null) {
-      options.fromStart();
-    } else {
-      options.fromRevision(fromRevision);
-    }
+  private QuoteProjection buildStateFromStart(String quoteId) throws Exception, StreamNotFoundException {
+    QuoteProjection state = null;
 
-    var state = baseModel;
-    var revision = fromRevision;
-
-    ReadResult results = getEvents(quoteId, fromRevision);
-    LOGGER.debug("Found {} events for quote {} starting from revision {}", results.getEvents().size(), quoteId,
-        fromRevision);
-
+    var results = getEvents(quoteId, null);
     for (ResolvedEvent result : results.getEvents()) {
       RecordedEvent event = result.getEvent();
       LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
 
-      state = reducer.reduceEvent(state, event);
-      revision = event.getStreamRevision().getValueUnsigned();
+      state = new QuoteProjection(reduceEvent(state, event));
     }
 
     return state;
   }
+
+  private QuoteProjection buildStateFromSnapshot(QuoteSnapshot snapshot)
+      throws StreamNotFoundException, Exception {
+    QuoteReducerModel state = snapshot;
+    var quoteId = snapshot.getId();
+
+    var results = getEvents(quoteId, snapshot.getRevision());
+    for (ResolvedEvent result : results.getEvents()) {
+      RecordedEvent event = result.getEvent();
+      LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
+
+      state = new QuoteProjection(reduceEvent(state, event));
+    }
+
+    return new QuoteProjection(state);
+  }
+
 }

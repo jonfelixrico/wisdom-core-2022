@@ -20,7 +20,7 @@ public abstract class QuoteSnapshot extends QuoteReducerModel {
     // TODO Auto-generated constructor stub
   }
 
-  QuoteSnapshot(QuoteReducerModel toClone) {
+  protected QuoteSnapshot(QuoteReducerModel toClone) {
     super(toClone);
     // TODO Auto-generated constructor stub
   }
