@@ -9,7 +9,7 @@ import java.util.Map;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 
-class MutableQuoteReducerModel extends QuoteAggregate {
+class MutableQuoteReducerModel extends QuoteReducerModel {
 
   public MutableQuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
@@ -19,7 +19,7 @@ class MutableQuoteReducerModel extends QuoteAggregate {
         statusDeclaration, votes, requiredVoteCount, isLegacy, revision);
   }
 
-  public static MutableQuoteReducerModel clone(QuoteAggregate source) {
+  public static MutableQuoteReducerModel clone(QuoteReducerModel source) {
     return new MutableQuoteReducerModel(source.getId(), source.getContent(), source.getAuthorId(),
         source.getSubmitterId(),
         source.getSubmitDt(), source.getExpirationDt(), source.getServerId(), source.getChannelId(),

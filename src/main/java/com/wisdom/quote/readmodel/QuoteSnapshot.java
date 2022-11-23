@@ -6,9 +6,9 @@ import java.util.Map;
 
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
-import com.wisdom.quote.eventsourcing.QuoteAggregate;
+import com.wisdom.quote.eventsourcing.QuoteReducerModel;
 
-public abstract class QuoteSnapshot extends QuoteAggregate {
+public abstract class QuoteSnapshot extends QuoteReducerModel {
 
   public QuoteSnapshot(
       String id, String content, String authorId, String submitterId, Instant submitDt,

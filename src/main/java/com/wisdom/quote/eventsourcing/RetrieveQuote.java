@@ -2,5 +2,5 @@ package com.wisdom.quote.eventsourcing;
 
 @FunctionalInterface
 public interface RetrieveQuote {
-  QuoteAggregate apply(String quoteId) throws Exception;
+  QuoteReducerModel apply(String quoteId) throws Exception;
 }

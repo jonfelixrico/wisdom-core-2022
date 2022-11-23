@@ -8,10 +8,10 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 
-public class QuoteAggregate extends QuoteEntity {
+public class QuoteReducerModel extends QuoteEntity {
   private Long revision;
 
-  public QuoteAggregate(String id, String content, String authorId, String submitterId, Instant submitDt,
+  public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
       Long revision) {
@@ -20,7 +20,7 @@ public class QuoteAggregate extends QuoteEntity {
     this.revision = revision;
   }
 
-  public QuoteAggregate(QuoteAggregate toClone) {
+  public QuoteReducerModel(QuoteReducerModel toClone) {
     super(toClone);
     this.revision = toClone.getRevision();
   }
