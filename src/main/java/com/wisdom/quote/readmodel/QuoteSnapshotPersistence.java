@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
-import com.wisdom.quote.eventsourcing.QuoteReducerModel;
+import com.wisdom.quote.eventsourcing.QuoteAggregate;
 
 /**
  * MongoDB object for the quote read model.
@@ -29,7 +29,7 @@ class QuoteSnapshotPersistence extends QuoteSnapshot {
     // TODO Auto-generated constructor stub
   }
 
-  public static QuoteSnapshotPersistence clone(QuoteReducerModel model) {
+  public static QuoteSnapshotPersistence clone(QuoteAggregate model) {
     return new QuoteSnapshotPersistence(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
         model.getSubmitDt(), model.getExpirationDt(), model.getServerId(),
         model.getChannelId(), model.getMessageId(), model.getReceives(), model.getStatusDeclaration(), model.getVotes(),

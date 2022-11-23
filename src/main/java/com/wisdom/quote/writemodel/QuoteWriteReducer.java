@@ -13,7 +13,7 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.eventsourcing.QuoteEventsReducer;
-import com.wisdom.quote.eventsourcing.QuoteReducerModel;
+import com.wisdom.quote.eventsourcing.QuoteAggregate;
 
 @Service
 public class QuoteWriteReducer {
@@ -27,7 +27,7 @@ public class QuoteWriteReducer {
   }
 }
 
-class QuoteReducerModelImpl extends QuoteReducerModel {
+class QuoteReducerModelImpl extends QuoteAggregate {
 
   public QuoteReducerModelImpl(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
