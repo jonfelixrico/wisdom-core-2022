@@ -5,7 +5,7 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wisdom.system.controller.dto.VersionRespDto;
+import com.wisdom.system.controller.dto.SystemInfoDto;
 
 @RestController
 public class SystemInfoController {
@@ -13,8 +13,8 @@ public class SystemInfoController {
   @Autowired
   private BuildProperties build;
 
-  @GetMapping("/version")
-  public VersionRespDto getVersion() {
-    return new VersionRespDto(build.getVersion());
+  @GetMapping
+  public SystemInfoDto getVersion() {
+    return new SystemInfoDto(build.getVersion());
   }
 }
