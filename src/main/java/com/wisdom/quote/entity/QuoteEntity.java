@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-public class QuoteEntity {
+public abstract class QuoteEntity {
   private String id;
 
   private String content;
