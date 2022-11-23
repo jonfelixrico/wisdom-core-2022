@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel;
+package com.wisdom.quote.readmodel;
 
 import java.time.Instant;
 import java.util.List;
@@ -7,14 +7,20 @@ import java.util.Map;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
+import com.wisdom.quote.eventsourcing.QuoteReducerModel;
 
+/**
+ * MongoDB object for the quote read model.
+ * 
+ * @author Felix
+ *
+ */
 @Document("quote-snapshot")
-class QuoteSnapshotDocument extends QuoteProjection {
+class QuoteSnapshotPersistence extends QuoteSnapshot {
   @PersistenceCreator
-  public QuoteSnapshotDocument(String id, String content, String authorId, String submitterId, Instant submitDt,
+  public QuoteSnapshotPersistence(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
       Long revision) {
@@ -23,7 +29,9 @@ class QuoteSnapshotDocument extends QuoteProjection {
     // TODO Auto-generated constructor stub
   }
 
-  public QuoteSnapshotDocument(QuoteEntity base, long revision) {
-    super(base, revision);
+  public QuoteSnapshotPersistence(QuoteReducerModel toClone) {
+    super(toClone);
+    // TODO Auto-generated constructor stub
   }
+
 }

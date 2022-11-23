@@ -1,6 +1,5 @@
 package com.wisdom.quote.readmodel;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
@@ -16,21 +15,19 @@ import com.eventstore.dbclient.SubscribeToAllOptions;
 import com.eventstore.dbclient.Subscription;
 import com.eventstore.dbclient.SubscriptionFilter;
 import com.eventstore.dbclient.SubscriptionListener;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
 import com.wisdom.common.readmodel.PositionService;
 import com.wisdom.eventstoredb.ESDBClientProvider;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
 
 @Service
-class QuoteReadCatchUp {
-  private static final Logger LOGGER = LoggerFactory.getLogger(QuoteReadCatchUp.class);
+class QuoteEventsCatchUpService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsCatchUpService.class);
 
-  private static final String POSITION_ID = "quote-readmodel";
+  private static final String POSITION_ID = "quote-snapshot";
 
   @Autowired
-  private QuoteReadReducer reducer;
+  private QuoteEventsProcessorService reducer;
 
   @Autowired
   private ESDBClientProvider esdb;
@@ -39,10 +36,10 @@ class QuoteReadCatchUp {
   private PositionService posSvc;
 
   private void processLagCatchUpEvent(ResolvedEvent event)
-      throws StreamReadException, DatabindException, IOException {
+      throws Exception {
     var recordedEvt = event.getEvent();
     try {
-      reducer.reduce(recordedEvt);
+      reducer.reduceAndSave(recordedEvt);
     } catch (LaggingRevisionException e) {
       // impossible to have lagging models at this point since we're especially
       // catching-up
@@ -70,14 +67,14 @@ class QuoteReadCatchUp {
     }
   }
 
-  private void processEvent(ResolvedEvent event) throws StreamReadException, DatabindException, IOException {
+  private void processEvent(ResolvedEvent event) throws Exception {
     var recordedEvt = event.getEvent();
     var position = recordedEvt.getPosition();
     try {
       LOGGER.debug("[prepare: {}, commit: {}] Handling event {} for stream {} with revision {}",
           position.getPrepareUnsigned(), position.getCommitUnsigned(), recordedEvt.getEventId(),
           recordedEvt.getStreamId(), recordedEvt.getStreamRevision());
-      reducer.reduce(recordedEvt);
+      reducer.reduceAndSave(recordedEvt);
     } catch (LaggingRevisionException e) {
       catchUpLaggingModel(e, event);
     } catch (UnrecognizedEventTypeException e) {

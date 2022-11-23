@@ -1,16 +1,16 @@
 package com.wisdom.quote.controller.dto.resp;
 
-import com.wisdom.quote.readmodel.QuoteReadModel;
+import com.wisdom.quote.readmodel.QuoteSnapshot;
 
 public class GetRandomQuoteResp {
-	private QuoteReadModel quote;
+  private QuoteSnapshot quote;
 
-	public GetRandomQuoteResp(QuoteReadModel quote) {
-		this.quote = quote;
-	}
+  public GetRandomQuoteResp(QuoteSnapshot quote) {
+    this.quote = quote;
+  }
 
-	protected QuoteReadModel getQuote() {
-		return quote;
-	}
+  protected QuoteSnapshot getQuote() {
+    return quote;
+  }
 
 }

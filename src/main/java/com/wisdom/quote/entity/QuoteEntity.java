@@ -1,10 +1,12 @@
 package com.wisdom.quote.entity;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class QuoteEntity {
+public abstract class QuoteEntity {
   private String id;
 
   private String content;
@@ -38,11 +40,19 @@ public class QuoteEntity {
     this.serverId = serverId;
     this.channelId = channelId;
     this.messageId = messageId;
-    this.receives = receives;
+    this.receives = receives == null ? new ArrayList<>() : receives;
     this.statusDeclaration = statusDeclaration;
-    this.votes = votes;
+    this.votes = votes == null ? new HashMap<>() : votes;
     this.requiredVoteCount = requiredVoteCount;
     this.isLegacy = isLegacy;
+  }
+
+  public QuoteEntity(QuoteEntity toClone) {
+    this(toClone.getId(), toClone.getContent(), toClone.getAuthorId(), toClone.getSubmitterId(), toClone.getSubmitDt(),
+        toClone.getExpirationDt(),
+        toClone.getServerId(), toClone.getChannelId(), toClone.getMessageId(),
+        new ArrayList<>(toClone.getReceives()), toClone.getStatusDeclaration(), new HashMap<>(toClone.getVotes()),
+        toClone.getRequiredVoteCount(), toClone.getIsLegacy());
   }
 
   public String getId() {

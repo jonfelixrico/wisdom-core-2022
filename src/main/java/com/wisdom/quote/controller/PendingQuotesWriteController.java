@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.req.QuoteAddVoteReqDto;
 import com.wisdom.quote.controller.dto.req.QuoteDeclareStatusReqDto;
-import com.wisdom.quote.writemodel.QuoteWriteService;
+import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 /**
  * @author Felix
@@ -29,7 +29,7 @@ import com.wisdom.quote.writemodel.QuoteWriteService;
 public class PendingQuotesWriteController {
 
   @Autowired
-  private QuoteWriteService writeSvc;
+  private QuoteWriteModelRepository writeSvc;
 
   @Autowired
   private TimeService timeSvc;

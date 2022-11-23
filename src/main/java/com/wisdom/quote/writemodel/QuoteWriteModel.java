@@ -10,10 +10,11 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
-import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
-import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
+import com.wisdom.quote.eventsourcing.QuoteReducerModel;
+import com.wisdom.quote.eventsourcing.events.QuoteReceivedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteStatusDeclaredEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteVoteAddedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteVoteRemovedEventV1;
 
 public class QuoteWriteModel extends QuoteBehavior {
   private EventAppendBuffer buffer;
@@ -23,6 +24,10 @@ public class QuoteWriteModel extends QuoteBehavior {
     super(entity);
     this.buffer = new EventAppendBuffer(String.format("quote/%s", entity.getId()), revision);
     this.writeSvc = writeSvc;
+  }
+  
+  QuoteWriteModel(QuoteReducerModel model, EventAppendService writeSvc) {
+    this(model, ExpectedRevision.expectedRevision(model.getRevision()), writeSvc);
   }
 
   public void receive(String receiveId, String receiverId, Instant receiveDt, String serverId, String channelId,

@@ -15,13 +15,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.req.ReceiveQuoteReqDto;
-import com.wisdom.quote.writemodel.QuoteWriteService;
+import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 @RestController
 @RequestMapping("/quote/{quoteId}")
 public class QuotesWriteController {
   @Autowired
-  private QuoteWriteService writeSvc;
+  private QuoteWriteModelRepository writeSvc;
 
   @Autowired
   private TimeService timeSvc;

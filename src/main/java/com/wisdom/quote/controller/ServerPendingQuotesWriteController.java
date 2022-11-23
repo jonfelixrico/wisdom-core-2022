@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.req.SubmitQuoteReqDto;
-import com.wisdom.quote.writemodel.QuoteWriteService;
+import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 /**
  * @author Felix
@@ -27,7 +27,7 @@ import com.wisdom.quote.writemodel.QuoteWriteService;
 public class ServerPendingQuotesWriteController {
 
   @Autowired
-  private QuoteWriteService writeSvc;
+  private QuoteWriteModelRepository writeSvc;
 
   @Autowired
   private TimeService timeSvc;

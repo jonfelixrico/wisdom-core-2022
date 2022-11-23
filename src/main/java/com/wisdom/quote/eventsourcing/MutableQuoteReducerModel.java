@@ -1,41 +1,25 @@
-package com.wisdom.quote.writemodel.event.reducer;
+package com.wisdom.quote.eventsourcing;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 
-/**
- * Makes reductions more readable.
- * 
- * We could just use the {@link QuoteEntity} constructor to achieve the same
- * goal (of instantiating and "mutating"
- * an entity), but that has proven itself to be unreadable -- imagine having to
- * call a very large constructor multiple times...
- * mistakes will be bound to happen. A structured way to do it like this class
- * is the way to go -- less potential for mistakes
- * but at the same time more readability.
- *
- * @author Felix
- */
-class QuoteReducerModel extends QuoteEntity {
+class MutableQuoteReducerModel extends QuoteReducerModel {
 
-  public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
+  public MutableQuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
-      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy) {
+      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
+      Long revision) {
     super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
-        statusDeclaration, votes, requiredVoteCount, isLegacy);
-    // TODO Auto-generated constructor stub
+        statusDeclaration, votes, requiredVoteCount, isLegacy, revision);
   }
 
-  public QuoteReducerModel(QuoteEntity entity) {
-    this(entity.getId(), entity.getContent(), entity.getAuthorId(), entity.getSubmitterId(), entity.getSubmitDt(),
-        entity.getExpirationDt(), entity.getServerId(), entity.getChannelId(), entity.getMessageId(),
-        entity.getReceives(), entity.getStatusDeclaration(), entity.getVotes(),
-        entity.getRequiredVoteCount(), entity.getIsLegacy());
+  public MutableQuoteReducerModel(QuoteReducerModel toClone) {
+    super(toClone);
+    // TODO Auto-generated constructor stub
   }
 
   @Override
@@ -87,7 +71,7 @@ class QuoteReducerModel extends QuoteEntity {
   }
 
   @Override
-  protected void setMessageId(String messageId) {
+  public void setMessageId(String messageId) {
     // TODO Auto-generated method stub
     super.setMessageId(messageId);
   }
@@ -114,6 +98,18 @@ class QuoteReducerModel extends QuoteEntity {
   public void setVotes(Map<String, Instant> votes) {
     // TODO Auto-generated method stub
     super.setVotes(votes);
+  }
+
+  @Override
+  public void setIsLegacy(Boolean isLegacy) {
+    // TODO Auto-generated method stub
+    super.setIsLegacy(isLegacy);
+  }
+
+  @Override
+  public void setRevision(Long revision) {
+    // TODO Auto-generated method stub
+    super.setRevision(revision);
   }
 
 }

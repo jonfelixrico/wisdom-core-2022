@@ -1,4 +1,4 @@
-package com.wisdom.quote.writemodel;
+package com.wisdom.quote.readmodel;
 
 import java.time.Instant;
 import java.util.List;
@@ -7,11 +7,11 @@ import java.util.Map;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.eventsourcing.QuoteReducerModel;
-import com.wisdom.quote.readmodel.QuoteSnapshot;
 
-class QuoteProjection extends QuoteSnapshot {
+public abstract class QuoteSnapshot extends QuoteReducerModel {
 
-  QuoteProjection(String id, String content, String authorId, String submitterId, Instant submitDt,
+  protected QuoteSnapshot(
+      String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
       Long revision) {
@@ -20,7 +20,7 @@ class QuoteProjection extends QuoteSnapshot {
     // TODO Auto-generated constructor stub
   }
 
-  QuoteProjection(QuoteReducerModel toClone) {
+  protected QuoteSnapshot(QuoteReducerModel toClone) {
     super(toClone);
     // TODO Auto-generated constructor stub
   }

@@ -1,6 +1,5 @@
 package com.wisdom.quote.writemodel;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
@@ -13,9 +12,12 @@ import com.eventstore.dbclient.ReadStreamOptions;
 import com.eventstore.dbclient.RecordedEvent;
 import com.eventstore.dbclient.ResolvedEvent;
 import com.eventstore.dbclient.StreamNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.eventstoredb.ESDBClientProvider;
-import com.wisdom.quote.entity.QuoteEntity;
-import com.wisdom.quote.writemodel.event.reducer.QuoteWriteReducer;
+import com.wisdom.quote.eventsourcing.QuoteEventsReducer;
+import com.wisdom.quote.eventsourcing.QuoteReducerModel;
+import com.wisdom.quote.readmodel.QuoteSnapshot;
+import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
 @Service
 class QuoteProjectionService {
@@ -25,25 +27,32 @@ class QuoteProjectionService {
   private ESDBClientProvider esdb;
 
   @Autowired
-  private QuoteWriteReducer reducer;
+  private QuoteSnapshotRepository snapshotRepo;
 
   @Autowired
-  private QuoteSnapshotService snapshotRepo;
+  private ObjectMapper mapper;
+
+  private QuoteReducerModel reduceEvent(QuoteReducerModel model, RecordedEvent event) throws Exception {
+    var reducer = new QuoteEventsReducer(mapper, quoteId -> model);
+    return reducer.reduce(event);
+  }
 
   public QuoteProjection getProjection(String quoteId)
-      throws InterruptedException, ExecutionException, IOException {
-    var snapshot = snapshotRepo.get(quoteId);
+      throws Exception {
+    var snapshot = snapshotRepo.findById(quoteId);
 
     try {
       QuoteProjection built;
 
       if (snapshot != null) {
-        built = buildState(quoteId, snapshot.getRevision(), snapshot);
+        LOGGER.debug("Building state of quote {} from revision {}", quoteId, snapshot.getRevision());
+        built = buildStateFromSnapshot(snapshot);
       } else {
-        built = buildState(quoteId, null, null);
+        LOGGER.debug("Building state of quote {} from the start", quoteId);
+        built = buildStateFromStart(quoteId);
       }
 
-      snapshotRepo.save(built, built.getRevision());
+      LOGGER.debug("Built state up to revision {} for quote {}", built.getRevision(), quoteId);
       return built;
     } catch (StreamNotFoundException e) {
       LOGGER.debug("Stream not found for quote {}", quoteId);
@@ -73,31 +82,34 @@ class QuoteProjectionService {
     }
   }
 
-  @SuppressWarnings("null")
-  private QuoteProjection buildState(String quoteId, Long fromRevision,
-      QuoteEntity baseModel) throws InterruptedException, ExecutionException, IOException, StreamNotFoundException {
-    ReadStreamOptions options = ReadStreamOptions.get();
-    if (fromRevision == null) {
-      options.fromStart();
-    } else {
-      options.fromRevision(fromRevision);
-    }
+  private QuoteProjection buildStateFromStart(String quoteId) throws Exception, StreamNotFoundException {
+    QuoteProjection state = null;
 
-    var state = baseModel;
-    var revision = fromRevision;
-
-    ReadResult results = getEvents(quoteId, fromRevision);
-    LOGGER.debug("Found {} events for quote {} starting from revision {}", results.getEvents().size(), quoteId,
-        fromRevision);
-
+    var results = getEvents(quoteId, null);
     for (ResolvedEvent result : results.getEvents()) {
       RecordedEvent event = result.getEvent();
-      LOGGER.debug("Reading event type {} for quote {}", event.getEventType(), quoteId);
+      LOGGER.debug("Reading event type {} for quote {} with revision {}", event.getEventType(), quoteId,
+          event.getStreamRevision().getValueUnsigned());
 
-      state = reducer.reduceEvent(state, event);
-      revision = event.getStreamRevision().getValueUnsigned();
+      state = new QuoteProjection(reduceEvent(state, event));
     }
 
-    return new QuoteProjection(state, revision);
+    return state;
   }
+
+  private QuoteProjection buildStateFromSnapshot(QuoteSnapshot snapshot)
+      throws StreamNotFoundException, Exception {
+    QuoteReducerModel state = snapshot;
+    var results = getEvents(snapshot.getId(), snapshot.getRevision() + 1);
+    for (ResolvedEvent result : results.getEvents()) {
+      RecordedEvent event = result.getEvent();
+      LOGGER.debug("Reading event type {} for quote {} with revision {}", event.getEventType(), snapshot.getId(),
+          event.getStreamRevision().getValueUnsigned());
+
+      state = new QuoteProjection(reduceEvent(state, event));
+    }
+
+    return new QuoteProjection(state);
+  }
+
 }

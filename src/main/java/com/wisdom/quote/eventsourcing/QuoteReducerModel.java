@@ -1,4 +1,4 @@
-package com.wisdom.quote.readmodel;
+package com.wisdom.quote.eventsourcing;
 
 import java.time.Instant;
 import java.util.List;
@@ -8,10 +8,10 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 
-public abstract class QuoteReadModel extends QuoteEntity {
-  protected Long revision;
+public abstract class QuoteReducerModel extends QuoteEntity {
+  private Long revision;
 
-  public QuoteReadModel(String id, String content, String authorId, String submitterId, Instant submitDt,
+  public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
       Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
       StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
       Long revision) {
@@ -20,11 +20,17 @@ public abstract class QuoteReadModel extends QuoteEntity {
     this.revision = revision;
   }
 
+  public QuoteReducerModel(QuoteReducerModel toClone) {
+    super(toClone);
+    this.revision = toClone.getRevision();
+  }
+
   public Long getRevision() {
     return revision;
   }
 
-  protected void setRevision(Long revision) {
+  void setRevision(Long revision) {
     this.revision = revision;
   }
+
 }
