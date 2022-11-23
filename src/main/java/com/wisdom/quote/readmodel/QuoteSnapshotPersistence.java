@@ -29,10 +29,9 @@ class QuoteSnapshotPersistence extends QuoteSnapshot {
     // TODO Auto-generated constructor stub
   }
 
-  public static QuoteSnapshotPersistence clone(QuoteReducerModel model) {
-    return new QuoteSnapshotPersistence(model.getId(), model.getContent(), model.getAuthorId(), model.getSubmitterId(),
-        model.getSubmitDt(), model.getExpirationDt(), model.getServerId(),
-        model.getChannelId(), model.getMessageId(), model.getReceives(), model.getStatusDeclaration(), model.getVotes(),
-        model.getRequiredVoteCount(), model.getIsLegacy(), model.getRevision());
+  public QuoteSnapshotPersistence(QuoteReducerModel toClone) {
+    super(toClone);
+    // TODO Auto-generated constructor stub
   }
+
 }
