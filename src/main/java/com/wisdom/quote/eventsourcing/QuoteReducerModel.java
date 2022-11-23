@@ -8,7 +8,7 @@ import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
 
-public class QuoteReducerModel extends QuoteEntity {
+public abstract class QuoteReducerModel extends QuoteEntity {
   private Long revision;
 
   public QuoteReducerModel(String id, String content, String authorId, String submitterId, Instant submitDt,
