@@ -17,7 +17,7 @@ import com.wisdom.quote.eventsourcing.QuoteReducerModel;
  * @author Felix
  *
  */
-@Document("quote-readmodel")
+@Document("quote-snapshot")
 class QuoteSnapshotPersistence extends QuoteSnapshot {
   @PersistenceCreator
   public QuoteSnapshotPersistence(String id, String content, String authorId, String submitterId, Instant submitDt,

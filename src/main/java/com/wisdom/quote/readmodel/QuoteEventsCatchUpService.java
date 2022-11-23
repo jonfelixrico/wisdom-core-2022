@@ -24,7 +24,7 @@ import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
 class QuoteEventsCatchUpService {
   private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsCatchUpService.class);
 
-  private static final String POSITION_ID = "quote-readmodel";
+  private static final String POSITION_ID = "quote-snapshot";
 
   @Autowired
   private QuoteEventsProcessorService reducer;
