@@ -85,7 +85,7 @@ public class QuoteEventsReducer {
 
   private MutableQuoteReducerModel retrieve(String quoteId) throws Exception {
     var model = retriever.apply(quoteId);
-    return model == null ? null : MutableQuoteReducerModel.clone(model);
+    return model == null ? null : new MutableQuoteReducerModel(model);
   }
 
   /*

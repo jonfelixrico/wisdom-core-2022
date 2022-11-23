@@ -1,8 +1,6 @@
 package com.wisdom.quote.eventsourcing;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +17,9 @@ class MutableQuoteReducerModel extends QuoteReducerModel {
         statusDeclaration, votes, requiredVoteCount, isLegacy, revision);
   }
 
-  public static MutableQuoteReducerModel clone(QuoteReducerModel source) {
-    return new MutableQuoteReducerModel(source.getId(), source.getContent(), source.getAuthorId(),
-        source.getSubmitterId(),
-        source.getSubmitDt(), source.getExpirationDt(), source.getServerId(), source.getChannelId(),
-        source.getMessageId(),
-        new ArrayList<>(source.getReceives()), source.getStatusDeclaration(), new HashMap<>(source.getVotes()),
-        source.getRequiredVoteCount(), source.getIsLegacy(), source.getRevision());
+  public MutableQuoteReducerModel(QuoteReducerModel toClone) {
+    super(toClone);
+    // TODO Auto-generated constructor stub
   }
 
   @Override
