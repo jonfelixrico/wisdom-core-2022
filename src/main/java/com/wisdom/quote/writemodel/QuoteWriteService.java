@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.eventstoredb.utils.EventAppendService;
-import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
 
 @Service
@@ -22,7 +21,7 @@ public class QuoteWriteService {
   public QuoteWriteModel create(String quoteId, String content, String authorId, String submitterId,
       Instant createDt, Instant expirationDt, String serverId, String channelId, String messageId,
       int requiredVoteCount) {
-    var entity = new QuoteEntity(quoteId, content, authorId, submitterId, createDt, expirationDt, serverId,
+    var entity = new QuoteEntityImpl(quoteId, content, authorId, submitterId, createDt, expirationDt, serverId,
         channelId, messageId, null, null, null, null, false);
     var writeModel = new QuoteWriteModel(entity, ExpectedRevision.NO_STREAM, eventAppendService);
 
