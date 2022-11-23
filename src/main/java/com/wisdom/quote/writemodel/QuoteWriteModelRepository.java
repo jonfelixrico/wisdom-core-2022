@@ -12,7 +12,7 @@ import com.wisdom.eventstoredb.utils.EventAppendService;
 import com.wisdom.quote.entity.QuoteEntity;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
-import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteSubmittedEventV1;
 
 @Service
 public class QuoteWriteModelRepository {

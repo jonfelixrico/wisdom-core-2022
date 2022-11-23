@@ -11,10 +11,10 @@ import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.entity.StatusDeclaration;
 import com.wisdom.quote.eventsourcing.QuoteReducerModel;
-import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
-import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteReceivedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteStatusDeclaredEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteVoteAddedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteVoteRemovedEventV1;
 
 public class QuoteWriteModel extends QuoteBehavior {
   private EventAppendBuffer buffer;

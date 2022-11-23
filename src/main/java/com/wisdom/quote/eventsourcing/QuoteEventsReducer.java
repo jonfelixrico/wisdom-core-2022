@@ -10,17 +10,17 @@ import com.eventstore.dbclient.RecordedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wisdom.quote.entity.Receive;
 import com.wisdom.quote.entity.StatusDeclaration;
+import com.wisdom.quote.eventsourcing.events.QuoteReceivedEventV0;
+import com.wisdom.quote.eventsourcing.events.QuoteReceivedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteStatusDeclaredEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteSubmittedEventV0;
+import com.wisdom.quote.eventsourcing.events.QuoteSubmittedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteVoteAddedEventV0;
+import com.wisdom.quote.eventsourcing.events.QuoteVoteAddedEventV1;
+import com.wisdom.quote.eventsourcing.events.QuoteVoteRemovedEventV1;
 import com.wisdom.quote.readmodel.exception.AdvancedRevisionException;
 import com.wisdom.quote.readmodel.exception.LaggingRevisionException;
 import com.wisdom.quote.readmodel.exception.UnrecognizedEventTypeException;
-import com.wisdom.quote.writemodel.event.QuoteReceivedEventV0;
-import com.wisdom.quote.writemodel.event.QuoteReceivedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteStatusDeclaredEventV1;
-import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV0;
-import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV0;
-import com.wisdom.quote.writemodel.event.QuoteVoteAddedEventV1;
-import com.wisdom.quote.writemodel.event.QuoteVoteRemovedEventV1;
 
 public class QuoteEventsReducer {
   private static final Logger LOGGER = LoggerFactory.getLogger(QuoteEventsReducer.class);
