@@ -1,6 +1,8 @@
 package com.wisdom.quote.writemodel;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 import com.eventstore.dbclient.ExpectedRevision;
 import com.wisdom.eventstoredb.utils.EventAppendBuffer;
@@ -22,6 +24,16 @@ public class QuoteWriteModel extends QuoteBehavior {
   QuoteWriteModel(QuoteEntity entity, ExpectedRevision revision, EventAppendService writeSvc) {
     super(entity);
     this.buffer = new EventAppendBuffer(String.format("quote/%s", entity.getId()), revision);
+    this.writeSvc = writeSvc;
+  }
+
+  QuoteWriteModel(String id, String content, String authorId, String submitterId, Instant submitDt,
+      Instant expirationDt, String serverId, String channelId, String messageId, List<Receive> receives,
+      StatusDeclaration statusDeclaration, Map<String, Instant> votes, Integer requiredVoteCount, Boolean isLegacy,
+      EventAppendBuffer buffer, EventAppendService writeSvc) {
+    super(id, content, authorId, submitterId, submitDt, expirationDt, serverId, channelId, messageId, receives,
+        statusDeclaration, votes, requiredVoteCount, isLegacy);
+    this.buffer = buffer;
     this.writeSvc = writeSvc;
   }
 
