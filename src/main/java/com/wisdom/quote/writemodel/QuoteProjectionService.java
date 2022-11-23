@@ -88,7 +88,7 @@ class QuoteProjectionService {
     var results = getEvents(quoteId, null);
     for (ResolvedEvent result : results.getEvents()) {
       RecordedEvent event = result.getEvent();
-      LOGGER.debug("Reading event type {} for quote {} with revision", event.getEventType(), quoteId,
+      LOGGER.debug("Reading event type {} for quote {} with revision {}", event.getEventType(), quoteId,
           event.getStreamRevision().getValueUnsigned());
 
       state = new QuoteProjection(reduceEvent(state, event));
@@ -100,10 +100,10 @@ class QuoteProjectionService {
   private QuoteProjection buildStateFromSnapshot(QuoteSnapshot snapshot)
       throws StreamNotFoundException, Exception {
     QuoteReducerModel state = snapshot;
-    var results = getEvents(snapshot.getId(), snapshot.getRevision());
+    var results = getEvents(snapshot.getId(), snapshot.getRevision() + 1);
     for (ResolvedEvent result : results.getEvents()) {
       RecordedEvent event = result.getEvent();
-      LOGGER.debug("Reading event type {} for quote {} with revision", event.getEventType(), snapshot.getId(),
+      LOGGER.debug("Reading event type {} for quote {} with revision {}", event.getEventType(), snapshot.getId(),
           event.getStreamRevision().getValueUnsigned());
 
       state = new QuoteProjection(reduceEvent(state, event));
