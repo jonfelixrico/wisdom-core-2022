@@ -14,6 +14,7 @@ import com.eventstore.dbclient.ResolvedEvent;
 import com.eventstore.dbclient.StreamNotFoundException;
 import com.wisdom.eventstoredb.ESDBClientProvider;
 import com.wisdom.quote.entity.QuoteEntity;
+import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
 @Service
 class QuoteProjectionService {
@@ -23,14 +24,14 @@ class QuoteProjectionService {
   private ESDBClientProvider esdb;
 
   @Autowired
-  private QuoteWriteReducer reducer;
+  private QuoteWriteModelReducerService reducer;
 
   @Autowired
-  private QuoteSnapshotService snapshotRepo;
+  private QuoteSnapshotRepository snapshotRepo;
 
   public QuoteProjection getProjection(String quoteId)
       throws Exception {
-    var snapshot = snapshotRepo.get(quoteId);
+    var snapshot = snapshotRepo.findById(quoteId);
 
     try {
       QuoteProjection built;
@@ -41,7 +42,6 @@ class QuoteProjectionService {
         built = buildState(quoteId, null, null);
       }
 
-      snapshotRepo.save(built, built.getRevision());
       return built;
     } catch (StreamNotFoundException e) {
       LOGGER.debug("Stream not found for quote {}", quoteId);

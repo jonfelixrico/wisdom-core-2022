@@ -16,7 +16,7 @@ import com.wisdom.quote.eventsourcing.QuoteEventsReducer;
 import com.wisdom.quote.eventsourcing.QuoteReducerModel;
 
 @Service
-public class QuoteWriteReducer {
+class QuoteWriteModelReducerService {
 
   @Autowired
   private ObjectMapper mapper;

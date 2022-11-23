@@ -10,7 +10,7 @@ import com.wisdom.eventstoredb.utils.EventAppendService;
 import com.wisdom.quote.writemodel.event.QuoteSubmittedEventV1;
 
 @Service
-public class QuoteWriteService {
+public class QuoteWriteModelRepository {
 
   @Autowired
   EventAppendService eventAppendService;
