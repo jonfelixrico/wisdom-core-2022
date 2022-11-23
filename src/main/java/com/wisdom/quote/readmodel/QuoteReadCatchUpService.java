@@ -27,7 +27,7 @@ class QuoteReadCatchUpService {
   private static final String POSITION_ID = "quote-readmodel";
 
   @Autowired
-  private QuoteReadReducerService reducer;
+  private QuoteSnapshotEventsProcessorService reducer;
 
   @Autowired
   private ESDBClientProvider esdb;
@@ -39,7 +39,7 @@ class QuoteReadCatchUpService {
       throws Exception {
     var recordedEvt = event.getEvent();
     try {
-      reducer.reduce(recordedEvt);
+      reducer.reduceAndSave(recordedEvt);
     } catch (LaggingRevisionException e) {
       // impossible to have lagging models at this point since we're especially
       // catching-up
@@ -74,7 +74,7 @@ class QuoteReadCatchUpService {
       LOGGER.debug("[prepare: {}, commit: {}] Handling event {} for stream {} with revision {}",
           position.getPrepareUnsigned(), position.getCommitUnsigned(), recordedEvt.getEventId(),
           recordedEvt.getStreamId(), recordedEvt.getStreamRevision());
-      reducer.reduce(recordedEvt);
+      reducer.reduceAndSave(recordedEvt);
     } catch (LaggingRevisionException e) {
       catchUpLaggingModel(e, event);
     } catch (UnrecognizedEventTypeException e) {
