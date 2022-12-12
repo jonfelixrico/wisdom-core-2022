@@ -1,17 +1,28 @@
 version: "3.4"
 
 services:
-  image: mongo
-  restart: always
-  ports:
-    - "9115:27017"
-  environment:
-    MONGO_INITDB_ROOT_USERNAME: root
-    MONGO_INITDB_ROOT_PASSWORD: password
-    MONGO_INITDB_DATABASE: wisdom
-  volumes:
-    - type: volume
-      source: mongo-data
-      target: /data/db
+  discord.client:
+    depends_on:
+      - mongo
+    # points to the root of this repository
+    build: ../../.
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - spring.data.mongodb.uri=mongodb://root:password@mongo:27017
+      - spring.data.mongodb.database=wisdom
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: wisdom
+    volumes:
+      - type: volume
+        source: mongo-data
+        target: /data/db
 volumes:
   mongo-data:
