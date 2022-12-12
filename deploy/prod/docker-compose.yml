@@ -1,7 +1,7 @@
 version: "3.4"
 
 services:
-  discord.client:
+  server:
     depends_on:
       - mongo
     # points to the root of this repository
