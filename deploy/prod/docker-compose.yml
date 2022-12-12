@@ -1,0 +1,35 @@
+version: "3.4"
+
+services:
+  server:
+    depends_on:
+      - mongo
+    # points to the root of this repository
+    build: ../../.
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - spring.data.mongodb.uri=mongodb://root:password@mongo:27017
+      - spring.data.mongodb.database=wisdom
+      - server.tomcat.basedir=/var/log/wisdom-core/tomcat
+      - logging.file.path=/var/log/wisdom-core/app
+    volumes:
+      - ./logs/tomcat:/var/log/wisdom-core/tomcat/logs
+      - ./logs/app/:/var/log/wisdom-core/app
+    ports:
+      - 9000:9000
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: wisdom
+    volumes:
+      - type: volume
+        source: mongo-data
+        target: /data/db
+volumes:
+  mongo-data:

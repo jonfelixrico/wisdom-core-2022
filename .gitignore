@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/logs
+
+/deploy/**/logs
+/deploy/**/.env
