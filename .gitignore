@@ -33,3 +33,6 @@ build/
 .vscode/
 
 /logs
+
+/deploy/**/logs
+/deploy/**/.env
