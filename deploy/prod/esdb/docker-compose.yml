@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+  esdb:
+    image: eventstore/eventstore:21.10.0-buster-slim
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_EXT_TCP_PORT=1113
+      - EVENTSTORE_HTTP_PORT=2113
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - 21130:2113
+    volumes:
+      - type: volume
+        source: esdb-data
+        target: /var/lib/eventstore
+      - ./logs:/var/log/eventstore
+
+volumes:
+  esdb-data:
+  esdb-logs:

@@ -5,7 +5,7 @@ services:
     depends_on:
       - mongo
     # points to the root of this repository
-    build: ../../.
+    build: ../../../.
     restart: unless-stopped
     env_file:
       - .env
