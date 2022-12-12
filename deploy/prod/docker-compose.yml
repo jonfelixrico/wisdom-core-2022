@@ -12,6 +12,10 @@ services:
     environment:
       - spring.data.mongodb.uri=mongodb://root:password@mongo:27017
       - spring.data.mongodb.database=wisdom
+      - server.tomcat.basedir=/var/log/wisdom-core/tomcat
+      - logging.file.path=/var/log/wisdom-core/app
+    volumes:
+      - ./logs:/var/log/wisdom-core
 
   mongo:
     image: mongo
