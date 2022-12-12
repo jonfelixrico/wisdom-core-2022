@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.wisdom</groupId>
 	<artifactId>wisdom-core</artifactId>
-	<version>3.0.1-SNAPSHOT</version>
+	<version>3.0.1</version>
 	<name>wisdom-core</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
