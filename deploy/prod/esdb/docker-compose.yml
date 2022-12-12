@@ -1,7 +1,7 @@
 version: "3.4"
 
 services:
-  eventstore.db:
+  esdb:
     image: eventstore/eventstore:21.10.0-buster-slim
     environment:
       - EVENTSTORE_CLUSTER_SIZE=1
