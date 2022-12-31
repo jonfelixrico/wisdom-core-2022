@@ -18,7 +18,7 @@ services:
       - ./logs/tomcat/:/var/log/wisdom-core/tomcat
       - ./logs/app/:/var/log/wisdom-core/app
     ports:
-      - 9000:9000
+      - 9999:9000
 
   mongo:
     image: mongo
@@ -31,5 +31,7 @@ services:
       - type: volume
         source: mongo-data
         target: /data/db
+    ports:
+      - 9998:27017
 volumes:
   mongo-data:
