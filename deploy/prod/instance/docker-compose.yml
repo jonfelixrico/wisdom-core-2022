@@ -16,7 +16,7 @@ services:
       - server.tomcat.accesslog.directory=./
       - logging.file.path=/var/log/wisdom-core/app
     volumes:
-      - ./logs/tomcat:/var/log/wisdom-core/tomcat/access-logs
+      - ./logs/tomcat:/var/log/wisdom-core/tomcat
       - ./logs/app:/var/log/wisdom-core/app
     ports:
       - 9999:9000
