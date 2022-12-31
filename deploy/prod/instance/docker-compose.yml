@@ -15,8 +15,7 @@ services:
       - server.tomcat.basedir=/var/log/wisdom-core/tomcat
       - logging.file.path=/var/log/wisdom-core/app
     volumes:
-      - ./logs/tomcat:/var/log/wisdom-core/tomcat
-      - ./logs/app:/var/log/wisdom-core/app
+      - ./logs:/app/logs
     ports:
       - 9999:9000
 
