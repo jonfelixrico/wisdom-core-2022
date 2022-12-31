@@ -13,7 +13,7 @@ services:
       - spring.data.mongodb.uri=mongodb://root:password@mongo:27017
       - spring.data.mongodb.database=wisdom
       - server.tomcat.basedir=/var/log/wisdom-core/tomcat
-      - server.tomcat.accesslog.directory=/var/log/wisdom-core/tomcat/access-logs
+      - server.tomcat.accesslog.directory=./
       - logging.file.path=/var/log/wisdom-core/app
     volumes:
       - ./logs/tomcat:/var/log/wisdom-core/tomcat/access-logs
