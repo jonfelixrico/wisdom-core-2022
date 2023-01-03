@@ -30,7 +30,7 @@ public class QuotesWriteController {
   @Autowired
   private TimeService timeSvc;
 
-  @Operation(operationId = "Add receive", summary = "Add a receive to a quote")
+  @Operation(operationId = "addReceive", summary = "Add a receive to a quote")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "404", description = "Quote not found"),
       @ApiResponse()
