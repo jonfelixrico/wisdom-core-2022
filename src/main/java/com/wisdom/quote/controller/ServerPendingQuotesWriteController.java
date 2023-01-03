@@ -19,6 +19,8 @@ import com.wisdom.quote.controller.dto.req.SubmitQuoteReqDto;
 import com.wisdom.quote.controller.dto.resp.SubmitQuoteResp;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 /**
  * @author Felix
  *
@@ -32,6 +34,7 @@ public class ServerPendingQuotesWriteController {
   @Autowired
   private TimeService timeSvc;
 
+  @Operation(operationId = "submitQuote", summary = "Submit quote")
   @PostMapping("/server/{serverId}/pending-quote")
   private SubmitQuoteResp submitQuote(@Valid @RequestBody SubmitQuoteReqDto body, @PathVariable String serverId)
       throws Exception {
