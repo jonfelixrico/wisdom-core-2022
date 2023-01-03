@@ -97,7 +97,8 @@ public class PendingQuotesWriteController {
     }
 
     /*
-     * Throws IllegalStateException, but that will only happen if we tried adding a status
+     * Throws IllegalStateException, but that will only happen if we tried adding a
+     * status
      * to a non-pending quote. It should've been already handled above.
      */
     writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
