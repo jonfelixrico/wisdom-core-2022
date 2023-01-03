@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wisdom.quote.readmodel.QuoteSnapshot;
 import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/server/{serverId}/quote")
 public class ServerQuotesReadController {
   @Autowired
   private QuoteSnapshotRepository repo;
 
+  @Operation(operationId = "getRandomQuote", summary = "Get a random quote from a server")
   @GetMapping("/random")
   private QuoteSnapshot getRandomQuote(@PathVariable String serverId, @RequestParam(required = false) String authorId) {
     if (authorId == null) {
@@ -27,6 +30,7 @@ public class ServerQuotesReadController {
     return repo.getRandomQuoteInServerFilteredByAuthor(serverId, authorId);
   }
 
+  @Operation(operationId = "getServerQuotes", summary = "List the quotes of a server")
   @GetMapping
   private List<QuoteSnapshot> getServerQuotes(@PathVariable String serverId,
       @RequestParam(required = false) String authorId) {

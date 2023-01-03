@@ -20,6 +20,10 @@ import com.wisdom.quote.controller.dto.req.QuoteAddVoteReqDto;
 import com.wisdom.quote.controller.dto.req.QuoteDeclareStatusReqDto;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 /**
  * @author Felix
  *
@@ -34,6 +38,12 @@ public class PendingQuotesWriteController {
   @Autowired
   private TimeService timeSvc;
 
+  @Operation(operationId = "addVote", summary = "Add a vote")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "404", description = "The pending quote was not found"),
+      @ApiResponse(responseCode = "403", description = "The user has already voted"),
+      @ApiResponse()
+  })
   @PostMapping("/vote")
   private void addVote(@PathVariable String quoteId,
       @Valid @RequestBody QuoteAddVoteReqDto body) throws Exception {
@@ -50,6 +60,11 @@ public class PendingQuotesWriteController {
     }
   }
 
+  @Operation(operationId = "removeVote", summary = "Remove a vote")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "404", description = "User has not yet voted, or the pending quote was not found"),
+      @ApiResponse()
+  })
   @DeleteMapping("/vote/{userId}")
   private void removeVote(@PathVariable String quoteId, @PathVariable String userId)
       throws Exception {
@@ -62,23 +77,31 @@ public class PendingQuotesWriteController {
       writeModel.removeVote(userId, timeSvc.getCurrentTime());
       writeModel.save();
     } catch (IllegalStateException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote note found.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote not found.");
     }
   }
 
+  @Operation(operationId = "declareStatus", summary = "Declare a pending quote's status")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "404", description = "Pending quote was not found"),
+      @ApiResponse()
+  })
   @PostMapping("/status")
   private void declareStatus(@PathVariable String quoteId,
       @RequestBody QuoteDeclareStatusReqDto body) throws Exception {
     var writeModel = writeSvc.get(quoteId);
-    if (writeModel == null || writeModel.getStatusDeclaration() != null) {
+    if (writeModel == null ||
+        writeModel.getStatusDeclaration() != null // a non-null status means that the quote is not pending anymore
+    ) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    try {
-      writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
-      writeModel.save();
-    } catch (IllegalStateException e) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-    }
+    /*
+     * Throws IllegalStateException, but that will only happen if we tried adding a
+     * status
+     * to a non-pending quote. It should've been already handled above.
+     */
+    writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
+    writeModel.save();
   }
 }
