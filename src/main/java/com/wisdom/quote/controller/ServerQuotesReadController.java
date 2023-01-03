@@ -8,11 +8,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.webjars.NotFoundException;
 
+import com.wisdom.quote.entity.Status;
 import com.wisdom.quote.readmodel.QuoteSnapshot;
 import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping("/server/{serverId}/quote")
@@ -39,5 +44,28 @@ public class ServerQuotesReadController {
     }
 
     return repo.getServerQuotes(serverId, authorId);
+  }
+
+  private boolean isQuoteApproved(QuoteSnapshot quote) {
+    return quote.getStatusDeclaration() != null
+        && Status.APPROVED.equals(quote.getStatusDeclaration().getStatus());
+  }
+
+  @Operation(operationId = "getQuote", summary = "Get the quote of a server")
+  @ApiResponses(value = {
+      @ApiResponse(),
+      @ApiResponse(responseCode = "404", description = "Quote does not exist or server does not exist", content = {
+          @Content() })
+  })
+  @GetMapping("/{quoteId}")
+  private QuoteSnapshot getQuote(@PathVariable String serverId, @PathVariable String quoteId) {
+    var quote = repo.findById(quoteId);
+    if (quote == null ||
+        !isQuoteApproved(quote) || // even though it exists in the db layer, BL-layer, its a separate entity
+        !quote.getServerId().equals(serverId)) {
+      throw new NotFoundException("Quote not found");
+    }
+
+    return quote;
   }
 }
