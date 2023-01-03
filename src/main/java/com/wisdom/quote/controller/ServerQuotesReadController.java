@@ -15,6 +15,7 @@ import com.wisdom.quote.readmodel.QuoteSnapshot;
 import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
@@ -53,7 +54,8 @@ public class ServerQuotesReadController {
   @Operation(operationId = "getQuote", summary = "Get the quote of a server")
   @ApiResponses(value = {
       @ApiResponse(),
-      @ApiResponse(responseCode = "404", description = "Quote does not exist or server does not exist")
+      @ApiResponse(responseCode = "404", description = "Quote does not exist or server does not exist", content = {
+          @Content() })
   })
   @GetMapping("/{quoteId}")
   private QuoteSnapshot getQuote(@PathVariable String serverId, @PathVariable String quoteId) {
