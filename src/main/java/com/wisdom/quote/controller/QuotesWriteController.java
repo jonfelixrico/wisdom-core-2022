@@ -17,6 +17,10 @@ import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.req.ReceiveQuoteReqDto;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/quote/{quoteId}")
 public class QuotesWriteController {
@@ -26,6 +30,11 @@ public class QuotesWriteController {
   @Autowired
   private TimeService timeSvc;
 
+  @Operation(operationId = "Add receive", summary = "Add a receive to a quote")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "404", description = "Quote not found"),
+      @ApiResponse()
+  })
   @PostMapping("/receive")
   private void receiveQuote(@PathVariable String quoteId,
       @Valid @RequestBody ReceiveQuoteReqDto body) throws Exception {
