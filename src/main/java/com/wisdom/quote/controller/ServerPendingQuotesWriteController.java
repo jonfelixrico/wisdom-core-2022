@@ -4,7 +4,6 @@
 package com.wisdom.quote.controller;
 
 import java.time.temporal.ChronoUnit;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wisdom.common.service.TimeService;
 import com.wisdom.quote.controller.dto.req.SubmitQuoteReqDto;
+import com.wisdom.quote.controller.dto.resp.SubmitQuoteResp;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 /**
@@ -33,7 +33,7 @@ public class ServerPendingQuotesWriteController {
   private TimeService timeSvc;
 
   @PostMapping("/server/{serverId}/pending-quote")
-  private Map<String, String> submitQuote(@Valid @RequestBody SubmitQuoteReqDto body, @PathVariable String serverId)
+  private SubmitQuoteResp submitQuote(@Valid @RequestBody SubmitQuoteReqDto body, @PathVariable String serverId)
       throws Exception {
     var quoteId = UUID.randomUUID().toString();
     var createDt = timeSvc.getCurrentTime();
@@ -45,6 +45,6 @@ public class ServerPendingQuotesWriteController {
         createDt, expireDt, serverId, body.getChannelId(), body.getMessageId(), 3);
     writeModel.save();
 
-    return Map.of("quoteId", quoteId);
+    return new SubmitQuoteResp(quoteId);
   }
 }
