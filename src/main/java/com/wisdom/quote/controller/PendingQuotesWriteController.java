@@ -70,7 +70,6 @@ public class PendingQuotesWriteController {
       writeModel.removeVote(userId, timeSvc.getCurrentTime());
       writeModel.save();
     } catch (IllegalStateException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote note found.");
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote not found.");
     }
   }
@@ -81,19 +80,12 @@ public class PendingQuotesWriteController {
   private void declareStatus(@PathVariable String quoteId,
       @RequestBody QuoteDeclareStatusReqDto body) throws Exception {
     var writeModel = writeSvc.get(quoteId);
-    if (writeModel == null || writeModel.getStatusDeclaration() != null) {
     if (writeModel == null ||
         writeModel.getStatusDeclaration() != null // a non-null status means that the quote is not pending anymore
     ) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    try {
-      writeModel.declareStatus(body.getStatus(), timeSvc.getCurrentTime());
-      writeModel.save();
-    } catch (IllegalStateException e) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, e.getMessage());
-    }
     /*
      * Throws IllegalStateException, but that will only happen if we tried adding a status
      * to a non-pending quote. It should've been already handled above.
