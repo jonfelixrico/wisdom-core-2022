@@ -20,6 +20,9 @@ import com.wisdom.quote.controller.dto.req.QuoteAddVoteReqDto;
 import com.wisdom.quote.controller.dto.req.QuoteDeclareStatusReqDto;
 import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * @author Felix
  *
@@ -34,6 +37,9 @@ public class PendingQuotesWriteController {
   @Autowired
   private TimeService timeSvc;
 
+  @Operation(operationId = "addVote", summary = "Add a vote")
+  @ApiResponse(responseCode = "404", description = "The pending quote was not found")
+  @ApiResponse(responseCode = "403", description = "The user has already voted")
   @PostMapping("/vote")
   private void addVote(@PathVariable String quoteId,
       @Valid @RequestBody QuoteAddVoteReqDto body) throws Exception {
