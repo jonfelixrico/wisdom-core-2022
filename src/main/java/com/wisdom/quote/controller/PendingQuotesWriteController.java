@@ -22,6 +22,7 @@ import com.wisdom.quote.writemodel.QuoteWriteModelRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 /**
  * @author Felix
@@ -38,8 +39,11 @@ public class PendingQuotesWriteController {
   private TimeService timeSvc;
 
   @Operation(operationId = "addVote", summary = "Add a vote")
-  @ApiResponse(responseCode = "404", description = "The pending quote was not found")
-  @ApiResponse(responseCode = "403", description = "The user has already voted")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "404", description = "The pending quote was not found"),
+      @ApiResponse(responseCode = "403", description = "The user has already voted"),
+      @ApiResponse()
+  })
   @PostMapping("/vote")
   private void addVote(@PathVariable String quoteId,
       @Valid @RequestBody QuoteAddVoteReqDto body) throws Exception {
@@ -57,7 +61,10 @@ public class PendingQuotesWriteController {
   }
 
   @Operation(operationId = "removeVote", summary = "Remove a vote")
-  @ApiResponse(responseCode = "404", description = "User has not yet voted, or the pending quote was not found")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "404", description = "User has not yet voted, or the pending quote was not found"),
+      @ApiResponse()
+  })
   @DeleteMapping("/vote/{userId}")
   private void removeVote(@PathVariable String quoteId, @PathVariable String userId)
       throws Exception {
@@ -75,7 +82,10 @@ public class PendingQuotesWriteController {
   }
 
   @Operation(operationId = "declareStatus", summary = "Declare a pending quote's status")
-  @ApiResponse(responseCode = "404", description = "Pending quote was not found")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "404", description = "Pending quote was not found"),
+      @ApiResponse()
+  })
   @PostMapping("/status")
   private void declareStatus(@PathVariable String quoteId,
       @RequestBody QuoteDeclareStatusReqDto body) throws Exception {
