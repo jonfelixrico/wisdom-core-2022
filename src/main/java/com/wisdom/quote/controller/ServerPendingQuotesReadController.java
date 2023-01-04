@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wisdom.quote.readmodel.QuoteSnapshot;
 import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 public class ServerPendingQuotesReadController {
   @Autowired
   private QuoteSnapshotRepository repo;
 
+  @Operation(operationId = "getServerPendingQuotes", summary = "List pending quotes of a server")
   @GetMapping("/server/{serverId}/pending-quote")
   private List<QuoteSnapshot> getServerPendingQuotes(@PathVariable String serverId,
       @RequestParam Optional<Instant> expiringBefore) {
