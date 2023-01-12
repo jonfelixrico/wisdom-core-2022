@@ -11,9 +11,11 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
-      - name: Get version from package.json
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@main
+      - name: Get project version
+        run: |
+          VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
+          echo "::set-output name=version::$VERSION"
+        id: project-version
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker Hub
@@ -25,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jonfelixrico/wisdom-bot:${{steps.package-version.outputs.current-version}},jonfelixrico/wisdom-bot:latest
+          tags: jonfelixrico/wisdom-core:${{steps.project-version.outputs.version}},jonfelixrico/wisdom-core:latest
