@@ -3,6 +3,7 @@ version: "3.4"
 services:
   esdb:
     image: eventstore/eventstore:21.10.0-buster-slim
+    restart: unless-stopped
     environment:
       - EVENTSTORE_CLUSTER_SIZE=1
       - EVENTSTORE_RUN_PROJECTIONS=All
