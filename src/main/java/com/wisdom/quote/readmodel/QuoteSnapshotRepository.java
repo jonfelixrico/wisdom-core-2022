@@ -25,7 +25,7 @@ public class QuoteSnapshotRepository {
     return results.isEmpty() ? null : results.get();
   }
 
-  public List<QuoteSnapshot> findPendingQuotesInServer(String serverId) {
+  public List<QuoteSnapshot> listPendingQuotes(String serverId) {
     return new ArrayList<>(repo.getPendingQuotes(serverId));
   }
 
@@ -39,16 +39,8 @@ public class QuoteSnapshotRepository {
     return fromDb.isEmpty() ? null : fromDb.get(0);
   }
 
-  public List<QuoteSnapshot> getExpiringPendingeQuotes(String serverId, Instant referenceDt) {
+  public List<QuoteSnapshot> listExpiringQuotes(String serverId, Instant referenceDt) {
     return new ArrayList<>(repo.getExpiringPendingQuotes(serverId, referenceDt));
-  }
-
-  public List<QuoteSnapshot> getServerQuotes(String serverId) {
-    return new ArrayList<>(repo.getRandomQuoteByServerId(serverId));
-  }
-
-  public List<QuoteSnapshot> getServerQuotes(String serverId, String authorId) {
-    return new ArrayList<>(repo.getRandomQuoteByServerIdAndAuthorId(serverId, authorId));
   }
 
   /**

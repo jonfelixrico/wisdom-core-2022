@@ -1,7 +1,5 @@
 package com.wisdom.quote.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,15 +15,17 @@ import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+@Tag(name = "server-quotes")
 @RestController
 @RequestMapping("/server/{serverId}/quote")
 public class ServerQuotesReadController {
   @Autowired
   private QuoteSnapshotRepository repo;
 
-  @Operation(operationId = "getRandomQuote", summary = "Get a random quote from a server")
+  @Operation(operationId = "getRandomQuote", summary = "Get a random approved quote from a server")
   @GetMapping("/random")
   private QuoteSnapshot getRandomQuote(@PathVariable String serverId, @RequestParam(required = false) String authorId) {
     if (authorId == null) {
@@ -35,23 +35,13 @@ public class ServerQuotesReadController {
     return repo.getRandomQuoteInServerFilteredByAuthor(serverId, authorId);
   }
 
-  @Operation(operationId = "getServerQuotes", summary = "List the quotes of a server")
-  @GetMapping
-  private List<QuoteSnapshot> getServerQuotes(@PathVariable String serverId,
-      @RequestParam(required = false) String authorId) {
-    if (authorId == null) {
-      return repo.getServerQuotes(serverId);
-    }
-
-    return repo.getServerQuotes(serverId, authorId);
-  }
-
   private boolean isQuoteApproved(QuoteSnapshot quote) {
     return quote.getStatusDeclaration() != null
         && Status.APPROVED.equals(quote.getStatusDeclaration().getStatus());
   }
 
-  @Operation(operationId = "getQuote", summary = "Get the quote of a server")
+  @Deprecated
+  @Operation(operationId = "getQuote", summary = "Get an approved quote from a server")
   @ApiResponses(value = {
       @ApiResponse(),
       @ApiResponse(responseCode = "404", description = "Quote does not exist or server does not exist", content = {
