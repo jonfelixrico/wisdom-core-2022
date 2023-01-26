@@ -22,8 +22,8 @@ public class ServerQuotesReadControllerV2 {
   @Operation(operationId = "getServerQuotesV2", summary = "List the quotes of a server (includes approved and pending quotes)")
   @GetMapping
   private List<QuoteSnapshot> getServerQuotes(@PathVariable String serverId,
-      @RequestParam(required = false) String contentId, @RequestParam(required = false) String limit,
+      @RequestParam(defaultValue = "20") Integer limit,
       @RequestParam(required = false) String after) {
-    throw new RuntimeException("noop");
+    return repo.listServerQuotes(serverId, limit, after);
   }
 }
