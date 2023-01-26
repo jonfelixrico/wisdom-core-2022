@@ -81,8 +81,8 @@ public class QuoteSnapshotRepository {
      * (taking = pushing into the list)
      */
     boolean isCursorFound = after == null;
-
     var list = new ArrayList<QuoteSnapshot>();
+
     try (var resultSet = mongoTemplate.aggregateStream(aggregate, QuoteSnapshotPersistence.class,
         QuoteSnapshotPersistence.class)) {
       while (resultSet.hasNext() ||
