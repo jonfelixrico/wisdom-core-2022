@@ -41,7 +41,7 @@ public class ServerQuotesReadController {
   }
 
   @Deprecated
-  @Operation(operationId = "getQuote", summary = "Get the quote of a server")
+  @Operation(operationId = "getQuote", summary = "Get an approved quote from a server")
   @ApiResponses(value = {
       @ApiResponse(),
       @ApiResponse(responseCode = "404", description = "Quote does not exist or server does not exist", content = {
