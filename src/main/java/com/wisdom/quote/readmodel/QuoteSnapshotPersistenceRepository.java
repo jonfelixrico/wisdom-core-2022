@@ -18,12 +18,6 @@ interface QuoteSnapshotPersistenceRepository extends MongoRepository<QuoteSnapsh
   @Aggregation(pipeline = {
       "{ $match: { serverId: ?0, 'statusDeclaration.status': 'APPROVED' } }", "{ $sample: { size: 1 }}" })
   public List<QuoteSnapshotPersistence> getRandomQuoteByServerId(String serverId);
-  
-  @Query("{ serverId: ?0, 'statusDeclaration.status': 'APPROVED' }")
-  public List<QuoteSnapshotPersistence> getQuotesByServerId(String serverId);
-  
-  @Query("{ serverId: ?0, authorId: ?1, 'statusDeclaration.status': 'APPROVED' }")
-  public List<QuoteSnapshotPersistence> getQuotesByServerIdAndAuthorId(String serverId, String authorId);
 
   /**
    * 

@@ -43,16 +43,6 @@ public class QuoteSnapshotRepository {
     return new ArrayList<>(repo.getExpiringPendingQuotes(serverId, referenceDt));
   }
 
-  @Deprecated
-  public List<QuoteSnapshot> getServerQuotes(String serverId) {
-    return new ArrayList<>(repo.getRandomQuoteByServerId(serverId));
-  }
-
-  @Deprecated
-  public List<QuoteSnapshot> getServerQuotes(String serverId, String authorId) {
-    return new ArrayList<>(repo.getRandomQuoteByServerIdAndAuthorId(serverId, authorId));
-  }
-
   /**
    * Lists the pending or approved quotes from the server.
    * Uses cursor-based pagination.
