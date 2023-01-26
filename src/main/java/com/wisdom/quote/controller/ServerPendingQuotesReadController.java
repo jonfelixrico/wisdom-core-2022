@@ -28,6 +28,6 @@ public class ServerPendingQuotesReadController {
       return repo.listExpiringQuotes(serverId, expiringBefore.get());
     }
 
-    return repo.findPendingQuotesInServer(serverId);
+    return repo.listPendingQuotes(serverId);
   }
 }

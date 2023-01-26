@@ -25,7 +25,7 @@ public class QuoteSnapshotRepository {
     return results.isEmpty() ? null : results.get();
   }
 
-  public List<QuoteSnapshot> findPendingQuotesInServer(String serverId) {
+  public List<QuoteSnapshot> listPendingQuotes(String serverId) {
     return new ArrayList<>(repo.getPendingQuotes(serverId));
   }
 
