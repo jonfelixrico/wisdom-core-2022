@@ -35,18 +35,6 @@ public class ServerQuotesReadController {
     return repo.getRandomQuoteInServerFilteredByAuthor(serverId, authorId);
   }
 
-  @Deprecated
-  @Operation(operationId = "getServerQuotes", summary = "List the approved quotes of a server")
-  @GetMapping
-  private List<QuoteSnapshot> getServerQuotes(@PathVariable String serverId,
-      @RequestParam(required = false) String authorId) {
-    if (authorId == null) {
-      return repo.getServerQuotes(serverId);
-    }
-
-    return repo.getServerQuotes(serverId, authorId);
-  }
-
   private boolean isQuoteApproved(QuoteSnapshot quote) {
     return quote.getStatusDeclaration() != null
         && Status.APPROVED.equals(quote.getStatusDeclaration().getStatus());
