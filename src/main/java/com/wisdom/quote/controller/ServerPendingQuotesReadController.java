@@ -25,7 +25,7 @@ public class ServerPendingQuotesReadController {
   private List<QuoteSnapshot> getServerPendingQuotes(@PathVariable String serverId,
       @RequestParam Optional<Instant> expiringBefore) {
     if (expiringBefore.isPresent()) {
-      return repo.getExpiringPendingQuotes(serverId, expiringBefore.get());
+      return repo.listExpiringQuotes(serverId, expiringBefore.get());
     }
 
     return repo.findPendingQuotesInServer(serverId);
