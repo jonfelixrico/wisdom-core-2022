@@ -25,7 +25,7 @@ public class ServerQuotesReadController {
   @Autowired
   private QuoteSnapshotRepository repo;
 
-  @Operation(operationId = "getRandomQuote", summary = "Get a random quote from a server")
+  @Operation(operationId = "getRandomQuote", summary = "Get a random approved quote from a server")
   @GetMapping("/random")
   private QuoteSnapshot getRandomQuote(@PathVariable String serverId, @RequestParam(required = false) String authorId) {
     if (authorId == null) {
@@ -35,7 +35,8 @@ public class ServerQuotesReadController {
     return repo.getRandomQuoteInServerFilteredByAuthor(serverId, authorId);
   }
 
-  @Operation(operationId = "getServerQuotes", summary = "List the quotes of a server")
+  @Deprecated
+  @Operation(operationId = "getServerQuotes", summary = "List the approved quotes of a server")
   @GetMapping
   private List<QuoteSnapshot> getServerQuotes(@PathVariable String serverId,
       @RequestParam(required = false) String authorId) {
@@ -51,6 +52,7 @@ public class ServerQuotesReadController {
         && Status.APPROVED.equals(quote.getStatusDeclaration().getStatus());
   }
 
+  @Deprecated
   @Operation(operationId = "getQuote", summary = "Get the quote of a server")
   @ApiResponses(value = {
       @ApiResponse(),
