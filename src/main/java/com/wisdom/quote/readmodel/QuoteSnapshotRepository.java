@@ -64,7 +64,7 @@ public class QuoteSnapshotRepository {
   public List<QuoteSnapshot> listServerQuotes(String serverId, int limit, String after) {
     // get only the approved or pending quotes from the specified server
     var matchExpression = MongoExpression
-        .create("{ serverId: ?0, statusDeclaration: { $or: [null, { status: 'APPROVED' }] } }", serverId);
+        .create("{ serverId: ?0, statusDeclaration: { $in: [null, { status: 'APPROVED' }] } }", serverId);
     var matchStage = Aggregation.match(AggregationExpression.from(matchExpression));
     var sortStage = Aggregation.sort(Sort.by(Sort.Order.desc("submitDt")));
     var aggregate = Aggregation.newAggregation(matchStage, sortStage);
@@ -84,7 +84,7 @@ public class QuoteSnapshotRepository {
 
     try (var resultSet = mongoTemplate.aggregateStream(aggregate, QuoteSnapshotPersistence.class,
         QuoteSnapshotPersistence.class)) {
-      while (resultSet.hasNext() ||
+      while (resultSet.hasNext() &&
       // the limiting mechanism
           list.size() <= limit) {
         var value = resultSet.next();
