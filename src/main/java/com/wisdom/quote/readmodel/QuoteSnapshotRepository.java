@@ -39,7 +39,7 @@ public class QuoteSnapshotRepository {
     return fromDb.isEmpty() ? null : fromDb.get(0);
   }
 
-  public List<QuoteSnapshot> getExpiringPendingeQuotes(String serverId, Instant referenceDt) {
+  public List<QuoteSnapshot> getExpiringPendingQuotes(String serverId, Instant referenceDt) {
     return new ArrayList<>(repo.getExpiringPendingQuotes(serverId, referenceDt));
   }
 
