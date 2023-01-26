@@ -21,7 +21,7 @@ public class ServerQuotesReadControllerV2 {
   @Autowired
   private QuoteSnapshotRepository repo;
 
-  @Operation(operationId = "getServerQuotesV2", summary = "List the quotes of a server (includes approved and pending quotes)")
+  @Operation(operationId = "listQuotesV2", summary = "List the quotes of a server")
   @GetMapping
   private List<QuoteSnapshot> getServerQuotes(@PathVariable String serverId,
       @RequestParam(defaultValue = "20") Integer limit,
