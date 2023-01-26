@@ -15,8 +15,10 @@ import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+@Tag(name = "server-quotes")
 @RestController
 @RequestMapping("/server/{serverId}/quote")
 public class ServerQuotesReadController {
