@@ -29,7 +29,7 @@ public class ServerQuotesReadControllerV2 {
 
   @Operation(operationId = "listQuotesV2", summary = "List the quotes of a server")
   @GetMapping
-  private List<QuoteSnapshot> getServerQuotes(@PathVariable String serverId,
+  private List<QuoteSnapshot> listQuotes(@PathVariable String serverId,
       @RequestParam(defaultValue = "20") Integer limit,
       @RequestParam(required = false) String after) {
     return repo.listServerQuotes(serverId, limit, after);
