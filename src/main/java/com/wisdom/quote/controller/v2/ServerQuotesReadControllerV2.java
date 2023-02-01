@@ -1,4 +1,6 @@
-package com.wisdom.quote.controller;
+package com.wisdom.quote.controller.v2;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,44 +16,40 @@ import com.wisdom.quote.readmodel.QuoteSnapshotRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @Tag(name = "server-quotes")
 @RestController
-@RequestMapping("/server/{serverId}/quote")
-public class ServerQuotesReadController {
+@RequestMapping("/v2/server/{serverId}/quote")
+public class ServerQuotesReadControllerV2 {
   @Autowired
   private QuoteSnapshotRepository repo;
 
-  @Operation(operationId = "getRandomQuote", summary = "Get a random approved quote from a server")
-  @GetMapping("/random")
-  private QuoteSnapshot getRandomQuote(@PathVariable String serverId, @RequestParam(required = false) String authorId) {
-    if (authorId == null) {
-      return repo.getRandomQuoteInServer(serverId);
-    }
-
-    return repo.getRandomQuoteInServerFilteredByAuthor(serverId, authorId);
+  @Operation(operationId = "listQuotesV2", summary = "List the quotes of a server")
+  @GetMapping
+  private List<QuoteSnapshot> listQuotes(@PathVariable String serverId,
+      @RequestParam(defaultValue = "20") Integer limit,
+      @RequestParam(required = false) String after) {
+    return repo.listServerQuotes(serverId, limit, after);
   }
 
-  private boolean isQuoteApproved(QuoteSnapshot quote) {
-    return quote.getStatusDeclaration() != null
-        && Status.APPROVED.equals(quote.getStatusDeclaration().getStatus());
+  private boolean isQuoteExpired(QuoteSnapshot quote) {
+    return quote.getStatusDeclaration() != null && Status.EXPIRED.equals(quote.getStatusDeclaration().getStatus());
   }
 
-  @Deprecated
-  @Operation(operationId = "getQuote", summary = "Get an approved quote from a server")
+  @Operation(operationId = "getQuoteV2", summary = "Get the quote of a server")
   @ApiResponses(value = {
       @ApiResponse(),
-      @ApiResponse(responseCode = "404", description = "Quote does not exist or server does not exist", content = {
+      @ApiResponse(responseCode = "404", content = {
           @Content() })
   })
   @GetMapping("/{quoteId}")
   private QuoteSnapshot getQuote(@PathVariable String serverId, @PathVariable String quoteId) {
     var quote = repo.findById(quoteId);
     if (quote == null ||
-        !isQuoteApproved(quote) || // even though it exists in the db layer, BL-layer, its a separate entity
+        isQuoteExpired(quote) ||
         !quote.getServerId().equals(serverId)) {
       throw new NotFoundException("Quote not found");
     }
