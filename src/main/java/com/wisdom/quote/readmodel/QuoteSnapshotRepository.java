@@ -86,7 +86,7 @@ public class QuoteSnapshotRepository {
            * list.
            * This will start in the iteration after the one where the cursor was found.
            */
-          isCursorFound = value.getId() == after;
+          isCursorFound = value.getId().equals(after);
           continue;
         }
 
